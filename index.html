@@ -1016,9 +1016,65 @@
     }
 
     .memory-btn .icon {
-      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
       filter: drop-shadow(0 0 5px currentColor);
       pointer-events: none;
+    }
+
+    /* Record button - filled circle */
+    .memory-btn.record .icon::before {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background: var(--cyber-red);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyber-red);
+    }
+
+    /* Done/Confirm button - checkmark using CSS */
+    .memory-btn.done .icon::before {
+      content: '';
+      width: 10px;
+      height: 16px;
+      border: solid var(--cyber-green);
+      border-width: 0 4px 4px 0;
+      transform: rotate(45deg) translateX(-2px);
+    }
+
+    /* Play button - triangle using CSS */
+    .memory-btn.play .icon::before {
+      content: '';
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 10px 0 10px 16px;
+      border-color: transparent transparent transparent var(--cyber-blue);
+      margin-left: 4px;
+    }
+
+    /* Reset button - X icon using CSS */
+    .memory-btn.reset .icon {
+      position: relative;
+    }
+    .memory-btn.reset .icon::before,
+    .memory-btn.reset .icon::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 3px;
+      background: var(--cyber-purple);
+      border-radius: 2px;
+      box-shadow: 0 0 6px var(--cyber-purple);
+    }
+    .memory-btn.reset .icon::before {
+      transform: rotate(45deg);
+    }
+    .memory-btn.reset .icon::after {
+      transform: rotate(-45deg);
     }
 
     .memory-btn.record {
@@ -1319,7 +1375,29 @@
       }
 
       .memory-btn .icon {
-        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+
+      .memory-btn.record .icon::before {
+        width: 14px;
+        height: 14px;
+      }
+
+      .memory-btn.done .icon::before {
+        width: 8px;
+        height: 13px;
+        border-width: 0 3px 3px 0;
+      }
+
+      .memory-btn.play .icon::before {
+        border-width: 8px 0 8px 13px;
+      }
+
+      .memory-btn.reset .icon::before,
+      .memory-btn.reset .icon::after {
+        width: 14px;
+        height: 2px;
       }
 
       .servo-group {
@@ -1463,7 +1541,29 @@
       }
 
       .memory-btn .icon {
-        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .memory-btn.record .icon::before {
+        width: 12px;
+        height: 12px;
+      }
+
+      .memory-btn.done .icon::before {
+        width: 7px;
+        height: 11px;
+        border-width: 0 3px 3px 0;
+      }
+
+      .memory-btn.play .icon::before {
+        border-width: 7px 0 7px 11px;
+      }
+
+      .memory-btn.reset .icon::before,
+      .memory-btn.reset .icon::after {
+        width: 12px;
+        height: 2px;
       }
 
       .servo-group {
@@ -1597,7 +1697,29 @@
       }
 
       .memory-btn .icon {
-        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .memory-btn.record .icon::before {
+        width: 10px;
+        height: 10px;
+      }
+
+      .memory-btn.done .icon::before {
+        width: 6px;
+        height: 10px;
+        border-width: 0 2px 2px 0;
+      }
+
+      .memory-btn.play .icon::before {
+        border-width: 6px 0 6px 9px;
+      }
+
+      .memory-btn.reset .icon::before,
+      .memory-btn.reset .icon::after {
+        width: 10px;
+        height: 2px;
       }
     }
 
@@ -2000,19 +2122,19 @@
         </div>
         <div class="memory-buttons">
           <button class="memory-btn record" id="remember">
-            <span class="icon">⏺</span>
+            <span class="icon"></span>
             Record
           </button>
           <button class="memory-btn done" id="done">
-            <span class="icon">✓</span>
+            <span class="icon"></span>
             Confirm
           </button>
           <button class="memory-btn play" id="run">
-            <span class="icon">▶</span>
+            <span class="icon"></span>
             Execute
           </button>
           <button class="memory-btn reset" id="reset">
-            <span class="icon">↺</span>
+            <span class="icon"></span>
             Clear
           </button>
         </div>
