@@ -908,13 +908,14 @@
       margin-bottom: 24px;
       padding-bottom: 20px;
       border-bottom: 1px solid rgba(255, 102, 0, 0.3);
+      position: relative;
     }
 
     .memory-header::after {
       content: '';
       position: absolute;
-      top: 78px;
-      left: 28px;
+      bottom: -1px;
+      left: 0;
       width: 60px;
       height: 2px;
       background: var(--cyber-orange);
@@ -2060,10 +2061,26 @@
     let recordedMoves = [];
 
     // ===== UI Functions =====
-    function showMessage(text, type = 'info') {
+    let messageTimeout = null;
+    
+    function showMessage(text, type = 'info', autoClearMs = 0) {
       const msgEl = document.getElementById('message');
       msgEl.innerText = '> ' + text;
       msgEl.className = 'status-text ' + type;
+      
+      // Clear any existing timeout
+      if (messageTimeout) {
+        clearTimeout(messageTimeout);
+        messageTimeout = null;
+      }
+      
+      // Auto-clear after specified time
+      if (autoClearMs > 0) {
+        messageTimeout = setTimeout(() => {
+          msgEl.innerText = '> System online. Awaiting commands.';
+          msgEl.className = 'status-text success';
+        }, autoClearMs);
+      }
     }
 
     function sendCommand(url) {
@@ -2236,16 +2253,16 @@
       if (remembering) {
         remembering = false;
         document.getElementById('remember').classList.remove('active');
-        showMessage(`✓ Recording complete! ${recordedMoves.length} actions stored in memory.`, 'success');
+        showMessage(`✓ Recording complete! ${recordedMoves.length} actions stored in memory.`, 'success', 3000);
         try { playBeep(); } catch(e) {}
       } else {
-        showMessage("⚠ No active recording session detected.", 'warning');
+        showMessage("⚠ No active recording session detected.", 'warning', 3000);
       }
     };
 
     document.getElementById('run').onclick = async function() {
       if (recordedMoves.length === 0) {
-        showMessage("⚠ Memory bank empty. Initialize recording first.", 'warning');
+        showMessage("⚠ Memory bank empty. Initialize recording first.", 'warning', 3000);
         return;
       }
 
@@ -2257,7 +2274,7 @@
         await new Promise(r => setTimeout(r, 800));
       }
 
-      showMessage("✓ Trajectory execution complete!", 'success');
+      showMessage("✓ Trajectory execution complete!", 'success', 3000);
       try { playBeep(); } catch(e) {}
     };
 
@@ -2265,7 +2282,7 @@
       recordedMoves = [];
       remembering = false;
       document.getElementById('remember').classList.remove('active');
-      showMessage("↺ Memory cleared. Ready for new recording.", 'info');
+      showMessage("↺ Memory cleared. Ready for new recording.", 'info', 3000);
       try { playBeep(); } catch(e) {}
     };
 
