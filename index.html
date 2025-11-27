@@ -726,11 +726,20 @@
       position: relative;
       cursor: pointer;
       transition: all 0.2s ease;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0, 255, 136, 0.3);
     }
 
     .servo-value:hover {
       background: rgba(0, 255, 136, 0.1);
       box-shadow: 0 0 25px rgba(0, 255, 136, 0.3);
+    }
+
+    .servo-value:active {
+      background: rgba(0, 255, 136, 0.2);
+      transform: scale(0.95);
     }
 
     .servo-value-input {
@@ -1331,6 +1340,7 @@
         min-width: 70px;
         padding: 6px 12px;
         font-size: 1rem;
+        cursor: pointer;
       }
 
       .status-container {
@@ -1478,6 +1488,7 @@
         min-width: 60px;
         padding: 5px 10px;
         font-size: 0.9rem;
+        cursor: pointer;
       }
 
       .servo-value::before {
@@ -1940,7 +1951,7 @@
                 <span class="servo-number">01</span>
                 <span class="servo-name">Base Rotation</span>
               </div>
-              <span class="servo-value" id="servo1-val" onclick="editServoValue(1)">90°</span>
+              <span class="servo-value" id="servo1-val">90°</span>
             </div>
             <div class="slider-container">
               <input type="range" class="slider" id="servo1" min="0" max="180" value="90" oninput="setServo(1, this.value)">
@@ -1953,7 +1964,7 @@
                 <span class="servo-number">02</span>
                 <span class="servo-name">Shoulder Joint</span>
               </div>
-              <span class="servo-value" id="servo2-val" onclick="editServoValue(2)">90°</span>
+              <span class="servo-value" id="servo2-val">90°</span>
             </div>
             <div class="slider-container">
               <input type="range" class="slider" id="servo2" min="0" max="180" value="90" oninput="setServo(2, this.value)">
@@ -1966,7 +1977,7 @@
                 <span class="servo-number">03</span>
                 <span class="servo-name">Gripper Claw</span>
               </div>
-              <span class="servo-value" id="servo3-val" onclick="editServoValue(3)">90°</span>
+              <span class="servo-value" id="servo3-val">90°</span>
             </div>
             <div class="slider-container">
               <input type="range" class="slider" id="servo3" min="0" max="180" value="90" oninput="setServo(3, this.value)">
@@ -2109,8 +2120,26 @@
     }
 
     // ===== Edit Servo Value by clicking on degree display =====
+    function attachServoValueEvents(element, num) {
+      // Handle both click and touch
+      element.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        editServoValue(num);
+      });
+      
+      // For touch devices, use touchend
+      element.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        editServoValue(num);
+      }, { passive: false });
+    }
+    
     function editServoValue(num) {
       const valEl = document.getElementById('servo' + num + '-val');
+      if (!valEl || valEl.tagName !== 'SPAN') return; // Already editing
+      
       const slider = document.getElementById('servo' + num);
       const currentValue = slider.value;
       
@@ -2122,18 +2151,29 @@
       input.min = 0;
       input.max = 180;
       input.id = 'servo' + num + '-val';
+      input.inputMode = 'numeric';
+      input.pattern = '[0-9]*';
       
       // Replace span with input
       valEl.replaceWith(input);
-      input.focus();
-      input.select();
+      
+      // Small delay to ensure proper focus on mobile
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 50);
+      
+      let confirmed = false;
       
       // Handle input confirmation
       function confirmValue() {
+        if (confirmed) return;
+        confirmed = true;
+        
         let newValue = parseInt(input.value);
         
         // Validate range
-        if (isNaN(newValue)) newValue = currentValue;
+        if (isNaN(newValue)) newValue = parseInt(currentValue);
         if (newValue < 0) newValue = 0;
         if (newValue > 180) newValue = 180;
         
@@ -2142,7 +2182,8 @@
         newSpan.className = 'servo-value';
         newSpan.id = 'servo' + num + '-val';
         newSpan.innerText = newValue + '°';
-        newSpan.onclick = () => editServoValue(num);
+        // Attach event listeners for touch/click
+        attachServoValueEvents(newSpan, num);
         
         // Replace input with span
         input.replaceWith(newSpan);
@@ -2161,17 +2202,26 @@
           confirmValue();
         } else if (e.key === 'Escape') {
           // Cancel and restore original value
+          confirmed = true;
           const newSpan = document.createElement('span');
           newSpan.className = 'servo-value';
           newSpan.id = 'servo' + num + '-val';
           newSpan.innerText = currentValue + '°';
-          newSpan.onclick = () => editServoValue(num);
+          attachServoValueEvents(newSpan, num);
           input.replaceWith(newSpan);
         }
       });
       
       input.addEventListener('blur', confirmValue);
     }
+    
+    // Initialize servo value tap events on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      [1, 2, 3].forEach(num => {
+        const el = document.getElementById('servo' + num + '-val');
+        if (el) attachServoValueEvents(el, num);
+      });
+    });
 
     // ===== Memory Control Functions =====
     document.getElementById('remember').onclick = function() {
