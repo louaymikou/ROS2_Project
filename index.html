@@ -368,13 +368,15 @@
         calc(100% - 28px) calc(100% - 28px) 0 var(--cyber-green);
     }
 
-    .panel:hover {
-      transform: translateY(-6px);
-      border-color: var(--cyber-blue);
-      box-shadow: 
-        0 0 30px rgba(0, 240, 255, 0.2),
-        0 20px 60px rgba(0, 0, 0, 0.4),
-        inset 0 0 60px rgba(0, 240, 255, 0.03);
+    @media (hover: hover) {
+      .panel:hover {
+        transform: translateY(-6px);
+        border-color: var(--cyber-blue);
+        box-shadow: 
+          0 0 30px rgba(0, 240, 255, 0.2),
+          0 20px 60px rgba(0, 0, 0, 0.4),
+          inset 0 0 60px rgba(0, 240, 255, 0.03);
+      }
     }
 
     .panel-inner {
@@ -552,15 +554,25 @@
         inset 0 1px 0 rgba(0, 240, 255, 0.2);
     }
 
-    .direction-btn.primary:hover {
-      background: linear-gradient(180deg, rgba(0, 240, 255, 0.2) 0%, rgba(0, 240, 255, 0.05) 100%);
-      box-shadow: 
-        0 0 30px rgba(0, 240, 255, 0.3),
-        0 0 60px rgba(0, 240, 255, 0.1),
-        inset 0 0 20px rgba(0, 240, 255, 0.1);
-      transform: scale(1.05);
-      border-color: var(--cyber-blue);
-      text-shadow: 0 0 10px var(--cyber-blue);
+    @media (hover: hover) {
+      .direction-btn.primary:hover {
+        background: linear-gradient(180deg, rgba(0, 240, 255, 0.2) 0%, rgba(0, 240, 255, 0.05) 100%);
+        box-shadow: 
+          0 0 30px rgba(0, 240, 255, 0.3),
+          0 0 60px rgba(0, 240, 255, 0.1),
+          inset 0 0 20px rgba(0, 240, 255, 0.1);
+        transform: scale(1.05);
+        border-color: var(--cyber-blue);
+        text-shadow: 0 0 10px var(--cyber-blue);
+      }
+
+      .direction-btn.stop:hover {
+        background: linear-gradient(180deg, rgba(255, 0, 85, 0.25) 0%, rgba(255, 0, 85, 0.05) 100%);
+        box-shadow: 
+          0 0 30px rgba(255, 0, 85, 0.3),
+          0 0 60px rgba(255, 0, 85, 0.1);
+        text-shadow: 0 0 10px var(--cyber-red);
+      }
     }
 
     .direction-btn.primary:active {
@@ -576,14 +588,6 @@
       border-color: var(--cyber-red);
       color: var(--cyber-red);
       box-shadow: 0 0 20px rgba(255, 0, 85, 0.1);
-    }
-
-    .direction-btn.stop:hover {
-      background: linear-gradient(180deg, rgba(255, 0, 85, 0.25) 0%, rgba(255, 0, 85, 0.05) 100%);
-      box-shadow: 
-        0 0 30px rgba(255, 0, 85, 0.3),
-        0 0 60px rgba(255, 0, 85, 0.1);
-      text-shadow: 0 0 10px var(--cyber-red);
     }
 
     .direction-btn.stop::before {
@@ -928,8 +932,34 @@
       transition: left 0.4s;
     }
 
-    .memory-btn:hover::before {
-      left: 100%;
+    @media (hover: hover) {
+      .memory-btn:hover::before {
+        left: 100%;
+      }
+
+      .memory-btn.record:hover {
+        background: rgba(255, 0, 85, 0.1);
+        box-shadow: 0 0 30px rgba(255, 0, 85, 0.3), inset 0 0 20px rgba(255, 0, 85, 0.1);
+        transform: translateY(-3px);
+      }
+
+      .memory-btn.done:hover {
+        background: rgba(0, 255, 136, 0.1);
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.3), inset 0 0 20px rgba(0, 255, 136, 0.1);
+        transform: translateY(-3px);
+      }
+
+      .memory-btn.play:hover {
+        background: rgba(0, 240, 255, 0.1);
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.1);
+        transform: translateY(-3px);
+      }
+
+      .memory-btn.reset:hover {
+        background: rgba(191, 0, 255, 0.1);
+        box-shadow: 0 0 30px rgba(191, 0, 255, 0.3), inset 0 0 20px rgba(191, 0, 255, 0.1);
+        transform: translateY(-3px);
+      }
     }
 
     .memory-btn .icon {
@@ -941,12 +971,6 @@
       border-color: var(--cyber-red);
       color: var(--cyber-red);
       box-shadow: 0 0 20px rgba(255, 0, 85, 0.15);
-    }
-
-    .memory-btn.record:hover {
-      background: rgba(255, 0, 85, 0.1);
-      box-shadow: 0 0 30px rgba(255, 0, 85, 0.3), inset 0 0 20px rgba(255, 0, 85, 0.1);
-      transform: translateY(-3px);
     }
 
     .memory-btn.record.active {
@@ -965,34 +989,16 @@
       box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
     }
 
-    .memory-btn.done:hover {
-      background: rgba(0, 255, 136, 0.1);
-      box-shadow: 0 0 30px rgba(0, 255, 136, 0.3), inset 0 0 20px rgba(0, 255, 136, 0.1);
-      transform: translateY(-3px);
-    }
-
     .memory-btn.play {
       border-color: var(--cyber-blue);
       color: var(--cyber-blue);
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
     }
 
-    .memory-btn.play:hover {
-      background: rgba(0, 240, 255, 0.1);
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.1);
-      transform: translateY(-3px);
-    }
-
     .memory-btn.reset {
       border-color: var(--cyber-purple);
       color: var(--cyber-purple);
       box-shadow: 0 0 20px rgba(191, 0, 255, 0.15);
-    }
-
-    .memory-btn.reset:hover {
-      background: rgba(191, 0, 255, 0.1);
-      box-shadow: 0 0 30px rgba(191, 0, 255, 0.3), inset 0 0 20px rgba(191, 0, 255, 0.1);
-      transform: translateY(-3px);
     }
 
     /* Status Message - Terminal Style */
