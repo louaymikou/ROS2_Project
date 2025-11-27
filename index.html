@@ -571,82 +571,6 @@
     .status-text.warning { color: var(--warning); }
     .status-text.info { color: var(--accent); }
 
-    /* Install Banner */
-    .install-banner {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-      z-index: 1000;
-    }
-
-    .install-banner.show {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .install-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .install-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .install-text h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .install-text p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .install-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .install-btn {
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
-      border: none;
-    }
-
-    .install-btn.primary {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-    }
-
-    .install-btn.secondary {
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border);
-    }
-
     /* Footer */
     .footer {
       text-align: center;
@@ -672,20 +596,6 @@
 
       .logo h1 {
         font-size: 1.4rem;
-      }
-
-      .install-banner {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-      }
-
-      .install-info {
-        justify-content: center;
-      }
-
-      .install-actions {
-        justify-content: center;
       }
     }
 
@@ -865,21 +775,6 @@
     </div>
   </main>
 
-  <!-- Install PWA Banner -->
-  <div class="install-banner" id="installBanner">
-    <div class="install-info">
-      <div class="install-icon">📲</div>
-      <div class="install-text">
-        <h4>Install RoboControl</h4>
-        <p>Add to home screen for quick access</p>
-      </div>
-    </div>
-    <div class="install-actions">
-      <button class="install-btn secondary" id="dismissInstall">Later</button>
-      <button class="install-btn primary" id="installApp">Install</button>
-    </div>
-  </div>
-
   <!-- Footer -->
   <footer class="footer">
     <p>Powered by <a href="#">DigiClub</a> • ESP32 Robot Control System</p>
@@ -889,49 +784,6 @@
     // ===== State Management =====
     let remembering = false;
     let recordedMoves = [];
-    let deferredPrompt;
-
-    // ===== PWA Installation =====
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('installBanner').classList.add('show');
-    });
-
-    document.getElementById('installApp').addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('User response:', outcome);
-        deferredPrompt = null;
-        document.getElementById('installBanner').classList.remove('show');
-      }
-    });
-
-    document.getElementById('dismissInstall').addEventListener('click', () => {
-      document.getElementById('installBanner').classList.remove('show');
-    });
-
-    // Register Service Worker (inline)
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        const CACHE_NAME = 'robocontrol-v1';
-        self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
-        self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-        self.addEventListener('fetch', e => {
-          if (e.request.url.includes('/forward') || e.request.url.includes('/backward') || 
-              e.request.url.includes('/left') || e.request.url.includes('/right') || 
-              e.request.url.includes('/stop') || e.request.url.includes('/set')) {
-            e.respondWith(fetch(e.request));
-          }
-        });
-      `;
-      const swBlob = new Blob([swCode], { type: 'application/javascript' });
-      const swUrl = URL.createObjectURL(swBlob);
-      navigator.serviceWorker.register(swUrl).then(reg => {
-        console.log('Service Worker registered');
-      }).catch(err => console.log('SW registration failed:', err));
-    }
 
     // ===== UI Functions =====
     function showMessage(text, type = 'info') {
