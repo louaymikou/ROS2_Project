@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0f23">
+  <meta name="description" content="ESP32 Robot Control Panel - Control your robotic arm with precision">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RoboControl">
+  <link rel="manifest" href="data:application/json,{%22name%22:%22RoboControl%22,%22short_name%22:%22RoboControl%22,%22description%22:%22ESP32%20Robot%20Control%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f0f23%22,%22theme_color%22:%22%230f0f23%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20512%20512%27%3E%3Crect%20fill%3D%27%25230f0f23%27%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%2780%27/%3E%3Ctext%20y%3D%27.85em%27%20font-size%3D%27350%27%20x%3D%2780%27%3E🤖%3C/text%3E%3C/svg%3E%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]}">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230f0f23' width='100' height='100' rx='20'/><text y='.9em' font-size='80' x='10'>🤖</text></svg>">
+  <title>RoboControl | ESP32 Robot</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    :root {
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-dark: #4f46e5;
+      --accent: #06b6d4;
+      --accent-light: #22d3ee;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg-dark: #0f0f23;
+      --bg-card: #1a1a2e;
+      --bg-card-hover: #252542;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(99, 102, 241, 0.2);
+      --glow: rgba(99, 102, 241, 0.4);
+      --glass: rgba(26, 26, 46, 0.8);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+      animation: bgFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes bgFloat {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(2%, 2%) rotate(1deg); }
+      66% { transform: translate(-1%, 1%) rotate(-1deg); }
+    }
+
+    /* Grid Pattern Overlay */
+    .grid-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: -1;
+    }
+
+    /* Header */
+    .header {
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      backdrop-filter: blur(20px);
+      background: var(--glass);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 8px 32px var(--glow);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 8px 32px var(--glow); }
+      50% { box-shadow: 0 8px 48px var(--glow), 0 0 60px var(--glow); }
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 100px;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* Panel Card */
+    .panel {
+      background: var(--bg-card);
+      border-radius: 24px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .panel:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: 0 20px 60px -20px var(--glow);
+    }
+
+    .panel:hover::before {
+      opacity: 1;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .panel-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .panel-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .panel-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Direction Control */
+    .direction-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .direction-btn {
+      aspect-ratio: 1.4;
+      border: none;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .direction-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .direction-btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .direction-btn.primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+    }
+
+    .direction-btn.primary:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    .direction-btn.stop {
+      background: linear-gradient(135deg, var(--danger), #dc2626);
+      color: white;
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .direction-btn.stop:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(239, 68, 68, 0.4);
+    }
+
+    .direction-btn .icon {
+      font-size: 20px;
+    }
+
+    .direction-btn .label {
+      font-size: 11px;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .empty-cell {
+      visibility: hidden;
+    }
+
+    /* Servo Controls */
+    .servo-group {
+      margin-bottom: 24px;
+    }
+
+    .servo-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .servo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .servo-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .servo-number {
+      width: 32px;
+      height: 32px;
+      background: var(--bg-dark);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-light);
+      border: 1px solid var(--border);
+    }
+
+    .servo-name {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .servo-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--bg-dark);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .slider-container {
+      position: relative;
+      padding: 8px 0;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      background: var(--bg-dark);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--glow);
+      transition: all 0.2s;
+      border: 3px solid var(--bg-card);
+    }
+
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px var(--glow);
+    }
+
+    .slider::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--glow);
+      border: 3px solid var(--bg-card);
+    }
+
+    .slider-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 4px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Memory Controls */
+    .memory-panel {
+      background: var(--bg-card);
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .memory-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .memory-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--warning), #d97706);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .memory-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .memory-btn {
+      padding: 16px 12px;
+      border: none;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .memory-btn .icon {
+      font-size: 22px;
+    }
+
+    .memory-btn.record {
+      background: linear-gradient(135deg, var(--danger), #dc2626);
+      color: white;
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .memory-btn.record.active {
+      animation: recordPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes recordPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
+      50% { box-shadow: 0 4px 30px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.3); }
+    }
+
+    .memory-btn.done {
+      background: linear-gradient(135deg, var(--success), #059669);
+      color: white;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .memory-btn.play {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .memory-btn.reset {
+      background: var(--bg-dark);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .memory-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .memory-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Status Message */
+    .status-container {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-dark);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .status-text.success { color: var(--success); }
+    .status-text.warning { color: var(--warning); }
+    .status-text.info { color: var(--accent); }
+
+    /* Install Banner */
+    .install-banner {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+    }
+
+    .install-banner.show {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .install-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .install-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .install-text h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .install-text p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .install-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .install-btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      border: none;
+    }
+
+    .install-btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+    }
+
+    .install-btn.secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .footer a {
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .memory-buttons {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .logo h1 {
+        font-size: 1.4rem;
+      }
+
+      .install-banner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+
+      .install-info {
+        justify-content: center;
+      }
+
+      .install-actions {
+        justify-content: center;
+      }
+    }
+
+    /* Touch feedback */
+    @media (hover: none) {
+      .direction-btn:active {
+        transform: scale(0.92);
+      }
+
+      .memory-btn:active {
+        transform: scale(0.95);
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      100% { left: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation"></div>
+  <div class="grid-pattern"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">🤖</div>
+      <h1>RoboControl</h1>
+    </div>
+    <p class="subtitle">Formation d'un bras hybride par DigiClub</p>
+    <div class="badge">ESP32 Connected</div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <div class="cards-grid">
+      <!-- Motor Control Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-icon">🎮</div>
+          <div>
+            <div class="panel-title">Motor Control</div>
+            <div class="panel-subtitle">Navigate your robot</div>
+          </div>
+        </div>
+        <div class="direction-grid">
+          <div class="empty-cell"></div>
+          <button class="direction-btn primary" ontouchstart="forward()" ontouchend="stopMotors()" onmousedown="forward()" onmouseup="stopMotors()">
+            <span class="icon">↑</span>
+            <span class="label">Forward</span>
+          </button>
+          <div class="empty-cell"></div>
+          
+          <button class="direction-btn primary" ontouchstart="left()" ontouchend="stopMotors()" onmousedown="left()" onmouseup="stopMotors()">
+            <span class="icon">←</span>
+            <span class="label">Left</span>
+          </button>
+          <button class="direction-btn stop" ontouchstart="stopMotors()" onmousedown="stopMotors()">
+            <span class="icon">⬛</span>
+            <span class="label">Stop</span>
+          </button>
+          <button class="direction-btn primary" ontouchstart="right()" ontouchend="stopMotors()" onmousedown="right()" onmouseup="stopMotors()">
+            <span class="icon">→</span>
+            <span class="label">Right</span>
+          </button>
+          
+          <div class="empty-cell"></div>
+          <button class="direction-btn primary" ontouchstart="backward()" ontouchend="stopMotors()" onmousedown="backward()" onmouseup="stopMotors()">
+            <span class="icon">↓</span>
+            <span class="label">Back</span>
+          </button>
+          <div class="empty-cell"></div>
+        </div>
+      </div>
+
+      <!-- Servo Control Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-icon">⚙️</div>
+          <div>
+            <div class="panel-title">Servo Control</div>
+            <div class="panel-subtitle">Adjust arm position</div>
+          </div>
+        </div>
+        
+        <div class="servo-group">
+          <div class="servo-header">
+            <div class="servo-label">
+              <span class="servo-number">1</span>
+              <span class="servo-name">Base Rotation</span>
+            </div>
+            <span class="servo-value" id="servo1-val">90°</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" class="slider" id="servo1" min="0" max="180" value="90" oninput="setServo(1, this.value)">
+          </div>
+        </div>
+
+        <div class="servo-group">
+          <div class="servo-header">
+            <div class="servo-label">
+              <span class="servo-number">2</span>
+              <span class="servo-name">Shoulder Joint</span>
+            </div>
+            <span class="servo-value" id="servo2-val">90°</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" class="slider" id="servo2" min="0" max="180" value="90" oninput="setServo(2, this.value)">
+          </div>
+        </div>
+
+        <div class="servo-group">
+          <div class="servo-header">
+            <div class="servo-label">
+              <span class="servo-number">3</span>
+              <span class="servo-name">Gripper</span>
+            </div>
+            <span class="servo-value" id="servo3-val">90°</span>
+          </div>
+          <div class="slider-container">
+            <input type="range" class="slider" id="servo3" min="0" max="180" value="90" oninput="setServo(3, this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Memory Control Panel -->
+    <div class="memory-panel">
+      <div class="memory-header">
+        <div class="memory-icon">💾</div>
+        <div>
+          <div class="panel-title">Trajectory Memory</div>
+          <div class="panel-subtitle">Record and playback movements</div>
+        </div>
+      </div>
+      <div class="memory-buttons">
+        <button class="memory-btn record" id="remember">
+          <span class="icon">⏺</span>
+          Record
+        </button>
+        <button class="memory-btn done" id="done">
+          <span class="icon">✓</span>
+          Done
+        </button>
+        <button class="memory-btn play" id="run">
+          <span class="icon">▶</span>
+          Play
+        </button>
+        <button class="memory-btn reset" id="reset">
+          <span class="icon">↺</span>
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Message -->
+    <div class="status-container">
+      <div class="status-icon">📡</div>
+      <div class="status-text" id="message">Ready to control. Use the panels above to operate your robot.</div>
+    </div>
+  </main>
+
+  <!-- Install PWA Banner -->
+  <div class="install-banner" id="installBanner">
+    <div class="install-info">
+      <div class="install-icon">📲</div>
+      <div class="install-text">
+        <h4>Install RoboControl</h4>
+        <p>Add to home screen for quick access</p>
+      </div>
+    </div>
+    <div class="install-actions">
+      <button class="install-btn secondary" id="dismissInstall">Later</button>
+      <button class="install-btn primary" id="installApp">Install</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Powered by <a href="#">DigiClub</a> • ESP32 Robot Control System</p>
+  </footer>
+
+  <script>
+    // ===== State Management =====
+    let remembering = false;
+    let recordedMoves = [];
+    let deferredPrompt;
+
+    // ===== PWA Installation =====
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBanner').classList.add('show');
+    });
+
+    document.getElementById('installApp').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('User response:', outcome);
+        deferredPrompt = null;
+        document.getElementById('installBanner').classList.remove('show');
+      }
+    });
+
+    document.getElementById('dismissInstall').addEventListener('click', () => {
+      document.getElementById('installBanner').classList.remove('show');
+    });
+
+    // Register Service Worker (inline)
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE_NAME = 'robocontrol-v1';
+        self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
+        self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+        self.addEventListener('fetch', e => {
+          if (e.request.url.includes('/forward') || e.request.url.includes('/backward') || 
+              e.request.url.includes('/left') || e.request.url.includes('/right') || 
+              e.request.url.includes('/stop') || e.request.url.includes('/set')) {
+            e.respondWith(fetch(e.request));
+          }
+        });
+      `;
+      const swBlob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).then(reg => {
+        console.log('Service Worker registered');
+      }).catch(err => console.log('SW registration failed:', err));
+    }
+
+    // ===== UI Functions =====
+    function showMessage(text, type = 'info') {
+      const msgEl = document.getElementById('message');
+      msgEl.innerText = text;
+      msgEl.className = 'status-text ' + type;
+    }
+
+    function sendCommand(url) {
+      fetch(url).catch(err => console.log('Command error:', err));
+      if (remembering) {
+        recordedMoves.push(url);
+        console.log("Recorded:", url);
+      }
+    }
+
+    // ===== Robot Control Functions =====
+    function forward() { sendCommand('/forward'); }
+    function backward() { sendCommand('/backward'); }
+    function left() { sendCommand('/left'); }
+    function right() { sendCommand('/right'); }
+    function stopMotors() { sendCommand('/stop'); }
+    
+    function setServo(num, angle) {
+      sendCommand('/set?servo=' + num + '&angle=' + angle);
+      document.getElementById('servo' + num + '-val').innerText = angle + '°';
+    }
+
+    // ===== Memory Control Functions =====
+    document.getElementById('remember').onclick = function() {
+      remembering = true;
+      recordedMoves = [];
+      this.classList.add('active');
+      showMessage("Recording movements... Perform your trajectory.", 'warning');
+    };
+
+    document.getElementById('done').onclick = function() {
+      if (remembering) {
+        remembering = false;
+        document.getElementById('remember').classList.remove('active');
+        showMessage("Recording complete! " + recordedMoves.length + " actions saved.", 'success');
+      } else {
+        showMessage("No recording is currently active.", 'warning');
+      }
+    };
+
+    document.getElementById('run').onclick = async function() {
+      if (recordedMoves.length === 0) {
+        showMessage("No trajectory recorded. Press Record first.", 'warning');
+        return;
+      }
+
+      showMessage("Executing trajectory...", 'info');
+
+      for (let i = 0; i < recordedMoves.length; i++) {
+        await fetch(recordedMoves[i]).catch(err => {});
+        showMessage("Executing step " + (i + 1) + " of " + recordedMoves.length + "...", 'info');
+        await new Promise(r => setTimeout(r, 800));
+      }
+
+      showMessage("Trajectory completed successfully!", 'success');
+    };
+
+    document.getElementById('reset').onclick = function() {
+      recordedMoves = [];
+      remembering = false;
+      document.getElementById('remember').classList.remove('active');
+      showMessage("Memory cleared. Ready for new recording.", 'info');
+    };
+
+    // ===== Prevent context menu on long press (mobile) =====
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('contextmenu', e => e.preventDefault());
+    });
+  </script>
+</body>
+</html>
