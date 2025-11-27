@@ -603,6 +603,7 @@
       width: 0;
       height: 0;
       border-style: solid;
+      pointer-events: none;
     }
 
     .direction-btn.arrow-up .icon {
@@ -631,12 +632,14 @@
       background: currentColor;
       border: none;
       border-radius: 4px;
+      pointer-events: none;
     }
 
     .direction-btn .label {
       font-size: 11px;
       opacity: 0.8;
       letter-spacing: 1px;
+      pointer-events: none;
     }
 
     .empty-cell {
@@ -974,6 +977,7 @@
     .memory-btn .icon {
       font-size: 26px;
       filter: drop-shadow(0 0 5px currentColor);
+      pointer-events: none;
     }
 
     .memory-btn.record {
@@ -1554,8 +1558,8 @@
       }
     }
 
-    /* Touch feedback - use pointer: coarse for better touch detection */
-    @media (pointer: coarse), (hover: none) {
+    /* Touch feedback - use multiple queries for cross-browser support */
+    @media (pointer: coarse), (hover: none), (any-hover: none), (any-pointer: coarse) {
       .direction-btn:active {
         transform: scale(0.92);
         background: rgba(0, 240, 255, 0.3) !important;
@@ -1590,11 +1594,81 @@
       }
     }
 
-    /* Additional touch device fallback - when JS adds .touch-device class */
-    body.touch-device .panel:hover,
-    body.touch-device .direction-btn:hover,
+    /* Touch device fallback - when JS adds .touch-device class */
+    /* Only disable transform on hover, let :active handle the color change */
+    body.touch-device .panel:hover {
+      transform: none !important;
+    }
+
+    body.touch-device .direction-btn:hover {
+      transform: none !important;
+      /* Keep original background - don't override */
+    }
+
+    body.touch-device .direction-btn.primary:hover {
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.1) 0%, var(--bg-darker) 100%) !important;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.1), inset 0 1px 0 rgba(0, 240, 255, 0.2) !important;
+      text-shadow: none !important;
+    }
+
+    body.touch-device .direction-btn.stop:hover {
+      background: linear-gradient(180deg, rgba(255, 0, 85, 0.15) 0%, var(--bg-darker) 100%) !important;
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.1) !important;
+      text-shadow: none !important;
+    }
+
     body.touch-device .memory-btn:hover {
       transform: none !important;
+      background: var(--bg-darker) !important;
+    }
+
+    /* Active states for touch - these take priority over hover */
+    body.touch-device .direction-btn.primary:active,
+    body.touch-device .direction-btn.primary:active:hover,
+    body.touch-device .direction-btn.primary.touching {
+      transform: scale(0.92) !important;
+      background: rgba(0, 240, 255, 0.4) !important;
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.5), inset 0 0 30px rgba(0, 240, 255, 0.3) !important;
+    }
+
+    body.touch-device .direction-btn.stop:active,
+    body.touch-device .direction-btn.stop:active:hover,
+    body.touch-device .direction-btn.stop.touching {
+      transform: scale(0.92) !important;
+      background: rgba(255, 0, 85, 0.4) !important;
+      box-shadow: 0 0 40px rgba(255, 0, 85, 0.5), inset 0 0 30px rgba(255, 0, 85, 0.3) !important;
+    }
+
+    body.touch-device .memory-btn.record:active,
+    body.touch-device .memory-btn.record:active:hover,
+    body.touch-device .memory-btn.record.touching {
+      transform: scale(0.95) !important;
+      background: rgba(255, 0, 85, 0.3) !important;
+      box-shadow: 0 0 30px rgba(255, 0, 85, 0.4) !important;
+    }
+
+    body.touch-device .memory-btn.done:active,
+    body.touch-device .memory-btn.done:active:hover,
+    body.touch-device .memory-btn.done.touching {
+      transform: scale(0.95) !important;
+      background: rgba(0, 255, 136, 0.3) !important;
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.4) !important;
+    }
+
+    body.touch-device .memory-btn.play:active,
+    body.touch-device .memory-btn.play:active:hover,
+    body.touch-device .memory-btn.play.touching {
+      transform: scale(0.95) !important;
+      background: rgba(0, 240, 255, 0.3) !important;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.4) !important;
+    }
+
+    body.touch-device .memory-btn.reset:active,
+    body.touch-device .memory-btn.reset:active:hover,
+    body.touch-device .memory-btn.reset.touching {
+      transform: scale(0.95) !important;
+      background: rgba(191, 0, 255, 0.3) !important;
+      box-shadow: 0 0 30px rgba(191, 0, 255, 0.4) !important;
     }
 
     /* Holographic shimmer effect */
@@ -2051,17 +2125,62 @@
     });
 
     // ===== Fix sticky hover on touch devices =====
-    // This removes hover states when touch ends
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    // Multiple detection methods for cross-browser support (including Firefox)
+    function isTouchDevice() {
+      // Method 1: Check for touch events
+      if ('ontouchstart' in window) return true;
+      // Method 2: Check maxTouchPoints (works in most browsers)
+      if (navigator.maxTouchPoints > 0) return true;
+      // Method 3: Check msMaxTouchPoints (IE/Edge legacy)
+      if (navigator.msMaxTouchPoints > 0) return true;
+      // Method 4: Check media query (Firefox support)
+      if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return true;
+      // Method 5: Check for touch in DocumentTouch (older Firefox)
+      if (window.DocumentTouch && document instanceof DocumentTouch) return true;
+      // Method 6: User agent check as last resort (Firefox Android)
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return true;
+      return false;
+    }
+
+    if (isTouchDevice()) {
       document.body.classList.add('touch-device');
       
-      document.querySelectorAll('button, .panel').forEach(el => {
+      // Add visual feedback class on touch
+      document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('touchstart', function(e) {
+          this.classList.add('touching');
+        }, { passive: true });
+        
+        btn.addEventListener('touchend', function(e) {
+          this.classList.remove('touching');
+          // Force style recalculation to clear hover
+          this.style.pointerEvents = 'none';
+          this.blur();
+          
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              this.style.pointerEvents = '';
+            }, 100);
+          });
+        }, { passive: true });
+        
+        btn.addEventListener('touchcancel', function() {
+          this.classList.remove('touching');
+          this.style.pointerEvents = 'none';
+          this.blur();
+          setTimeout(() => {
+            this.style.pointerEvents = '';
+          }, 100);
+        }, { passive: true });
+      });
+      
+      // Handle panels separately (no touching class needed)
+      document.querySelectorAll('.panel').forEach(el => {
         el.addEventListener('touchend', function() {
-          // Force remove focus/hover by briefly hiding the element
           this.style.pointerEvents = 'none';
           setTimeout(() => {
             this.style.pointerEvents = '';
-          }, 300);
+          }, 100);
         }, { passive: true });
       });
     }
