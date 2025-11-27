@@ -2320,34 +2320,42 @@
         
         btn.addEventListener('touchend', function(e) {
           this.classList.remove('touching');
-          // Force style recalculation to clear hover
-          this.style.pointerEvents = 'none';
-          this.blur();
           
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              this.style.pointerEvents = '';
-            }, 100);
-          });
+          // Delay pointer-events reset to allow click event to fire first
+          // The click event fires ~300ms after touchend on some devices
+          setTimeout(() => {
+            this.style.pointerEvents = 'none';
+            this.blur();
+            
+            requestAnimationFrame(() => {
+              setTimeout(() => {
+                this.style.pointerEvents = '';
+              }, 100);
+            });
+          }, 10);
         }, { passive: true });
         
         btn.addEventListener('touchcancel', function() {
           this.classList.remove('touching');
-          this.style.pointerEvents = 'none';
-          this.blur();
           setTimeout(() => {
-            this.style.pointerEvents = '';
-          }, 100);
+            this.style.pointerEvents = 'none';
+            this.blur();
+            setTimeout(() => {
+              this.style.pointerEvents = '';
+            }, 100);
+          }, 10);
         }, { passive: true });
       });
       
       // Handle panels separately (no touching class needed)
       document.querySelectorAll('.panel').forEach(el => {
         el.addEventListener('touchend', function() {
-          this.style.pointerEvents = 'none';
           setTimeout(() => {
-            this.style.pointerEvents = '';
-          }, 100);
+            this.style.pointerEvents = 'none';
+            setTimeout(() => {
+              this.style.pointerEvents = '';
+            }, 100);
+          }, 10);
         }, { passive: true });
       });
     }
