@@ -1,0 +1,24 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 30
+    
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+diff_cont:
+  ros__parameters:
+    left_wheel_names: ["front_left_joint", "rear_left_joint"]
+    right_wheel_names: ["front_right_joint", "rear_right_joint"]
+    wheel_separation: 0.35
+    wheel_radius: 0.05
+
+    use_stamped_vel: false # Simplifie la commande téléop
+    
+    # Odométrie (Pour que le robot bouge dans RViz)
+    publish_rate: 50.0
+    base_frame_id: base_link
+    odom_frame_id: odom
+    enable_odom_tf: true
