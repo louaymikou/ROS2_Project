@@ -49,11 +49,18 @@ def generate_launch_description():
         arguments=["joint_broad"],
         output="screen"
     )
+    spawn_arm = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["arm_controller"],
+        output="screen"
+    )
 
     return LaunchDescription([
         gazebo,
         node_robot_state_publisher,
         spawn_entity,
         spawn_diff_drive,
-        spawn_joint_broad
+        spawn_joint_broad,
+        spawn_arm
     ])
