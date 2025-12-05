@@ -57,6 +57,14 @@ def generate_launch_description():
         output="screen"
     )
 
+    # AJOUTER LE SPAWNER POUR LA PINCE
+    spawn_gripper = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["gripper_controller"],
+        output="screen"
+    )
+
     # Nœud Joy pour lire la manette
     joy_node = Node(
         package='joy',
@@ -77,6 +85,7 @@ def generate_launch_description():
         spawn_diff_drive,
         spawn_joint_broad,
         spawn_arm,
+        spawn_gripper,  # Ajouter ici
         joy_node,
         ps4_controller_node
     ])

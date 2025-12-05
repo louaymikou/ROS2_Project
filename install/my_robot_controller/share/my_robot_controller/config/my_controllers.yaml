@@ -2,16 +2,16 @@ controller_manager:
   ros__parameters:
     update_rate: 30
     
-    # 1. Le Diff Drive (Roues)
     diff_cont:
       type: diff_drive_controller/DiffDriveController
 
-    # 2. Le Joint State Broadcaster (États)
     joint_broad:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    # 3. LE BRAS (C'est ce qui vous manquait !)
     arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
 # Configuration du Diff Drive
@@ -26,6 +26,9 @@ diff_cont:
     base_frame_id: base_link
     odom_frame_id: odom
     enable_odom_tf: true
+    # Use effort command interface instead of velocity
+    reference_timeout: 1.0
+    state_publish_period: 0.02
 
 # Configuration du Bras
 arm_controller:
@@ -33,7 +36,18 @@ arm_controller:
     joints:
       - shoulder_joint
       - elbow_joint
-    interface_name: position
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+# Configuration de la Pince
+gripper_controller:
+  ros__parameters:
+    joints:
+      - gripper_left_joint
+      - gripper_right_joint
     command_interfaces:
       - position
     state_interfaces:
