@@ -1,6 +1,8 @@
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/description/robot.urdf.xacro
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/launch_sim.launch.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/config/my_controllers.yaml
+/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/worlds/my_world.world
+/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/my_map.stl
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/ament_index/resource_index/package_run_dependencies/my_robot_controller
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/ament_index/resource_index/parent_prefix_path/my_robot_controller
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/environment/ament_prefix_path.sh

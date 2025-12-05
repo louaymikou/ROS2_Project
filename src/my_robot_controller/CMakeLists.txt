@@ -9,7 +9,7 @@ find_package(ament_cmake REQUIRED)
 
 # Installer les dossiers pour qu'ils soient visibles après la compilation
 install(
-  DIRECTORY description launch config
+  DIRECTORY description launch config worlds models
   DESTINATION share/${PROJECT_NAME}
 )
 

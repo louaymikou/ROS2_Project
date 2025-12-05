@@ -231,7 +231,9 @@
 			[
 				"description",
 				"launch",
-				"config"
+				"config",
+				"worlds",
+				"models"
 			],
 			"type" : "directory"
 		},
