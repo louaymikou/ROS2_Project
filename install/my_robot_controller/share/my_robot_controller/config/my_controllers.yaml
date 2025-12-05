@@ -19,8 +19,8 @@ diff_cont:
   ros__parameters:
     left_wheel_names: ["front_left_joint", "rear_left_joint"]
     right_wheel_names: ["front_right_joint", "rear_right_joint"]
-    wheel_separation: 0.35
-    wheel_radius: 0.05
+    wheel_separation: 1.05  # CORRIGÉ: 0.525 * 2
+    wheel_radius: 0.15      # CORRIGÉ: correspond au URDF
     use_stamped_vel: false
     publish_rate: 50.0
     base_frame_id: base_link
@@ -30,19 +30,20 @@ diff_cont:
     reference_timeout: 1.0
     state_publish_period: 0.02
 
-# Configuration du Bras
+# Configuration du Bras + Rotation Grip
 arm_controller:
   ros__parameters:
     joints:
       - shoulder_joint
       - elbow_joint
+      - gripper_rotate_joint
     command_interfaces:
       - position
     state_interfaces:
       - position
       - velocity
 
-# Configuration de la Pince
+# Configuration de la Pince (doigts)
 gripper_controller:
   ros__parameters:
     joints:

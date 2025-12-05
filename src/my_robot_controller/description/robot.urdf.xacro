@@ -21,18 +21,8 @@
     </inertial>
   </xacro:macro>
 
-  <!-- MACRO POUR LES CONTROLES - UTILISER VELOCITY -->
-  <xacro:macro name="control_joint" params="name">
-    <joint name="${name}">
-      <command_interface name="velocity"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </xacro:macro>
-
   <material name="blue"><color rgba="0 0 0.8 1"/></material>
   <material name="black"><color rgba="0 0 0 1"/></material>
-  <material name="orange"><color rgba="1 0.5 0 1"/></material>
 
   <link name="base_link"></link>
 
@@ -88,7 +78,7 @@
     <visual>
       <origin xyz="0 0 0.3" rpy="0 0 0"/>
       <geometry><box size="0.15 0.15 0.6"/></geometry>
-      <material name="orange"/>
+      <material name="orange"><color rgba="1 0.5 0 1"/></material>
     </visual>
     <collision>
       <origin xyz="0 0 0.3" rpy="0 0 0"/>
@@ -103,8 +93,7 @@
     <parent link="chassis"/>
     <child link="arm_1_link"/>
     <origin xyz="0.3 0 0.15" rpy="0 0 0"/>
-    <axis xyz="0 1 0"/>
-    <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    <axis xyz="0 1 0"/> <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
     <dynamics damping="0.1" friction="0.1"/> 
   </joint>
 
@@ -126,13 +115,29 @@
   <joint name="elbow_joint" type="revolute">
     <parent link="arm_1_link"/>
     <child link="arm_2_link"/>
-    <origin xyz="0 0 0.6" rpy="0 0 0"/> 
-    <axis xyz="0 1 0"/>
+    <origin xyz="0 0 0.6" rpy="0 0 0"/> <axis xyz="0 1 0"/>
     <limit lower="-2.5" upper="2.5" effort="10" velocity="1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>
 
-  <!-- PINCE - Base de la pince (augmentée aussi) -->
+  <!-- PINCE - Joint de rotation (NEW) -->
+  <joint name="gripper_rotate_joint" type="revolute">
+    <parent link="arm_2_link"/>
+    <child link="gripper_base_link"/>
+    <origin xyz="0 0 0.6" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="50" velocity="1.0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <!-- Supprimer l'ancien gripper_base_joint (fixed) -->
+  <!-- <joint name="gripper_base_joint" type="fixed">
+    <parent link="arm_2_link"/>
+    <child link="gripper_base_link"/>
+    <origin xyz="0 0 0.6" rpy="0 0 0"/>
+  </joint> -->
+
+  <!-- PINCE - Base de la pince -->
   <link name="gripper_base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -147,12 +152,6 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </xacro:inertial_box>
   </link>
-
-  <joint name="gripper_base_joint" type="fixed">
-    <parent link="arm_2_link"/>
-    <child link="gripper_base_link"/>
-    <origin xyz="0 0 0.6" rpy="0 0 0"/>
-  </joint>
 
   <!-- DOIGT GAUCHE (plus mince, plus long) -->
   <link name="gripper_left_link">
@@ -209,6 +208,18 @@
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
     
+    <xacro:macro name="control_joint" params="name">
+      <joint name="${name}">
+        <command_interface name="velocity">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+    </xacro:macro>
+
+    <!-- Bras + Rotation Grip (POSITION) -->
     <joint name="shoulder_joint">
         <command_interface name="position"/>
         <state_interface name="position"/>
@@ -219,7 +230,19 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
     </joint>
+    <joint name="gripper_rotate_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+    </joint>
 
+    <!-- Roues (VELOCITY) -->
+    <xacro:control_joint name="front_left_joint"/>
+    <xacro:control_joint name="front_right_joint"/>
+    <xacro:control_joint name="rear_left_joint"/>
+    <xacro:control_joint name="rear_right_joint"/>
+
+    <!-- Pince - Doigts (POSITION) -->
     <joint name="gripper_left_joint">
         <command_interface name="position"/>
         <state_interface name="position"/>
@@ -230,11 +253,6 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
     </joint>
-
-    <xacro:control_joint name="front_left_joint"/>
-    <xacro:control_joint name="front_right_joint"/>
-    <xacro:control_joint name="rear_left_joint"/>
-    <xacro:control_joint name="rear_right_joint"/>
   </ros2_control>
 
   <gazebo>

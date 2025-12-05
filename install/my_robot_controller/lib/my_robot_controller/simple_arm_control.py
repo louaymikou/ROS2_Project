@@ -24,38 +24,46 @@ class ArmCommander(Node):
         # MEMOIRE : On retient la dernière position connue pour ne pas tout réinitialiser
         self.last_shoulder = 0.0
         self.last_elbow = 0.0
+        self.last_rotate = 0.0  # AJOUTER LA MÉMOIRE DE ROTATION
 
-    def send_command(self, shoulder_pos, elbow_pos, duration=1.0):
+    def send_command(self, shoulder_pos, elbow_pos, rotate_pos, duration=1.0):
         # 1. Mise à jour de la mémoire
         self.last_shoulder = float(shoulder_pos)
         self.last_elbow = float(elbow_pos)
+        self.last_rotate = float(rotate_pos) # Mettre à jour la rotation
 
         # 2. Création du message
         traj = JointTrajectory()
-        traj.joint_names = ['shoulder_joint', 'elbow_joint']
+        # Mettre à jour les noms des articulations
+        traj.joint_names = ['shoulder_joint', 'elbow_joint', 'gripper_rotate_joint']
         
         point = JointTrajectoryPoint()
-        point.positions = [self.last_shoulder, self.last_elbow]
+        # Envoyer les 3 positions
+        point.positions = [self.last_shoulder, self.last_elbow, self.last_rotate]
         point.time_from_start.sec = int(duration)
         
         traj.points.append(point)
         self.publisher_.publish(traj)
-        print(f"Commande envoyée -> Epaule: {self.last_shoulder:.2f}, Coude: {self.last_elbow:.2f}")
+        print(f"Commande envoyée -> Epaule: {self.last_shoulder:.2f}, Coude: {self.last_elbow:.2f}, Rotation: {self.last_rotate:.2f}")
 
     def move_single_motor(self, motor_choice, angle):
         """
-        Bouge un seul moteur en gardant l'autre fixe
+        Bouge un seul moteur en gardant les autres fixes
         """
         if motor_choice == 1: # Epaule
             print(f"Déplacement de l'épaule vers {angle}")
-            self.send_command(angle, self.last_elbow)
+            self.send_command(angle, self.last_elbow, self.last_rotate)
         
         elif motor_choice == 2: # Coude
             print(f"Déplacement du coude vers {angle}")
-            self.send_command(self.last_shoulder, angle)
+            self.send_command(self.last_shoulder, angle, self.last_rotate)
         
+        elif motor_choice == 3: # Rotation Pince
+            print(f"Rotation de la pince vers {angle}")
+            self.send_command(self.last_shoulder, self.last_elbow, angle)
+
         else:
-            print("Erreur : Moteur inconnu (choisir 1 ou 2)")
+            print("Erreur : Moteur inconnu (choisir 1, 2 ou 3)")
 
 # --- Gestion du terminal (Ne pas toucher) ---
 def get_key():
@@ -79,10 +87,12 @@ def main():
             key = get_key()
             
             if key == 'e':
-                node.send_command(0.75, 0.75) # Etendre
+                # Conserver la rotation actuelle en étendant
+                node.send_command(0.75, 0.75, node.last_rotate)
             
             elif key == 'r':
-                node.send_command(-1.0, 3.14) # Ranger
+                # Conserver la rotation actuelle en rangeant
+                node.send_command(-1.0, 3.14, node.last_rotate)
             
             elif key == 'q':
                 print("Fermeture...")
@@ -96,7 +106,7 @@ def main():
                 
                 print("\n--- MODE MANUEL ---")
                 try:
-                    mot = int(input("Quel moteur ? (1=Epaule, 2=Coude) : "))
+                    mot = int(input("Quel moteur ? (1=Epaule, 2=Coude, 3=Rotation) : "))
                     ang = float(input("Quel angle ? (ex: 1.57 pour 90°) : "))
                     node.move_single_motor(mot, ang)
                 except ValueError:
