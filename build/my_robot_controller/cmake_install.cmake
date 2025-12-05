@@ -53,6 +53,13 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/my_robot_controller" TYPE PROGRAM FILES
+    "/home/wayay/ROS_PROJECT/src/my_robot_controller/ps4_controller.py"
+    "/home/wayay/ROS_PROJECT/src/my_robot_controller/simple_arm_control.py"
+    )
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/wayay/ROS_PROJECT/build/my_robot_controller/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/my_robot_controller")
 endif()
 
