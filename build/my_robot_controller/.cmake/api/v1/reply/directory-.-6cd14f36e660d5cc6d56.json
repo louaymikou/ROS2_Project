@@ -48,7 +48,7 @@
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 23,
+				"line" : 24,
 				"parent" : 0
 			},
 			{
@@ -250,7 +250,8 @@
 			"paths" : 
 			[
 				"ps4_controller.py",
-				"simple_arm_control.py"
+				"simple_arm_control.py",
+				"keyboard_controller.py"
 			],
 			"type" : "file"
 		},

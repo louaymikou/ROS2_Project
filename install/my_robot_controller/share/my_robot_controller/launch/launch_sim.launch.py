@@ -63,6 +63,13 @@ def generate_launch_description():
         arguments=["arm_controller"],
         output="screen"
     )
+    
+    spawn_gripper = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["gripper_controller"],
+        output="screen"
+    )
 
     return LaunchDescription([
         gazebo,
@@ -70,5 +77,6 @@ def generate_launch_description():
         spawn_entity,
         spawn_diff_drive,
         spawn_joint_broad,
-        spawn_arm
+        spawn_arm,
+        spawn_gripper
     ])
