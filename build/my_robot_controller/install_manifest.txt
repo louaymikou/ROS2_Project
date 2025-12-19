@@ -5,6 +5,7 @@
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/config/my_controllers.yaml
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/worlds/my_world.world
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/my_map.stl
+/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/Cube_ROS.stl
 /home/wayay/ROS_PROJECT/install/my_robot_controller/lib/my_robot_controller/ps4_controller.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/lib/my_robot_controller/simple_arm_control.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/lib/my_robot_controller/keyboard_controller.py
