@@ -29,13 +29,19 @@ def generate_launch_description():
     # Config files
     slam_params_file = os.path.join(pkg_share, 'config', 'slam_params.yaml')
     nav2_params_file = os.path.join(pkg_share, 'config', 'nav2_params.yaml')
-    
-    # ==================== GAZEBO ====================
+
+
+# ==================== GAZEBO ====================
+    # Run Gazebo headless with verbose logs so errors are visible even without GUI
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
         ]),
-        launch_arguments={'world': world_file_path, 'verbose': 'false'}.items()
+        launch_arguments={
+            'world': world_file_path,
+            'verbose': 'true',
+            'gui': 'false'
+        }.items()
     )
     
     # Spawn robot
