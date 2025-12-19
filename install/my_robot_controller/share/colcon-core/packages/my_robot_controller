@@ -1,1 +1,1 @@
-controller_manager:hardware_interface:pluginlib:rclcpp
+action_msgs:controller_manager:geometry_msgs:hardware_interface:nav2_msgs:navigation2:pluginlib:rclcpp:rclpy:rosidl_default_runtime:slam_toolbox:std_msgs
