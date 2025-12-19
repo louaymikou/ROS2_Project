@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wayay/ROS_PROJECT/src/my_robot_controller
+CMAKE_SOURCE_DIR = /home/lamiae/ROS2_Project/ROS2_Project/src/my_robot_controller
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/wayay/ROS_PROJECT/build/my_robot_controller
+CMAKE_BINARY_DIR = /home/lamiae/ROS2_Project/ROS2_Project/build/my_robot_controller
 
 # Utility rule file for uninstall.
 
@@ -78,6 +78,6 @@ CMakeFiles/uninstall.dir/clean:
 .PHONY : CMakeFiles/uninstall.dir/clean
 
 CMakeFiles/uninstall.dir/depend:
-	cd /home/wayay/ROS_PROJECT/build/my_robot_controller && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wayay/ROS_PROJECT/src/my_robot_controller /home/wayay/ROS_PROJECT/src/my_robot_controller /home/wayay/ROS_PROJECT/build/my_robot_controller /home/wayay/ROS_PROJECT/build/my_robot_controller /home/wayay/ROS_PROJECT/build/my_robot_controller/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/lamiae/ROS2_Project/ROS2_Project/build/my_robot_controller && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/lamiae/ROS2_Project/ROS2_Project/src/my_robot_controller /home/lamiae/ROS2_Project/ROS2_Project/src/my_robot_controller /home/lamiae/ROS2_Project/ROS2_Project/build/my_robot_controller /home/lamiae/ROS2_Project/ROS2_Project/build/my_robot_controller /home/lamiae/ROS2_Project/ROS2_Project/build/my_robot_controller/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/uninstall.dir/depend
 

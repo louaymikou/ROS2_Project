@@ -261,4 +261,7 @@
     </plugin>
   </gazebo>
 
+  <!-- Include LIDAR sensor -->
+  <xacro:include filename="$(find my_robot_controller)/description/lidar.xacro" />
+
 </robot>

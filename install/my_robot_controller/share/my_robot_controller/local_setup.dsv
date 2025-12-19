@@ -1,2 +1,1 @@
-source;share/my_robot_controller/environment/ament_prefix_path.sh
-source;share/my_robot_controller/environment/path.sh
+/home/lamiae/ROS2_Project/ROS2_Project/build/my_robot_controller/ament_cmake_environment_hooks/local_setup.dsv

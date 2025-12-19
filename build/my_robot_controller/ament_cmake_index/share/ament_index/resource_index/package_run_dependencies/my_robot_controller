@@ -1,1 +1,1 @@
-rclcpp;hardware_interface;pluginlib;controller_manager;ament_lint_auto;ament_lint_common
+rclcpp;rclpy;hardware_interface;pluginlib;controller_manager;std_msgs;geometry_msgs;sensor_msgs;nav_msgs;trajectory_msgs;control_msgs;nav2_msgs;action_msgs;gazebo_ros;gazebo_ros_pkgs;slam_toolbox;nav2_bringup;navigation2;nav2_map_server;rosidl_default_runtime;ament_lint_auto;ament_lint_common
