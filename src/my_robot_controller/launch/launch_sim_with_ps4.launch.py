@@ -9,26 +9,34 @@ import xacro
 def generate_launch_description():
     pkg_name = 'my_robot_controller'
 
+    # Charger le fichier URDF/Xacro
     xacro_file = os.path.join(get_package_share_directory(pkg_name), 'description', 'robot.urdf.xacro')
     robot_description_config = xacro.process_file(xacro_file)
     robot_description = {'robot_description': robot_description_config.toxml()}
 
+    # Fichier monde Gazebo
     world_file_path = os.path.join(get_package_share_directory(pkg_name), 'worlds', 'my_world.world')
 
+    # Lancer Gazebo
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
         launch_arguments={'world': world_file_path}.items()
     )
 
-    spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
-                        arguments=['-topic', 'robot_description',
-                                   '-entity', 'my_bot',
-                                   '-x', '0',
-                                   '-y', '0',
-                                   '-z', '0.3'],
-                        output='screen')
+    # Spawn du robot
+    spawn_entity = Node(
+        package='gazebo_ros',
+        executable='spawn_entity.py',
+        arguments=['-topic', 'robot_description',
+                   '-entity', 'my_bot',
+                   '-x', '0',
+                   '-y', '0',
+                   '-z', '0.3'],
+        output='screen'
+    )
 
+    # Robot State Publisher
     node_robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -36,6 +44,7 @@ def generate_launch_description():
         parameters=[robot_description, {'use_sim_time': True}]
     )
 
+    # Contrôleurs
     spawn_diff_drive = Node(
         package="controller_manager",
         executable="spawner",
@@ -57,7 +66,6 @@ def generate_launch_description():
         output="screen"
     )
 
-    # AJOUTER LE SPAWNER POUR LA PINCE
     spawn_gripper = Node(
         package="controller_manager",
         executable="spawner",
@@ -65,14 +73,14 @@ def generate_launch_description():
         output="screen"
     )
 
-    # Nœud Joy pour lire la manette
+    # Nœud Joy
     joy_node = Node(
         package='joy',
         executable='joy_node',
         output='screen'
     )
 
-    # Votre nœud de contrôle PS4 avec ExecuteProcess
+    # Contrôleur PS4
     ps4_controller_node = ExecuteProcess(
         cmd=['python3', '/home/wayay/ROS_PROJECT/src/my_robot_controller/ps4_controller.py'],
         output='screen'
@@ -85,7 +93,7 @@ def generate_launch_description():
         spawn_diff_drive,
         spawn_joint_broad,
         spawn_arm,
-        spawn_gripper,  # Ajouter ici
+        spawn_gripper,
         joy_node,
         ps4_controller_node
     ])
