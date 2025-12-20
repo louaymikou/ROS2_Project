@@ -17,3 +17,6 @@ Makefile
 
 # VS Code settings (optional; uncomment if you prefer)
 #.vscode/
+build/
+install/
+log/

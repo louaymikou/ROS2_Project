@@ -6,6 +6,7 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 import sys
 import termios
 import tty
+import time
 
 # Texte d'aide
 msg = """
@@ -46,6 +47,10 @@ class KeyboardRobotController(Node):
         self.shoulder_pos = 0.0
         self.elbow_pos = 0.0
         self.gripper_rotate_pos = 0.0
+        
+        # Attendre que les publishers soient prêts
+        time.sleep(0.5)
+        self.get_logger().info('Publishers ready!')
 
     def send_arm_command(self, shoulder_pos, elbow_pos, rotate_pos, duration=0.5):
         self.shoulder_pos = float(shoulder_pos)
@@ -80,30 +85,47 @@ class KeyboardRobotController(Node):
         twist.linear.x = 0.0
         twist.angular.z = 0.0
         self.cmd_vel_pub.publish(twist)
+        print(">>> STOP <<<")
 
     def move_forward(self):
         twist = Twist()
         twist.linear.x = 0.5
         twist.angular.z = 0.0
-        self.cmd_vel_pub.publish(twist)
+        # Publier plusieurs fois pour assurer la réception
+        for _ in range(5):
+            self.cmd_vel_pub.publish(twist)
+            time.sleep(0.02)
+        print(">>> AVANCER <<<")
 
     def move_backward(self):
         twist = Twist()
         twist.linear.x = -0.5
         twist.angular.z = 0.0
-        self.cmd_vel_pub.publish(twist)
+        # Publier plusieurs fois pour assurer la réception
+        for _ in range(5):
+            self.cmd_vel_pub.publish(twist)
+            time.sleep(0.02)
+        print(">>> RECULER <<<")
 
     def rotate_left(self):
         twist = Twist()
         twist.linear.x = 0.0
         twist.angular.z = 0.5
-        self.cmd_vel_pub.publish(twist)
+        # Publier plusieurs fois pour assurer la réception
+        for _ in range(5):
+            self.cmd_vel_pub.publish(twist)
+            time.sleep(0.02)
+        print(">>> PIVOTER GAUCHE <<<")
 
     def rotate_right(self):
         twist = Twist()
         twist.linear.x = 0.0
         twist.angular.z = -0.5
-        self.cmd_vel_pub.publish(twist)
+        # Publier plusieurs fois pour assurer la réception
+        for _ in range(5):
+            self.cmd_vel_pub.publish(twist)
+            time.sleep(0.02)
+        print(">>> PIVOTER DROITE <<<")
 
 # Gestion du terminal
 def get_key():
@@ -121,6 +143,8 @@ def main():
     node = KeyboardRobotController()
     
     print(msg)
+    print("\n✅ Node démarré! Publishers prêts!")
+    print(f"📡 Publishing base commands to: {node.cmd_vel_pub.topic_name}\n")
     
     try:
         while True:
@@ -129,52 +153,64 @@ def main():
             # --- Mouvement de la base ---
             if key == 'z' or key == 'w':
                 node.move_forward()
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             elif key == 's':
                 node.move_backward()
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             elif key == 'q' or key == 'a':
                 node.rotate_left()
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             elif key == 'd':
                 node.rotate_right()
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             elif key == ' ':
                 node.stop_movement()
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             # --- Bras ---
             elif key == '1':
                 print("Bras: Position étendue")
                 node.send_arm_command(0.75, 0.75, node.gripper_rotate_pos)
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             elif key == '2':
                 print("Bras: Position rangée")
                 node.send_arm_command(-1.0, 3.14, node.gripper_rotate_pos)
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             # --- Pince ---
             elif key == '3':
                 print("Pince: Fermeture")
                 node.send_gripper_command(0.0)
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             elif key == '4':
                 print("Pince: Ouverture")
                 node.send_gripper_command(0.12)
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             # --- Rotation pince ---
             elif key == 'e':
                 print("Pince: Rotation anti-horaire")
                 node.gripper_rotate_pos = min(node.gripper_rotate_pos + 0.2, 3.14159)
                 node.send_arm_command(node.shoulder_pos, node.elbow_pos, node.gripper_rotate_pos)
+                rclpy.spin_once(node, timeout_sec=0.01)
             
             elif key == 'r':
                 print("Pince: Rotation horaire")
                 node.gripper_rotate_pos = max(node.gripper_rotate_pos - 0.2, -3.14159)
                 node.send_arm_command(node.shoulder_pos, node.elbow_pos, node.gripper_rotate_pos)
+                rclpy.spin_once(node, timeout_sec=0.01)
 
     except KeyboardInterrupt:
-        print("\nFermeture...")
+        print("\n⚠️  Interruption utilisateur...")
         node.stop_movement()
     finally:
+        print("🔴 Arrêt du node...")
         node.destroy_node()
         rclpy.shutdown()
 
