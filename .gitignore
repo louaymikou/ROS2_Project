@@ -20,3 +20,6 @@ Makefile
 build/
 install/
 log/
+
+# Docker environment file (contains local config)
+.env

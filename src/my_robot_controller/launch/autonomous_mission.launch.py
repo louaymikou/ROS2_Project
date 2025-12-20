@@ -30,9 +30,10 @@ def generate_launch_description():
     slam_params_file = os.path.join(pkg_share, 'config', 'slam_params.yaml')
     nav2_params_file = os.path.join(pkg_share, 'config', 'nav2_params.yaml')
 
-
 # ==================== GAZEBO ====================
-    # Run Gazebo headless with verbose logs so errors are visible even without GUI
+    # Gazebo with configurable GUI (set gui:=false for headless)
+    gui = LaunchConfiguration('gui', default='true')
+    
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
@@ -40,9 +41,10 @@ def generate_launch_description():
         launch_arguments={
             'world': world_file_path,
             'verbose': 'true',
-            'gui': 'false'
+            'gui': gui
         }.items()
     )
+
     
     # Spawn robot
     spawn_entity = Node(
@@ -157,6 +159,7 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument('use_slam', default_value='true'),
         DeclareLaunchArgument('map_file', default_value=''),
+        DeclareLaunchArgument('gui', default_value='true', description='Enable Gazebo GUI'),
         
         # Gazebo
         gazebo,

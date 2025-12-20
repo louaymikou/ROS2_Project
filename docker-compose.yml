@@ -1,0 +1,104 @@
+# =============================================================================
+# Docker Compose for ROS2 Mobile Manipulator
+# Supports: Gazebo GUI, RViz2, PS4 Controller, Nav2, SLAM
+# =============================================================================
+#
+# USAGE:
+#   Build:      docker compose build
+#   Run:        docker compose up
+#   Shell:      docker compose run --rm ros2 bash
+#   Stop:       docker compose down
+#
+# PREREQUISITES (Linux with Docker Engine):
+#   xhost +local:docker    # Allow X11 access
+#
+# =============================================================================
+
+services:
+  ros2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ros2_mobile_manipulator
+
+    # Use host network for ROS2 DDS discovery
+    network_mode: host
+
+    # Required for joystick and GPU access
+    privileged: true
+
+    # Environment variables
+    environment:
+      # Display for GUI applications (Gazebo, RViz2)
+      - DISPLAY=${DISPLAY:-:0}
+      # ROS2 Domain ID (change if needed)
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      # Gazebo settings - disable online model database to prevent timeout
+      - GAZEBO_MODEL_PATH=/ros2_ws/install/my_robot_controller/share:/ros2_ws/src/my_robot_controller
+      - GAZEBO_MODEL_DATABASE_URI=
+      # NVIDIA GPU support (optional)
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      # QT settings for GUI
+      - QT_X11_NO_MITSHM=1
+      # OpenGL - use hardware if available, fall back to software
+      - LIBGL_ALWAYS_SOFTWARE=0
+      - MESA_GL_VERSION_OVERRIDE=3.3
+
+    # Volume mounts
+    volumes:
+      # X11 socket for GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # X11 authentication
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+      # Joystick devices (PS4 controller)
+      - /dev/input:/dev/input:rw
+      # Source code (for development - optional)
+      # Uncomment to enable live code editing without rebuild:
+      # - ./src:/ros2_ws/src:rw
+
+      # Keep container running
+    stdin_open: true
+    tty: true
+
+    # Default command: Launch autonomous mission
+    command: ros2 launch my_robot_controller autonomous_mission.launch.py
+
+  # =============================================================================
+  # Alternative service profiles for different modes
+  # =============================================================================
+
+  # Keyboard control mode
+  keyboard:
+    extends:
+      service: ros2
+    container_name: ros2_keyboard
+    command: ros2 launch my_robot_controller launch_sim_with_keyboard.launch.py
+
+  # PS4 controller mode
+  ps4:
+    extends:
+      service: ros2
+    container_name: ros2_ps4
+    command: ros2 launch my_robot_controller launch_sim_with_ps4.launch.py
+
+  # SLAM mapping mode
+  slam:
+    extends:
+      service: ros2
+    container_name: ros2_slam
+    command: ros2 launch my_robot_controller slam_mapping.launch.py
+
+  # Basic simulation (no navigation)
+  sim:
+    extends:
+      service: ros2
+    container_name: ros2_sim
+    command: ros2 launch my_robot_controller launch_sim.launch.py
+
+  # Shell only (for development)
+  shell:
+    extends:
+      service: ros2
+    container_name: ros2_shell
+    command: bash

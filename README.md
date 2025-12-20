@@ -1,7 +1,9 @@
 # ROS2 Mobile Manipulator Project
 
 ## 🤖 Project Overview
+
 Autonomous pick-and-place mobile manipulator with:
+
 - 4-wheel differential drive base
 - 3-DOF robotic arm + 2-finger gripper
 - SLAM-based navigation (LIDAR sensor)
@@ -10,9 +12,91 @@ Autonomous pick-and-place mobile manipulator with:
 
 ---
 
-## 📋 Prerequisites
+## 🐳 Docker (Recommended)
+
+Run the project with Docker - no ROS2 installation required!
+
+### Prerequisites
+
+**Docker Engine (Recommended for GUI/Joystick support):**
+
+```bash
+# Install Docker Engine (NOT Docker Desktop)
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+# Log out and back in for group changes
+```
+
+> ⚠️ **Docker Desktop vs Docker Engine**: Docker Desktop on Linux has limitations with X11 forwarding and device passthrough. Use Docker Engine for full GUI (Gazebo/RViz2) and PS4 controller support.
+
+### X11 Setup (Required for GUI)
+
+**Linux:**
+
+```bash
+xhost +local:docker
+```
+
+**WSL2 (Windows):**
+
+1. Install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) or [X410](https://x410.dev/)
+2. Launch with "Disable access control" checked
+3. Set DISPLAY:
+
+```bash
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0
+```
+
+### Quick Start
+
+```bash
+# Build image (first time only)
+docker compose build
+
+# Allow X11 access
+xhost +local:docker
+
+# Run autonomous mission (default)
+docker compose up ros2
+```
+
+### Running Different Modes
+
+| Mode | Command |
+|------|---------|
+| **Autonomous Mission** | `docker compose up ros2` |
+| **Keyboard Control** | `docker compose up keyboard` |
+| **PS4 Controller** | `docker compose up ps4` |
+| **SLAM Mapping** | `docker compose up slam` |
+| **Basic Simulation** | `docker compose up sim` |
+| **Shell (Dev)** | `docker compose run --rm shell` |
+
+### Running Mission Orchestrator
+
+```bash
+# Terminal 1: Start simulation
+docker compose up ros2
+
+# Terminal 2: Wait 15-20s, then run mission
+docker compose exec ros2 ros2 run my_robot_controller mission_orchestrator.py
+```
+
+### Troubleshooting Docker
+
+| Issue | Solution |
+|-------|----------|
+| No GUI display | Run `xhost +local:docker` |
+| Joystick not detected | Ensure `/dev/input` exists and controller is connected |
+| Permission denied | Add user to docker group: `sudo usermod -aG docker $USER` |
+| Build fails | Check internet connection, retry with `docker compose build --no-cache` |
+
+---
+
+## 📋 Prerequisites (Native Installation)
 
 ### Install Dependencies
+
 ```bash
 # ROS2 Humble + Gazebo
 sudo apt update
@@ -29,6 +113,7 @@ sudo apt install -y ros-humble-teleop-twist-keyboard
 ```
 
 ### Build Workspace
+
 ```bash
 cd ~/ROS2_Project/ROS2_Project
 source /opt/ros/humble/setup.bash
@@ -45,6 +130,7 @@ source install/setup.bash
 **Pick object from Point A → Place at Point B → Return to A**
 
 **Terminal 1 - Launch System:**
+
 ```bash
 cd ~/ROS2_Project/ROS2_Project
 source /opt/ros/humble/setup.bash
@@ -55,6 +141,7 @@ ros2 launch my_robot_controller autonomous_mission.launch.py
 **Wait ~15-20 seconds for Nav2 initialization**
 
 **Terminal 2 - Start Mission:**
+
 ```bash
 cd ~/ROS2_Project/ROS2_Project
 source install/setup.bash
@@ -62,6 +149,7 @@ ros2 run my_robot_controller mission_orchestrator.py
 ```
 
 **Watch the robot autonomously:**
+
 - Navigate to cube location (Point A: 0, 5.5)
 - Pick cube with arm + gripper
 - Navigate to drop-off (Point B: 3, 0)
@@ -73,6 +161,7 @@ ros2 run my_robot_controller mission_orchestrator.py
 ---
 
 ### 2️⃣ **MANUAL CONTROL - PS4 Controller**
+
 ```bash
 source install/setup.bash
 ros2 launch my_robot_controller launch_sim_with_ps4.launch.py
@@ -81,6 +170,7 @@ ros2 launch my_robot_controller launch_sim_with_ps4.launch.py
 ---
 
 ### 3️⃣ **MANUAL CONTROL - Keyboard (All-in-One)**
+
 ```bash
 source install/setup.bash
 ros2 launch my_robot_controller launch_sim_with_keyboard.launch.py
@@ -91,12 +181,14 @@ ros2 launch my_robot_controller launch_sim_with_keyboard.launch.py
 ### 4️⃣ **MANUAL CONTROL - Separate Terminals**
 
 **Terminal 1 - Simulation:**
+
 ```bash
 source install/setup.bash
 ros2 launch my_robot_controller launch_sim.launch.py
 ```
 
 **Terminal 2 - Keyboard Control:**
+
 ```bash
 source install/setup.bash
 python3 src/my_robot_controller/keyboard_controller.py
@@ -107,18 +199,21 @@ python3 src/my_robot_controller/keyboard_controller.py
 ### 5️⃣ **MANUAL CONTROL - Teleop + Arm**
 
 **Terminal 1 - Simulation:**
+
 ```bash
 source install/setup.bash
 ros2 launch my_robot_controller launch_sim.launch.py
 ```
 
 **Terminal 2 - Base Teleop:**
+
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args -r /cmd_vel:=/diff_cont/cmd_vel_unstamped
 ```
 
 **Terminal 3 - Arm Control:**
+
 ```bash
 python3 src/my_robot_controller/simple_arm_control.py
 ```
@@ -128,18 +223,21 @@ python3 src/my_robot_controller/simple_arm_control.py
 ### 6️⃣ **SLAM MAPPING** (Build Map First Time)
 
 **Terminal 1 - SLAM Launch:**
+
 ```bash
 source install/setup.bash
 ros2 launch my_robot_controller slam_mapping.launch.py
 ```
 
 **Terminal 2 - Drive Around:**
+
 ```bash
 python3 src/my_robot_controller/keyboard_controller.py
 # OR use teleop_twist_keyboard
 ```
 
 **Terminal 3 - Save Map:**
+
 ```bash
 ros2 run nav2_map_server map_saver_cli -f ~/my_map
 ```
@@ -165,16 +263,19 @@ Gazebo Simulation + LIDAR Sensor
 ## 🛠️ Troubleshooting
 
 ### "Package not found" error
+
 ```bash
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 ```
 
 ### Nav2 won't start
+
 - Wait longer (up to 30 seconds on slower machines)
 - Check SLAM is publishing `/map` topic: `ros2 topic list | grep map`
 
 ### Robot doesn't move
+
 ```bash
 # Verify controllers
 ros2 control list_controllers
@@ -183,6 +284,7 @@ ros2 control list_controllers
 ```
 
 ### High resource usage
+
 - See `RESOURCE_OPTIMIZATION.md` for 6GB RAM VM tuning
 - Gazebo runs headless by default (no GUI to save memory)
 

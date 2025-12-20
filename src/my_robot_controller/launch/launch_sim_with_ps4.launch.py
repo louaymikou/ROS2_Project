@@ -1,5 +1,5 @@
 import os
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_share_directory, get_package_prefix
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -80,9 +80,11 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Contrôleur PS4
+    # Contrôleur PS4 - use package lib path where scripts are installed
+    pkg_prefix = get_package_prefix(pkg_name)
+    ps4_controller_path = os.path.join(pkg_prefix, 'lib', pkg_name, 'ps4_controller.py')
     ps4_controller_node = ExecuteProcess(
-        cmd=['python3', '/home/wayay/ROS_PROJECT/src/my_robot_controller/ps4_controller.py'],
+        cmd=['python3', ps4_controller_path],
         output='screen'
     )
 
