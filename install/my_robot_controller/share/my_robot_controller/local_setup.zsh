@@ -1,1 +1,0 @@
-/home/ikram/backup/ROS2_Project/build/my_robot_controller/ament_cmake_environment_hooks/local_setup.zsh
