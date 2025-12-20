@@ -1,0 +1,13 @@
+# Goal: Pick or place an object at a target position
+geometry_msgs/Point target_position
+string operation  # "pick" or "place"
+---
+# Result: Success status and message
+bool success
+string message
+float32 execution_time
+---
+# Feedback: Current phase and progress
+string current_phase  # "navigating", "approaching", "lowering_arm", "grasping", "lifting", "placing"
+float32 progress_percent
+geometry_msgs/Point current_position

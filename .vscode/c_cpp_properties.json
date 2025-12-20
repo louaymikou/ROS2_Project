@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/wayay/ros2_ws/install/simple_interfaces/include/**",
+        "/home/wayay/ros2_ws/install/fleet_interfaces/include/**",
+        "/home/wayay/ros2_ws/install/custom_interfaces/include/**",
+        "/home/wayay/ros2_ws/install/calculator_interfaces/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/wayay/ROS_PROJECT/src/my_robot_controller/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

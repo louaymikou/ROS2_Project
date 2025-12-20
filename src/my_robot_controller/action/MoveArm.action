@@ -1,0 +1,15 @@
+# Goal: Move arm to target joint positions
+float32 shoulder_target
+float32 elbow_target  
+float32 gripper_rotation_target
+float32 duration
+---
+# Result: Final joint positions and success
+bool success
+float32[] final_positions
+string message
+---
+# Feedback: Progress and current positions
+float32 progress_percent
+float32[] current_positions
+string status
