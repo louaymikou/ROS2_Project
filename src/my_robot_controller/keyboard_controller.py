@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Enhanced Keyboard Controller for ROS2 Mobile Manipulator
+Controls: Base movement, Arm (incremental), Gripper, with speed modes
+"""
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -8,126 +12,110 @@ import termios
 import tty
 import time
 
-# Texte d'aide
+# Help text
 msg = """
-╔════════════════════════════════════════════╗
-║   CONTRÔLE DU ROBOT AU CLAVIER QWERTY      ║
-╠════════════════════════════════════════════╣
-║ MOUVEMENT DE LA BASE:                      ║
-║   Z ou W : Avancer                         ║
-║   S      : Reculer                         ║
-║   Q ou A : Pivoter à gauche                ║
-║   D      : Pivoter à droite                ║
-║   ESPACE : Arrêter                         ║
-║                                            ║
-║ COMMANDES DU BRAS:                         ║
-║   1 : Position étendue                     ║
-║   2 : Position rangée                      ║
-║                                            ║
-║ COMMANDES DE LA PINCE:                     ║
-║   3 : Fermer la pince                      ║
-║   4 : Ouvrir la pince                      ║
-║                                            ║
-║ ROTATION DE LA PINCE:                      ║
-║   E : Rotation anti-horaire                ║
-║   R : Rotation horaire                     ║
-║                                            ║
-║ QUITTER: Ctrl+C                            ║
-╚════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════╗
+║     ENHANCED ROBOT KEYBOARD CONTROLLER                   ║
+╠══════════════════════════════════════════════════════════╣
+║ MOVEMENT (W/A/S/D):              SPEED MODES:            ║
+║   W : Forward                      F1/1 : Slow (0.2 m/s) ║
+║   S : Backward                     F2/2 : Medium (0.5)   ║
+║   A : Turn Left                    F3/3 : Fast (1.0)     ║
+║   D : Turn Right                                         ║
+║   SPACE : Stop                                           ║
+╠══════════════════════════════════════════════════════════╣
+║ ARM CONTROL (Incremental):       GRIPPER:                ║
+║   I/K : Shoulder Up/Down           O : Open Gripper      ║
+║   J/L : Elbow Out/In               P : Close Gripper     ║
+║   U/M : Rotate Left/Right          0 : Home Position     ║
+╠══════════════════════════════════════════════════════════╣
+║ QUIT: Ctrl+C                                             ║
+╚══════════════════════════════════════════════════════════╝
 """
 
-class KeyboardRobotController(Node):
+class EnhancedKeyboardController(Node):
     def __init__(self):
-        super().__init__('keyboard_robot_controller')
+        super().__init__('enhanced_keyboard_controller')
+        
+        # Publishers
         self.cmd_vel_pub = self.create_publisher(Twist, '/diff_cont/cmd_vel_unstamped', 10)
         self.arm_pub = self.create_publisher(JointTrajectory, '/arm_controller/joint_trajectory', 10)
         self.gripper_pub = self.create_publisher(JointTrajectory, '/gripper_controller/joint_trajectory', 10)
         
-        # Mémoriser la position du bras
+        # Speed settings
+        self.speed_modes = {'slow': 0.2, 'medium': 0.5, 'fast': 1.0}
+        self.current_speed = 'medium'
+        self.linear_speed = self.speed_modes[self.current_speed]
+        self.angular_speed = 1.0
+        
+        # Arm joint positions (incremental control)
         self.shoulder_pos = 0.0
         self.elbow_pos = 0.0
         self.gripper_rotate_pos = 0.0
         
-        # Attendre que les publishers soient prêts
+        # Arm joint limits
+        self.shoulder_limits = (-1.57, 1.57)
+        self.elbow_limits = (-2.5, 2.5)
+        self.gripper_rot_limits = (-3.14, 3.14)
+        
+        # Increment step for arm
+        self.arm_step = 0.15
+        
         time.sleep(0.5)
-        self.get_logger().info('Publishers ready!')
+        self.get_logger().info('Enhanced Keyboard Controller Ready!')
 
-    def send_arm_command(self, shoulder_pos, elbow_pos, rotate_pos, duration=0.5):
-        self.shoulder_pos = float(shoulder_pos)
-        self.elbow_pos = float(elbow_pos)
-        self.gripper_rotate_pos = float(rotate_pos)
+    def set_speed_mode(self, mode):
+        self.current_speed = mode
+        self.linear_speed = self.speed_modes[mode]
+        print(f"\n🚀 Speed: {mode.upper()} ({self.linear_speed} m/s)")
+
+    def send_velocity(self, linear=0.0, angular=0.0):
+        twist = Twist()
+        twist.linear.x = linear * self.linear_speed
+        twist.angular.z = angular * self.angular_speed
+        for _ in range(3):
+            self.cmd_vel_pub.publish(twist)
+            time.sleep(0.02)
+
+    def send_arm_command(self, duration=0.3):
+        # Clamp values to limits
+        self.shoulder_pos = max(self.shoulder_limits[0], min(self.shoulder_limits[1], self.shoulder_pos))
+        self.elbow_pos = max(self.elbow_limits[0], min(self.elbow_limits[1], self.elbow_pos))
+        self.gripper_rotate_pos = max(self.gripper_rot_limits[0], min(self.gripper_rot_limits[1], self.gripper_rotate_pos))
         
         traj = JointTrajectory()
         traj.joint_names = ['shoulder_joint', 'elbow_joint', 'gripper_rotate_joint']
         
         point = JointTrajectoryPoint()
         point.positions = [self.shoulder_pos, self.elbow_pos, self.gripper_rotate_pos]
-        point.time_from_start.sec = int(duration)
-        point.time_from_start.nanosec = int((duration % 1) * 1e9)
+        point.time_from_start.sec = 0
+        point.time_from_start.nanosec = int(duration * 1e9)
         
         traj.points.append(point)
         self.arm_pub.publish(traj)
+        
+        print(f"  Arm: shoulder={self.shoulder_pos:.2f} elbow={self.elbow_pos:.2f} rotate={self.gripper_rotate_pos:.2f}")
 
-    def send_gripper_command(self, opening_distance, duration=0.5):
+    def send_gripper_command(self, opening):
         traj = JointTrajectory()
         traj.joint_names = ['gripper_left_joint', 'gripper_right_joint']
         
         point = JointTrajectoryPoint()
-        point.positions = [-opening_distance, -opening_distance]
-        point.time_from_start.sec = int(duration)
-        point.time_from_start.nanosec = int((duration % 1) * 1e9)
+        point.positions = [-opening, -opening]
+        point.time_from_start.sec = 0
+        point.time_from_start.nanosec = int(0.5 * 1e9)
         
         traj.points.append(point)
         self.gripper_pub.publish(traj)
 
-    def stop_movement(self):
-        twist = Twist()
-        twist.linear.x = 0.0
-        twist.angular.z = 0.0
-        self.cmd_vel_pub.publish(twist)
-        print(">>> STOP <<<")
+    def home_arm(self):
+        self.shoulder_pos = 0.0
+        self.elbow_pos = 0.0
+        self.gripper_rotate_pos = 0.0
+        self.send_arm_command()
+        print("🏠 Arm: Home position")
 
-    def move_forward(self):
-        twist = Twist()
-        twist.linear.x = 0.5
-        twist.angular.z = 0.0
-        # Publier plusieurs fois pour assurer la réception
-        for _ in range(5):
-            self.cmd_vel_pub.publish(twist)
-            time.sleep(0.02)
-        print(">>> AVANCER <<<")
 
-    def move_backward(self):
-        twist = Twist()
-        twist.linear.x = -0.5
-        twist.angular.z = 0.0
-        # Publier plusieurs fois pour assurer la réception
-        for _ in range(5):
-            self.cmd_vel_pub.publish(twist)
-            time.sleep(0.02)
-        print(">>> RECULER <<<")
-
-    def rotate_left(self):
-        twist = Twist()
-        twist.linear.x = 0.0
-        twist.angular.z = 0.5
-        # Publier plusieurs fois pour assurer la réception
-        for _ in range(5):
-            self.cmd_vel_pub.publish(twist)
-            time.sleep(0.02)
-        print(">>> PIVOTER GAUCHE <<<")
-
-    def rotate_right(self):
-        twist = Twist()
-        twist.linear.x = 0.0
-        twist.angular.z = -0.5
-        # Publier plusieurs fois pour assurer la réception
-        for _ in range(5):
-            self.cmd_vel_pub.publish(twist)
-            time.sleep(0.02)
-        print(">>> PIVOTER DROITE <<<")
-
-# Gestion du terminal
 def get_key():
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
@@ -138,81 +126,84 @@ def get_key():
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     return ch
 
+
 def main():
     rclpy.init()
-    node = KeyboardRobotController()
+    node = EnhancedKeyboardController()
     
     print(msg)
-    print("\n✅ Node démarré! Publishers prêts!")
-    print(f"📡 Publishing base commands to: {node.cmd_vel_pub.topic_name}\n")
+    print(f"\n✅ Controller Ready! Current speed: {node.current_speed.upper()}\n")
     
     try:
         while True:
-            key = get_key()
+            key = get_key().lower()
             
-            # --- Mouvement de la base ---
-            if key == 'z' or key == 'w':
-                node.move_forward()
-                rclpy.spin_once(node, timeout_sec=0.01)
-            
+            # Movement
+            if key == 'w':
+                node.send_velocity(linear=1.0)
+                print("▲ Forward")
             elif key == 's':
-                node.move_backward()
-                rclpy.spin_once(node, timeout_sec=0.01)
-            
-            elif key == 'q' or key == 'a':
-                node.rotate_left()
-                rclpy.spin_once(node, timeout_sec=0.01)
-            
+                node.send_velocity(linear=-1.0)
+                print("▼ Backward")
+            elif key == 'a':
+                node.send_velocity(angular=1.0)
+                print("◄ Turn Left")
             elif key == 'd':
-                node.rotate_right()
-                rclpy.spin_once(node, timeout_sec=0.01)
-            
+                node.send_velocity(angular=-1.0)
+                print("► Turn Right")
             elif key == ' ':
-                node.stop_movement()
-                rclpy.spin_once(node, timeout_sec=0.01)
+                node.send_velocity(0, 0)
+                print("■ STOP")
             
-            # --- Bras ---
+            # Speed modes
             elif key == '1':
-                print("Bras: Position étendue")
-                node.send_arm_command(0.75, 0.75, node.gripper_rotate_pos)
-                rclpy.spin_once(node, timeout_sec=0.01)
-            
+                node.set_speed_mode('slow')
             elif key == '2':
-                print("Bras: Position rangée")
-                node.send_arm_command(-1.0, 3.14, node.gripper_rotate_pos)
-                rclpy.spin_once(node, timeout_sec=0.01)
-            
-            # --- Pince ---
+                node.set_speed_mode('medium')
             elif key == '3':
-                print("Pince: Fermeture")
+                node.set_speed_mode('fast')
+            
+            # Arm control (incremental)
+            elif key == 'i':
+                node.shoulder_pos += node.arm_step
+                node.send_arm_command()
+            elif key == 'k':
+                node.shoulder_pos -= node.arm_step
+                node.send_arm_command()
+            elif key == 'j':
+                node.elbow_pos -= node.arm_step
+                node.send_arm_command()
+            elif key == 'l':
+                node.elbow_pos += node.arm_step
+                node.send_arm_command()
+            elif key == 'u':
+                node.gripper_rotate_pos += node.arm_step
+                node.send_arm_command()
+            elif key == 'm':
+                node.gripper_rotate_pos -= node.arm_step
+                node.send_arm_command()
+            
+            # Gripper
+            elif key == 'o':
+                node.send_gripper_command(0.15)
+                print("🤏 Gripper: OPEN")
+            elif key == 'p':
                 node.send_gripper_command(0.0)
-                rclpy.spin_once(node, timeout_sec=0.01)
+                print("✊ Gripper: CLOSED")
             
-            elif key == '4':
-                print("Pince: Ouverture")
-                node.send_gripper_command(0.12)
-                rclpy.spin_once(node, timeout_sec=0.01)
+            # Home position
+            elif key == '0':
+                node.home_arm()
             
-            # --- Rotation pince ---
-            elif key == 'e':
-                print("Pince: Rotation anti-horaire")
-                node.gripper_rotate_pos = min(node.gripper_rotate_pos + 0.2, 3.14159)
-                node.send_arm_command(node.shoulder_pos, node.elbow_pos, node.gripper_rotate_pos)
-                rclpy.spin_once(node, timeout_sec=0.01)
+            rclpy.spin_once(node, timeout_sec=0.01)
             
-            elif key == 'r':
-                print("Pince: Rotation horaire")
-                node.gripper_rotate_pos = max(node.gripper_rotate_pos - 0.2, -3.14159)
-                node.send_arm_command(node.shoulder_pos, node.elbow_pos, node.gripper_rotate_pos)
-                rclpy.spin_once(node, timeout_sec=0.01)
-
     except KeyboardInterrupt:
-        print("\n⚠️  Interruption utilisateur...")
-        node.stop_movement()
+        print("\n⚠️ Stopping...")
+        node.send_velocity(0, 0)
     finally:
-        print("🔴 Arrêt du node...")
         node.destroy_node()
         rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
