@@ -30,8 +30,11 @@ def generate_launch_description():
                         arguments=['-topic', 'robot_description',
                                    '-entity', 'my_bot',
                                    '-x', '0',
-                                   '-y', '0',
-                                   '-z', '0.3'],  # Divisé par 2 : 0.6 -> 0.3
+                                   '-y', '10',
+                                   '-z', '1.2',
+                                   '-R', '0',      # Roll (rotation X)
+                                   '-P', '0',      # Pitch (rotation Y)
+                                   '-Y', '1.57'],  # Yaw (rotation Z) - 1.57 = 90 degrés
                         output='screen')
 
     # 4. Robot State Publisher (Publie les transformations)

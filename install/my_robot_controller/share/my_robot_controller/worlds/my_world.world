@@ -11,16 +11,15 @@
       <uri>model://ground_plane</uri>
     </include>
 
-    <!-- On charge votre map -->
-    <model name="my_blender_map">
+    <!-- Warehouse world -->
+    <model name="warehouse">
       <static>true</static>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0 0 1 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
             <mesh>
-              <!-- Chemin absolu vers le fichier STL -->
-              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/my_map.stl</uri>
+              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -28,22 +27,17 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/my_map.stl</uri>
+              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
-          <material>
-            <ambient>0.5 0.5 0.5 1.0</ambient>
-            <diffuse>0.8 0.8 0.8 1.0</diffuse>
-          </material>
         </visual>
       </link>
     </model>
 
-    <!-- NOUVEAU CUBE -->
-        <!-- NOUVEAU CUBE -->
+    <!-- Cube Object -->
     <model name="cube_object">
-      <pose>0 5.5 0.5 0 0 0</pose>
+      <pose>0 11.5 2 0 0 0</pose>
       <link name="cube_link">
         <inertial>
           <mass>1.0</mass>
