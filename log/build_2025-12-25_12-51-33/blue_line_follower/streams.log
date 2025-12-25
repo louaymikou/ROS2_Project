@@ -1,0 +1,22 @@
+[0.477s] Invoking command in '/home/wayay/line_follower_ws/src/blue_line_follower': PYTHONPATH=/home/wayay/line_follower_ws/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/line_follower_ws/build/blue_line_follower/build install --record /home/wayay/line_follower_ws/build/blue_line_follower/install.log --single-version-externally-managed install_data
+[0.668s] running egg_info
+[0.668s] writing ../../build/blue_line_follower/blue_line_follower.egg-info/PKG-INFO
+[0.668s] writing dependency_links to ../../build/blue_line_follower/blue_line_follower.egg-info/dependency_links.txt
+[0.669s] writing entry points to ../../build/blue_line_follower/blue_line_follower.egg-info/entry_points.txt
+[0.669s] writing requirements to ../../build/blue_line_follower/blue_line_follower.egg-info/requires.txt
+[0.669s] writing top-level names to ../../build/blue_line_follower/blue_line_follower.egg-info/top_level.txt
+[0.670s] reading manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.670s] writing manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.670s] running build
+[0.670s] running build_py
+[0.670s] running install
+[0.671s] running install_lib
+[0.671s] running install_data
+[0.672s] copying urdf/line_follower_robot.urdf.xacro -> /home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/urdf
+[0.672s] running install_egg_info
+[0.673s] removing '/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info' (and everything under it)
+[0.673s] Copying ../../build/blue_line_follower/blue_line_follower.egg-info to /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info
+[0.674s] running install_scripts
+[0.688s] Installing line_follower_node script to /home/wayay/line_follower_ws/install/blue_line_follower/lib/blue_line_follower
+[0.688s] writing list of installed files to '/home/wayay/line_follower_ws/build/blue_line_follower/install.log'
+[0.704s] Invoked command in '/home/wayay/line_follower_ws/src/blue_line_follower' returned '0': PYTHONPATH=/home/wayay/line_follower_ws/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/line_follower_ws/build/blue_line_follower/build install --record /home/wayay/line_follower_ws/build/blue_line_follower/install.log --single-version-externally-managed install_data
