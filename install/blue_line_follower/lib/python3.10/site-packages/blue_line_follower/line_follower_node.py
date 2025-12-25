@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Blue Line Follower Node
+Blue Line Follower Node with ArUco Detection
 Based on the algorithm from the Jupyter notebook training material.
 """
 
@@ -32,6 +32,15 @@ class LineFollowerNode(Node):
         # Initialize cv_bridge
         self.bridge = CvBridge()
         
+        # Initialize ArUco detector
+        self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        self.aruco_params = cv2.aruco.DetectorParameters()
+        self.aruco_detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
+        
+        # Track last detected ArUco to avoid spam
+        self.last_detected_aruco = None
+        self.last_aruco_time = 0
+        
         # Subscribe to camera topic
         self.subscription = self.create_subscription(
             Image,
@@ -47,7 +56,7 @@ class LineFollowerNode(Node):
         self.integral = 0.0
         self.last_time = time.time()
         
-        self.get_logger().info('Line Follower Node has been started')
+        self.get_logger().info('Line Follower Node with ArUco Detection has been started')
 
     def get_contour_data(self, mask):
         """
@@ -86,6 +95,24 @@ class LineFollowerNode(Node):
             # Focus on the area closer to the robot
             roi_start_row = int(height * 0.6)  # Start at 60% down from top (bottom 40%)
             roi_frame = current_frame[roi_start_row:height, 0:width]
+            
+            # Detect ArUco markers ONLY in the ROI region
+            gray_roi = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2GRAY)
+            corners, ids, rejected = self.aruco_detector.detectMarkers(gray_roi)
+            
+            # Display detected ArUco markers
+            if ids is not None and len(ids) > 0:
+                # Draw detected markers on ROI
+                cv2.aruco.drawDetectedMarkers(roi_frame, corners, ids)
+                
+                # Check if this is a new detection (avoid spam)
+                current_time = time.time()
+                for marker_id in ids.flatten():
+                    if marker_id <= 5:  # Only IDs 1-5
+                        if self.last_detected_aruco != marker_id or (current_time - self.last_aruco_time) > 3.0:
+                            self.get_logger().info(f'======> Detected ArUco Marker: {marker_id} <=======')
+                            self.last_detected_aruco = marker_id
+                            self.last_aruco_time = current_time
             
             # Convert BGR to HSV
             hsv_image = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2HSV)
@@ -155,6 +182,11 @@ class LineFollowerNode(Node):
                 # Display PID values
                 cv2.putText(blue_segmented_image, f"P:{P:.2f} I:{I:.2f} D:{D:.2f}", 
                            (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                
+                # Display last detected ArUco if any
+                if self.last_detected_aruco is not None:
+                    cv2.putText(blue_segmented_image, f"ArUco: {self.last_detected_aruco}", 
+                               (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
             else:
                 # No line detected, stop
                 cmd.linear.x = 0.0
