@@ -146,6 +146,65 @@
     </sensor>
   </gazebo>
 
+  <!-- Rear Camera Link -->
+  <link name="rear_camera_link">
+    <visual>
+      <geometry>
+        <box size="0.05 0.1 0.05"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0.2 0.8 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.1 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <joint name="rear_camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rear_camera_link"/>
+    <origin xyz="${-base_length/2 - 0.025} 0 ${base_height/2 + 0}" rpy="0 0.6 3.14159"/>
+  </joint>
+
+  <!-- Rear Camera Sensor -->
+  <gazebo reference="rear_camera_link">
+    <sensor type="camera" name="rear_camera">
+      <update_rate>30.0</update_rate>
+      <camera name="rear">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="rear_camera_controller" filename="libgazebo_ros_camera.so">
+        <frame_name>rear_camera_link</frame_name>
+        <ros>
+          <namespace>/</namespace>
+          <remapping>~/image_raw:=rear_camera/image_raw</remapping>
+          <remapping>~/camera_info:=rear_camera/camera_info</remapping>
+        </ros>
+      </plugin>
+    </sensor>
+  </gazebo>
+
   <!-- Differential Drive Plugin -->
   <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">

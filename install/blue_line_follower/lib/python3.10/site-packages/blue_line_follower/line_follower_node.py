@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Blue Line Follower Node with ArUco Detection
+Blue Line Follower Node with ArUco Detection and Bidirectional Control
 Based on the algorithm from the Jupyter notebook training material.
 """
 
@@ -8,6 +8,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
+from std_srvs.srv import SetBool
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
@@ -41,22 +42,71 @@ class LineFollowerNode(Node):
         self.last_detected_aruco = None
         self.last_aruco_time = 0
         
-        # Subscribe to camera topic
-        self.subscription = self.create_subscription(
+        # Direction control: True = forward (front camera), False = backward (rear camera)
+        self.forward_direction = True
+        
+        # Subscribe to front camera topic
+        self.front_subscription = self.create_subscription(
             Image,
             '/camera/image_raw',
-            self.image_callback,
+            self.front_camera_callback,
+            10)
+        
+        # Subscribe to rear camera topic
+        self.rear_subscription = self.create_subscription(
+            Image,
+            '/rear_camera/image_raw',
+            self.rear_camera_callback,
             10)
         
         # Publisher for velocity commands
         self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
+        
+        # Service to change direction
+        self.direction_service = self.create_service(
+            SetBool,
+            'set_forward_direction',
+            self.change_direction_callback)
         
         # PID control variables
         self.last_error = 0.0
         self.integral = 0.0
         self.last_time = time.time()
         
-        self.get_logger().info('Line Follower Node with ArUco Detection has been started')
+        self.get_logger().info('Line Follower Node with Bidirectional Control has been started')
+        self.get_logger().info('Use: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: true}"  for forward')
+        self.get_logger().info('Use: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}" for backward')
+    
+    def change_direction_callback(self, request, response):
+        """
+        Service callback to change direction
+        """
+        self.forward_direction = request.data
+        direction_str = "FORWARD (front camera)" if self.forward_direction else "BACKWARD (rear camera)"
+        self.get_logger().info(f'Direction changed to: {direction_str}')
+        
+        # Reset PID when changing direction
+        self.last_error = 0.0
+        self.integral = 0.0
+        self.last_detected_aruco = None
+        
+        response.success = True
+        response.message = f'Direction set to {direction_str}'
+        return response
+    
+    def front_camera_callback(self, data):
+        """
+        Callback for front camera
+        """
+        if self.forward_direction:
+            self.process_image(data, "FRONT")
+    
+    def rear_camera_callback(self, data):
+        """
+        Callback for rear camera
+        """
+        if not self.forward_direction:
+            self.process_image(data, "REAR")
 
     def get_contour_data(self, mask):
         """
@@ -80,9 +130,9 @@ class LineFollowerNode(Node):
 
         return line
 
-    def image_callback(self, data):
+    def process_image(self, data, camera_name):
         """
-        Callback function for processing camera images
+        Main image processing function for both cameras
         """
         try:
             # Convert ROS Image message to OpenCV image
@@ -172,6 +222,10 @@ class LineFollowerNode(Node):
                 else:
                     cmd.linear.x = LINEAR_SPEED
                 
+                # Invert linear velocity if going backward
+                if not self.forward_direction:
+                    cmd.linear.x = -cmd.linear.x
+                
                 cmd.angular.z = angular_z
                 
                 # Draw circle on detected line for visualization
@@ -179,14 +233,19 @@ class LineFollowerNode(Node):
                 # Draw center line reference
                 cv2.line(blue_segmented_image, (roi_width//2, 0), (roi_width//2, roi_height), (0, 255, 0), 2)
                 
+                # Display camera name and direction
+                direction_text = f"{camera_name} - {'FORWARD' if self.forward_direction else 'BACKWARD'}"
+                cv2.putText(blue_segmented_image, direction_text, 
+                           (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+                
                 # Display PID values
                 cv2.putText(blue_segmented_image, f"P:{P:.2f} I:{I:.2f} D:{D:.2f}", 
-                           (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                           (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
                 
                 # Display last detected ArUco if any
                 if self.last_detected_aruco is not None:
                     cv2.putText(blue_segmented_image, f"ArUco: {self.last_detected_aruco}", 
-                               (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                               (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
             else:
                 # No line detected, stop
                 cmd.linear.x = 0.0
