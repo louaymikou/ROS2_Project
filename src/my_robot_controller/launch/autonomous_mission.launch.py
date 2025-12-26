@@ -153,6 +153,18 @@ def generate_launch_description():
         ]
     )
     
+    # ==================== RVIZ2 ====================
+    rviz_config = os.path.join(pkg_share, 'rviz', 'robot_view.rviz')
+    
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config],
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen'
+    )
+    
     # ==================== LAUNCH DESCRIPTION ====================
     return LaunchDescription([
         # Arguments
@@ -160,6 +172,7 @@ def generate_launch_description():
         DeclareLaunchArgument('use_slam', default_value='true'),
         DeclareLaunchArgument('map_file', default_value=''),
         DeclareLaunchArgument('gui', default_value='true', description='Enable Gazebo GUI'),
+        DeclareLaunchArgument('rviz', default_value='true', description='Launch RViz2'),
         
         # Gazebo
         gazebo,
@@ -180,6 +193,9 @@ def generate_launch_description():
             period=3.0,  # Wait for SLAM to initialize
             actions=[nav2_bringup]
         ),
+        
+        # RViz2
+        rviz_node,
         
         # Action Servers
         arm_action_server,

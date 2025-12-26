@@ -70,6 +70,18 @@ def generate_launch_description():
         arguments=["gripper_controller"],
         output="screen"
     )
+    
+    # RViz2 configuration
+    rviz_config = os.path.join(get_package_share_directory(pkg_name), 'rviz', 'robot_view.rviz')
+    
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config],
+        parameters=[{'use_sim_time': True}],
+        output='screen'
+    )
 
     return LaunchDescription([
         gazebo,
@@ -78,5 +90,6 @@ def generate_launch_description():
         spawn_diff_drive,
         spawn_joint_broad,
         spawn_arm,
-        spawn_gripper
+        spawn_gripper,
+        rviz_node
     ])

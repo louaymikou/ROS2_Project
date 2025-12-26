@@ -16,6 +16,8 @@ Autonomous pick-and-place mobile manipulator with:
 
 Run the project with Docker - no ROS2 installation required!
 
+> 📺 **RViz2 Visualization:** RViz2 se lance automatiquement pour visualiser le robot, le LIDAR, la carte SLAM et les trajectoires. Voir [RVIZ_GUIDE.md](RVIZ_GUIDE.md) pour plus de détails.
+
 ### Prerequisites
 
 **Docker Engine (Recommended for GUI/Joystick support):**
@@ -75,12 +77,17 @@ docker compose up ros2
 ### Running Mission Orchestrator
 
 ```bash
-# Terminal 1: Start simulation
+# Terminal 1: Start simulation (RViz2 included by default)
 docker compose up ros2
+
+# To disable RViz2 (save resources):
+# docker compose run --rm ros2 ros2 launch my_robot_controller autonomous_mission.launch.py rviz:=false
 
 # Terminal 2: Wait 15-20s, then run mission
 docker compose exec ros2 ros2 run my_robot_controller mission_orchestrator.py
 ```
+
+**RViz2 Visualization:** Vous verrez le robot en 3D, le LIDAR, la carte SLAM et les trajectoires en temps réel!
 
 ### Troubleshooting Docker
 
@@ -297,6 +304,8 @@ ros2 control list_controllers
 - `RESOURCE_OPTIMIZATION.md` - Performance tuning for low-spec VMs
 - `QUICK_REFERENCE.md` - Command cheat sheet
 - `QUICK_SUMMARY.md` - High-level overview
+- `RVIZ_GUIDE.md` - Guide d'utilisation de RViz2 pour la visualisation
+- `DOCKER_GUIDE.md` - Docker deployment guide
 
 ---
 

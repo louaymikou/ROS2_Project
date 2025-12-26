@@ -17,7 +17,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
 
 install(
-  DIRECTORY description launch config worlds models action
+  DIRECTORY description launch config worlds models action rviz
   DESTINATION share/${PROJECT_NAME}
 )
 
