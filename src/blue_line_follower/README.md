@@ -29,17 +29,65 @@ source install/setup.bash
 
 ## Usage
 
-Launch the complete simulation:
+### Lancer la simulation
 
 ```bash
 ros2 launch blue_line_follower simulation.launch.py
 ```
 
-This will:
-- Start Gazebo with the blue line track world
-- Spawn the 4-wheeled robot at the start position
-- Launch the line follower node
-- Begin autonomous line following
+Ceci démarre:
+- Gazebo avec la piste de ligne bleue
+- Le robot 4 roues à la position de départ
+- Le nœud de suivi de ligne
+- **ATTENTION**: Le robot ne bouge PAS automatiquement, vous devez activer le mouvement
+
+### Commandes de contrôle
+
+#### Activer/Désactiver le mouvement
+
+**Démarrer le robot** (activer le suivi de ligne):
+```bash
+ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}"
+```
+
+**Arrêter le robot** (désactiver le suivi de ligne):
+```bash
+ros2 service call /enable_movement std_srvs/srv/SetBool "{data: false}"
+```
+
+#### Changer de direction
+
+**Avancer** (utiliser la caméra avant):
+```bash
+ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: true}"
+```
+
+**Reculer** (utiliser la caméra arrière):
+```bash
+ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}"
+```
+
+### Séquence complète typique
+
+1. Lancer la simulation:
+   ```bash
+   ros2 launch blue_line_follower simulation.launch.py
+   ```
+
+2. Activer le mouvement en avant:
+   ```bash
+   ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}"
+   ```
+
+3. Pour inverser la direction:
+   ```bash
+   ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}"
+   ```
+
+4. Pour arrêter:
+   ```bash
+   ros2 service call /enable_movement std_srvs/srv/SetBool "{data: false}"
+   ```
 
 ## Package Structure
 

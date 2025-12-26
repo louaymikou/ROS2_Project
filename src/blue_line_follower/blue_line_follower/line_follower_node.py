@@ -45,6 +45,9 @@ class LineFollowerNode(Node):
         # Direction control: True = forward (front camera), False = backward (rear camera)
         self.forward_direction = True
         
+        # Movement control: robot only moves when enabled
+        self.movement_enabled = False
+        
         # Subscribe to front camera topic
         self.front_subscription = self.create_subscription(
             Image,
@@ -68,14 +71,38 @@ class LineFollowerNode(Node):
             'set_forward_direction',
             self.change_direction_callback)
         
+        # Service to enable/disable movement
+        self.movement_service = self.create_service(
+            SetBool,
+            'enable_movement',
+            self.enable_movement_callback)
+        
         # PID control variables
         self.last_error = 0.0
         self.integral = 0.0
         self.last_time = time.time()
         
         self.get_logger().info('Line Follower Node with Bidirectional Control has been started')
-        self.get_logger().info('Use: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: true}"  for forward')
-        self.get_logger().info('Use: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}" for backward')
+        self.get_logger().info('MOVEMENT IS DISABLED - Use: ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}" to start')
+        self.get_logger().info('Forward: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: true}"')
+        self.get_logger().info('Backward: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}"')
+    
+    def enable_movement_callback(self, request, response):
+        """
+        Service callback to enable/disable robot movement
+        """
+        self.movement_enabled = request.data
+        status = "ENABLED" if self.movement_enabled else "DISABLED"
+        self.get_logger().info(f'Robot movement: {status}')
+        
+        # Stop robot if disabling movement
+        if not self.movement_enabled:
+            cmd = Twist()
+            self.publisher.publish(cmd)
+        
+        response.success = True
+        response.message = f'Movement {status}'
+        return response
     
     def change_direction_callback(self, request, response):
         """
@@ -158,7 +185,7 @@ class LineFollowerNode(Node):
                 # Check if this is a new detection (avoid spam)
                 current_time = time.time()
                 for marker_id in ids.flatten():
-                    if marker_id <= 5:  # Only IDs 1-5
+                    if marker_id <= 7:  # IDs 0-7
                         if self.last_detected_aruco != marker_id or (current_time - self.last_aruco_time) > 3.0:
                             self.get_logger().info(f'======> Detected ArUco Marker: {marker_id} <=======')
                             self.last_detected_aruco = marker_id
@@ -257,8 +284,13 @@ class LineFollowerNode(Node):
             if line:
                 self.get_logger().debug(f"Error: {error} | Angular Z: {cmd.angular.z}")
 
-            # Send the command to execute
-            self.publisher.publish(cmd)
+            # Send the command to execute ONLY if movement is enabled
+            if self.movement_enabled:
+                self.publisher.publish(cmd)
+            else:
+                # Ensure robot is stopped when movement is disabled
+                stop_cmd = Twist()
+                self.publisher.publish(stop_cmd)
             
             # Display the processed image with line detection
             cv2.imshow("Blue Segmented Image", blue_segmented_image)

@@ -56,11 +56,11 @@
     <model name="blue_line_straight">
       <static>true</static>
       <link name="link">
-        <pose>12.5 0 0.001 0 0 0</pose>
+        <pose>17.5 0 0.001 0 0 0</pose>
         <visual name="visual">
           <geometry>
             <box>
-              <size>25 0.1 0.001</size>
+              <size>35 0.1 0.001</size>
             </box>
           </geometry>
           <material>
@@ -200,6 +200,28 @@
     </model>-->
     
     <!-- ArUco Markers along the track -->
+    <!-- ArUco 0 - at the very start (HOME) -->
+    <model name="aruco_0">
+      <static>true</static>
+      <link name="link">
+        <pose>0 0 0.002 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_0/materials/scripts</uri>
+              <uri>model://aruco_0/materials/textures</uri>
+              <name>aruco_0</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
     <!-- ArUco 1 - at the start -->
     <model name="aruco_1">
       <static>true</static>
@@ -304,6 +326,50 @@
               <uri>model://aruco_5/materials/scripts</uri>
               <uri>model://aruco_5/materials/textures</uri>
               <name>aruco_5</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <!-- ArUco 6 - near the end -->
+    <model name="aruco_6">
+      <static>true</static>
+      <link name="link">
+        <pose>30 0 0.002 0 0 3.14159</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_6/materials/scripts</uri>
+              <uri>model://aruco_6/materials/textures</uri>
+              <name>aruco_6</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <!-- ArUco 7 - at the end (DESTINATION) -->
+    <model name="aruco_7">
+      <static>true</static>
+      <link name="link">
+        <pose>35 0 0.002 0 0 3.14159</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_7/materials/scripts</uri>
+              <uri>model://aruco_7/materials/textures</uri>
+              <name>aruco_7</name>
             </script>
           </material>
         </visual>
