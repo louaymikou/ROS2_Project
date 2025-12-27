@@ -17,10 +17,13 @@ import time
 # Linear forward speed
 LINEAR_SPEED = 0.2
 
-# PID constants
-KP = 0.008  # Proportional gain
+# PID constants for position error
+KP = 0.008  # Proportional gain for position
 KI = 0.0001  # Integral gain
 KD = 0.005  # Derivative gain
+
+# Orientation correction gain
+KP_ANGLE = 0.002  # Proportional gain for angle correction
 
 # Maximum angular velocity (rad/s)
 MAX_ANGULAR_VEL = 1.5
@@ -137,7 +140,7 @@ class LineFollowerNode(Node):
 
     def get_contour_data(self, mask):
         """
-        Return the centroid of the largest contour in the binary image 'mask' (the line) 
+        Return the centroid and orientation of the largest contour in the binary image 'mask' (the line) 
         """
         # Constants
         MIN_AREA_TRACK = 50  # Minimum area for track marks
@@ -146,14 +149,29 @@ class LineFollowerNode(Node):
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
         line = {}
+        max_area = 0
 
         for contour in contours:
             M = cv2.moments(contour)
 
             if M['m00'] > MIN_AREA_TRACK:
-                # Contour is part of the track
-                line['x'] = int(M["m10"]/M["m00"])
-                line['y'] = int(M["m01"]/M["m00"])
+                area = M['m00']
+                if area > max_area:
+                    max_area = area
+                    # Centroid of the line
+                    line['x'] = int(M["m10"]/M["m00"])
+                    line['y'] = int(M["m01"]/M["m00"])
+                    
+                    # Calculate orientation using image moments
+                    # This helps understand if the line is tilted
+                    if len(contour) >= 5:  # Need at least 5 points for fitEllipse
+                        try:
+                            ellipse = cv2.fitEllipse(contour)
+                            line['angle'] = ellipse[2]  # Angle in degrees
+                        except:
+                            line['angle'] = 90.0  # Default: vertical line
+                    else:
+                        line['angle'] = 90.0
 
         return line
 
@@ -170,7 +188,7 @@ class LineFollowerNode(Node):
             
             # Define Region of Interest (ROI) - bottom portion of image only
             # Focus on the area closer to the robot
-            roi_start_row = int(height * 0.6)  # Start at 60% down from top (bottom 40%)
+            roi_start_row = int(height * 0.4)  # Start at 40% down from top (bottom 60%)
             roi_frame = current_frame[roi_start_row:height, 0:width]
             
             # Detect ArUco markers ONLY in the ROI region
@@ -220,7 +238,12 @@ class LineFollowerNode(Node):
                 x = line['x']
                 error = x - roi_width//2
                 
-                # PID calculation
+                # Calculate angle error (line should be vertical, around 90 degrees)
+                # If angle is less than 90, line is tilted left; if more than 90, tilted right
+                angle = line.get('angle', 90.0)
+                angle_error = angle - 90.0  # Positive if tilted right, negative if tilted left
+                
+                # PID calculation for position error
                 # Proportional term
                 P = KP * error
                 
@@ -237,8 +260,9 @@ class LineFollowerNode(Node):
                 # Update last error
                 self.last_error = error
                 
-                # Calculate angular velocity with PID
-                angular_z = -(P + I + D)
+                # Calculate angular velocity with PID + angle correction
+                # Position correction + Orientation correction
+                angular_z = -(P + I + D) - (KP_ANGLE * angle_error)
                 
                 # Limit angular velocity to maximum
                 angular_z = max(-MAX_ANGULAR_VEL, min(MAX_ANGULAR_VEL, angular_z))
@@ -265,14 +289,16 @@ class LineFollowerNode(Node):
                 cv2.putText(blue_segmented_image, direction_text, 
                            (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
                 
-                # Display PID values
+                # Display PID values and angle
                 cv2.putText(blue_segmented_image, f"P:{P:.2f} I:{I:.2f} D:{D:.2f}", 
                            (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                cv2.putText(blue_segmented_image, f"Angle:{angle:.1f}° Error:{error:.0f}px", 
+                           (10, 85), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
                 
                 # Display last detected ArUco if any
                 if self.last_detected_aruco is not None:
                     cv2.putText(blue_segmented_image, f"ArUco: {self.last_detected_aruco}", 
-                               (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                               (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
             else:
                 # No line detected, stop
                 cmd.linear.x = 0.0

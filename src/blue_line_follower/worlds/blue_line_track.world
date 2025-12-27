@@ -73,11 +73,11 @@
       </link>
     </model>
     
-    <!-- Blue Line Track - Curve 1 (right turn) -->
+    <!-- Blue Line Track - Curve 1 (right turn) 
     <model name="blue_line_curve1">
       <static>true</static>
       <link name="link">
-        <pose>5 1.5 0.001 0 0 1.5708</pose>
+        <pose>30 1.5 0.001 0 0 1.5708</pose>
         <visual name="visual">
           <geometry>
             <box>
@@ -92,7 +92,7 @@
           </material>
         </visual>
       </link>
-    </model>
+    </model> -->
     
     <!-- Blue Line Track - Straight 2 
     <model name="blue_line_straight2">

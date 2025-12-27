@@ -170,7 +170,7 @@ class LineFollowerNode(Node):
             
             # Define Region of Interest (ROI) - bottom portion of image only
             # Focus on the area closer to the robot
-            roi_start_row = int(height * 0.6)  # Start at 60% down from top (bottom 40%)
+            roi_start_row = int(height * 0.4)  # Start at 40% down from top (bottom 60%)
             roi_frame = current_frame[roi_start_row:height, 0:width]
             
             # Detect ArUco markers ONLY in the ROI region

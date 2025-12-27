@@ -206,22 +206,39 @@ class ArucoNavigationServer(Node):
         # Étape 3: Naviguer jusqu'au marqueur cible
         self.get_logger().info(f'🚀 Navigation en cours vers ArUco {self.target_id}...')
         
-        navigation_timeout = 120.0  # 120 secondes max (augmenté)
+        segment_timeout = 60.0  # 60 secondes max sans détecter de nouveau marqueur
+        last_aruco_change_time = time.time()  # Timer réinitialisé à chaque nouveau marqueur
+        last_detected_aruco = starting_aruco  # Dernier ArUco détecté
+        
         last_feedback_time = time.time()
         feedback_interval = 1.0  # Envoyer feedback chaque seconde
         last_movement_check = time.time()
-        movement_check_interval = 5.0  # Réactiver le mouvement toutes les 5 secondes
+        movement_check_interval = 3.0  # Réactiver le mouvement toutes les 3 secondes
         
-        while time.time() - self.start_time < navigation_timeout:
+        while True:
             # Vérifier l'annulation
             if goal_handle.is_cancel_requested:
                 return self._handle_cancellation(goal_handle)
             
+            # Réinitialiser le timeout si un nouveau marqueur est détecté
+            current_id = self.current_aruco_id if self.current_aruco_id is not None else 0
+            if current_id > 0 and current_id != last_detected_aruco:
+                last_aruco_change_time = time.time()
+                last_detected_aruco = current_id
+                self.get_logger().info(f'🔄 Nouveau marqueur détecté: ArUco {current_id} - Timer réinitialisé')
+            
+            # Vérifier le timeout par segment (temps sans nouveau marqueur)
+            time_since_last_change = time.time() - last_aruco_change_time
+            if time_since_last_change > segment_timeout:
+                self.get_logger().warn(f'⏱️ Timeout: Aucun nouveau marqueur depuis {segment_timeout}s')
+                return self._return_failure(goal_handle)
+            
             # Réactiver le mouvement périodiquement pour s'assurer qu'il reste actif
             if time.time() - last_movement_check >= movement_check_interval:
                 self._enable_movement(True)
+                self._set_direction(self.went_forward)  # Réappliquer la direction aussi
                 last_movement_check = time.time()
-                self.get_logger().debug('🔄 Réactivation du mouvement')
+                self.get_logger().debug('🔄 Réactivation du mouvement et direction')
             
             # Vérifier si on a atteint la cible
             if (self.current_aruco_id == self.target_id and 
@@ -233,14 +250,14 @@ class ArucoNavigationServer(Node):
             
             # Envoyer feedback périodiquement
             if time.time() - last_feedback_time >= feedback_interval:
-                current_id = self.current_aruco_id if self.current_aruco_id is not None else 0
                 feedback_msg.current_aruco_id = current_id
                 feedback_msg.current_direction = direction_text
                 feedback_msg.elapsed_time = time.time() - self.start_time
                 
                 if current_id > 0:
                     distance = abs(self.target_id - current_id)
-                    feedback_msg.status_message = f'ArUco {current_id} → {self.target_id} (distance: {distance}) [détections: {self.aruco_detection_count}/{self.required_detections}]'
+                    time_left = segment_timeout - time_since_last_change
+                    feedback_msg.status_message = f'ArUco {current_id} → {self.target_id} (distance: {distance}) [timeout: {time_left:.1f}s] [détections: {self.aruco_detection_count}/{self.required_detections}]'
                 else:
                     feedback_msg.status_message = 'Suivi de la ligne...'
                 
@@ -249,10 +266,6 @@ class ArucoNavigationServer(Node):
                 last_feedback_time = time.time()
             
             time.sleep(0.1)
-        
-        # Timeout atteint
-        self.get_logger().warn('⏱️ Timeout: Marqueur cible non atteint')
-        return self._return_failure(goal_handle)
 
     def _enable_movement(self, enable):
         """Active ou désactive le mouvement du robot"""

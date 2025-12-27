@@ -1,0 +1,209 @@
+[0.083s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.083s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=6, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x721fc5771480>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x721fc5770eb0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x721fc5770eb0>>, mixin_verb=('build',))
+[0.213s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.213s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.213s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.213s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.213s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.213s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.213s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/wayay/line_follower_ws'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extensions ['ignore', 'ignore_ament_install']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extension 'ignore'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extension 'ignore_ament_install'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extensions ['colcon_pkg']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extension 'colcon_pkg'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extensions ['colcon_meta']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extension 'colcon_meta'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extensions ['ros']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(src/blue_line_follower) by extension 'ros'
+[0.225s] DEBUG:colcon.colcon_core.package_identification:Package 'src/blue_line_follower' with type 'ros.ament_python' and name 'blue_line_follower'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extensions ['ignore', 'ignore_ament_install']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extension 'ignore'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extension 'ignore_ament_install'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extensions ['colcon_pkg']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extension 'colcon_pkg'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extensions ['colcon_meta']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extension 'colcon_meta'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extensions ['ros']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(src/custom_interfaces) by extension 'ros'
+[0.226s] DEBUG:colcon.colcon_core.package_identification:Package 'src/custom_interfaces' with type 'ros.ament_cmake' and name 'custom_interfaces'
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.248s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.248s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.249s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 2 installed packages in /home/wayay/line_follower_ws/install
+[0.250s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 17 installed packages in /home/wayay/ros2_ws/install
+[0.251s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 369 installed packages in /opt/ros/humble
+[0.252s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.286s] WARNING:colcon.colcon_core.package_selection:Some selected packages are already built in one or more underlay workspaces:
+	'custom_interfaces' is in: /home/wayay/line_follower_ws/install/custom_interfaces, /home/wayay/ros2_ws/install/custom_interfaces
+If a package in a merged underlay workspace is overridden and it installs headers, then all packages in the overlay must sort their include directories by workspace order. Failure to do so may result in build failures or undefined behavior at run time.
+If the overridden package is used by another package in any underlay, then the overriding package in the overlay must be API and ABI compatible or undefined behavior at run time may occur.
+
+If you understand the risks and want to override a package anyways, add the following to the command line:
+	--allow-overriding custom_interfaces
+
+This may be promoted to an error in a future release of colcon-override-check.
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'cmake_args' from command line to 'None'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'cmake_target' from command line to 'None'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'cmake_clean_cache' from command line to 'False'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'cmake_clean_first' from command line to 'False'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'cmake_force_configure' from command line to 'False'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'ament_cmake_args' from command line to 'None'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'catkin_cmake_args' from command line to 'None'
+[0.286s] Level 5:colcon.colcon_core.verb:set package 'custom_interfaces' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.286s] DEBUG:colcon.colcon_core.verb:Building package 'custom_interfaces' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/wayay/line_follower_ws/build/custom_interfaces', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/wayay/line_follower_ws/install/custom_interfaces', 'merge_install': False, 'path': '/home/wayay/line_follower_ws/src/custom_interfaces', 'symlink_install': False, 'test_result_base': None}
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'cmake_args' from command line to 'None'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'cmake_target' from command line to 'None'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'cmake_clean_cache' from command line to 'False'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'cmake_clean_first' from command line to 'False'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'cmake_force_configure' from command line to 'False'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'ament_cmake_args' from command line to 'None'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'catkin_cmake_args' from command line to 'None'
+[0.287s] Level 5:colcon.colcon_core.verb:set package 'blue_line_follower' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.287s] DEBUG:colcon.colcon_core.verb:Building package 'blue_line_follower' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/wayay/line_follower_ws/build/blue_line_follower', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/wayay/line_follower_ws/install/blue_line_follower', 'merge_install': False, 'path': '/home/wayay/line_follower_ws/src/blue_line_follower', 'symlink_install': False, 'test_result_base': None}
+[0.287s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.288s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.288s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/wayay/line_follower_ws/src/custom_interfaces' with build type 'ament_cmake'
+[0.288s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/wayay/line_follower_ws/src/custom_interfaces'
+[0.290s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.290s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.290s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.298s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/wayay/line_follower_ws/build/custom_interfaces': CMAKE_PREFIX_PATH=/home/wayay/line_follower_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/simple_interfaces:/home/wayay/ros2_ws/install/robotics_sim_project:/home/wayay/ros2_ws/install/mobile_arm_gazebo:/home/wayay/line_follower_ws/install/blue_line_follower:/home/wayay/ros2_ws/install/simple_params:/home/wayay/ros2_ws/install/service_practice:/home/wayay/ros2_ws/install/robot_actions:/home/wayay/ros2_ws/install/my_first_package:/home/wayay/ros2_ws/install/line_navigation:/home/wayay/ros2_ws/install/fleet_manager:/home/wayay/ros2_ws/install/exercice5_ping_pong_package:/home/wayay/ros2_ws/install/exercice4_turtlecontroller_package:/home/wayay/ros2_ws/install/calculator_service:/opt/ros/humble:/home/wayay/ros2_ws/install/mobile_arm_description:/home/wayay/ros2_ws/install/mobile_arm_control:/home/wayay/ros2_ws/install/fleet_interfaces:/home/wayay/ros2_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/calculator_interfaces /usr/bin/cmake --build /home/wayay/line_follower_ws/build/custom_interfaces -- -j6 -l6
+[0.574s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/wayay/line_follower_ws/build/custom_interfaces' returned '0': CMAKE_PREFIX_PATH=/home/wayay/line_follower_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/simple_interfaces:/home/wayay/ros2_ws/install/robotics_sim_project:/home/wayay/ros2_ws/install/mobile_arm_gazebo:/home/wayay/line_follower_ws/install/blue_line_follower:/home/wayay/ros2_ws/install/simple_params:/home/wayay/ros2_ws/install/service_practice:/home/wayay/ros2_ws/install/robot_actions:/home/wayay/ros2_ws/install/my_first_package:/home/wayay/ros2_ws/install/line_navigation:/home/wayay/ros2_ws/install/fleet_manager:/home/wayay/ros2_ws/install/exercice5_ping_pong_package:/home/wayay/ros2_ws/install/exercice4_turtlecontroller_package:/home/wayay/ros2_ws/install/calculator_service:/opt/ros/humble:/home/wayay/ros2_ws/install/mobile_arm_description:/home/wayay/ros2_ws/install/mobile_arm_control:/home/wayay/ros2_ws/install/fleet_interfaces:/home/wayay/ros2_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/calculator_interfaces /usr/bin/cmake --build /home/wayay/line_follower_ws/build/custom_interfaces -- -j6 -l6
+[0.583s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/wayay/line_follower_ws/build/custom_interfaces': CMAKE_PREFIX_PATH=/home/wayay/line_follower_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/simple_interfaces:/home/wayay/ros2_ws/install/robotics_sim_project:/home/wayay/ros2_ws/install/mobile_arm_gazebo:/home/wayay/line_follower_ws/install/blue_line_follower:/home/wayay/ros2_ws/install/simple_params:/home/wayay/ros2_ws/install/service_practice:/home/wayay/ros2_ws/install/robot_actions:/home/wayay/ros2_ws/install/my_first_package:/home/wayay/ros2_ws/install/line_navigation:/home/wayay/ros2_ws/install/fleet_manager:/home/wayay/ros2_ws/install/exercice5_ping_pong_package:/home/wayay/ros2_ws/install/exercice4_turtlecontroller_package:/home/wayay/ros2_ws/install/calculator_service:/opt/ros/humble:/home/wayay/ros2_ws/install/mobile_arm_description:/home/wayay/ros2_ws/install/mobile_arm_control:/home/wayay/ros2_ws/install/fleet_interfaces:/home/wayay/ros2_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/calculator_interfaces /usr/bin/cmake --install /home/wayay/line_follower_ws/build/custom_interfaces
+[0.630s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(custom_interfaces)
+[0.632s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/wayay/line_follower_ws/build/custom_interfaces' returned '0': CMAKE_PREFIX_PATH=/home/wayay/line_follower_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/simple_interfaces:/home/wayay/ros2_ws/install/robotics_sim_project:/home/wayay/ros2_ws/install/mobile_arm_gazebo:/home/wayay/line_follower_ws/install/blue_line_follower:/home/wayay/ros2_ws/install/simple_params:/home/wayay/ros2_ws/install/service_practice:/home/wayay/ros2_ws/install/robot_actions:/home/wayay/ros2_ws/install/my_first_package:/home/wayay/ros2_ws/install/line_navigation:/home/wayay/ros2_ws/install/fleet_manager:/home/wayay/ros2_ws/install/exercice5_ping_pong_package:/home/wayay/ros2_ws/install/exercice4_turtlecontroller_package:/home/wayay/ros2_ws/install/calculator_service:/opt/ros/humble:/home/wayay/ros2_ws/install/mobile_arm_description:/home/wayay/ros2_ws/install/mobile_arm_control:/home/wayay/ros2_ws/install/fleet_interfaces:/home/wayay/ros2_ws/install/custom_interfaces:/home/wayay/ros2_ws/install/calculator_interfaces /usr/bin/cmake --install /home/wayay/line_follower_ws/build/custom_interfaces
+[0.633s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces' for CMake module files
+[0.634s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces' for CMake config files
+[0.634s] Level 1:colcon.colcon_core.shell:create_environment_hook('custom_interfaces', 'cmake_prefix_path')
+[0.634s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/cmake_prefix_path.ps1'
+[0.634s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/cmake_prefix_path.dsv'
+[0.635s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/cmake_prefix_path.sh'
+[0.635s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/lib'
+[0.635s] Level 1:colcon.colcon_core.shell:create_environment_hook('custom_interfaces', 'ld_library_path_lib')
+[0.635s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/ld_library_path_lib.ps1'
+[0.636s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/ld_library_path_lib.dsv'
+[0.636s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/ld_library_path_lib.sh'
+[0.636s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/bin'
+[0.636s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/lib/pkgconfig/custom_interfaces.pc'
+[0.636s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/lib/python3.10/site-packages'
+[0.637s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/bin'
+[0.637s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.ps1'
+[0.637s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.dsv'
+[0.638s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.sh'
+[0.638s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.bash'
+[0.639s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.zsh'
+[0.639s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/wayay/line_follower_ws/install/custom_interfaces/share/colcon-core/packages/custom_interfaces)
+[0.640s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(custom_interfaces)
+[0.640s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces' for CMake module files
+[0.640s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces' for CMake config files
+[0.640s] Level 1:colcon.colcon_core.shell:create_environment_hook('custom_interfaces', 'cmake_prefix_path')
+[0.640s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/cmake_prefix_path.ps1'
+[0.641s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/cmake_prefix_path.dsv'
+[0.641s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/cmake_prefix_path.sh'
+[0.641s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/lib'
+[0.641s] Level 1:colcon.colcon_core.shell:create_environment_hook('custom_interfaces', 'ld_library_path_lib')
+[0.641s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/ld_library_path_lib.ps1'
+[0.642s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/ld_library_path_lib.dsv'
+[0.642s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/hook/ld_library_path_lib.sh'
+[0.642s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/bin'
+[0.642s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/lib/pkgconfig/custom_interfaces.pc'
+[0.642s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/lib/python3.10/site-packages'
+[0.643s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/custom_interfaces/bin'
+[0.643s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.ps1'
+[0.643s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.dsv'
+[0.643s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.sh'
+[0.644s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.bash'
+[0.644s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/custom_interfaces/share/custom_interfaces/package.zsh'
+[0.644s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/wayay/line_follower_ws/install/custom_interfaces/share/colcon-core/packages/custom_interfaces)
+[0.644s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/wayay/line_follower_ws/src/blue_line_follower' with build type 'ament_python'
+[0.644s] Level 1:colcon.colcon_core.shell:create_environment_hook('blue_line_follower', 'ament_prefix_path')
+[0.645s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/hook/ament_prefix_path.ps1'
+[0.645s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/hook/ament_prefix_path.dsv'
+[0.645s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/hook/ament_prefix_path.sh'
+[0.646s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.646s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.856s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/wayay/line_follower_ws/src/blue_line_follower'
+[0.856s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.856s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.149s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/wayay/line_follower_ws/src/blue_line_follower': PYTHONPATH=/home/wayay/line_follower_ws/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/line_follower_ws/build/blue_line_follower/build install --record /home/wayay/line_follower_ws/build/blue_line_follower/install.log --single-version-externally-managed install_data
+[1.371s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/blue_line_follower' for CMake module files
+[1.372s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/wayay/line_follower_ws/src/blue_line_follower' returned '0': PYTHONPATH=/home/wayay/line_follower_ws/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/line_follower_ws/build/blue_line_follower/build install --record /home/wayay/line_follower_ws/build/blue_line_follower/install.log --single-version-externally-managed install_data
+[1.372s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/blue_line_follower' for CMake config files
+[1.373s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/blue_line_follower/lib'
+[1.373s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/blue_line_follower/bin'
+[1.373s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/blue_line_follower/lib/pkgconfig/blue_line_follower.pc'
+[1.374s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages'
+[1.374s] Level 1:colcon.colcon_core.shell:create_environment_hook('blue_line_follower', 'pythonpath')
+[1.374s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/hook/pythonpath.ps1'
+[1.375s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/hook/pythonpath.dsv'
+[1.375s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/hook/pythonpath.sh'
+[1.376s] Level 1:colcon.colcon_core.environment:checking '/home/wayay/line_follower_ws/install/blue_line_follower/bin'
+[1.376s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(blue_line_follower)
+[1.376s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/package.ps1'
+[1.377s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/package.dsv'
+[1.378s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/package.sh'
+[1.378s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/package.bash'
+[1.379s] INFO:colcon.colcon_core.shell:Creating package script '/home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/package.zsh'
+[1.379s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/wayay/line_follower_ws/install/blue_line_follower/share/colcon-core/packages/blue_line_follower)
+[1.380s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[1.380s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[1.380s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[1.380s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[1.385s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[1.385s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[1.385s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[1.399s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[1.400s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/wayay/line_follower_ws/install/local_setup.ps1'
+[1.401s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/wayay/line_follower_ws/install/_local_setup_util_ps1.py'
+[1.403s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/wayay/line_follower_ws/install/setup.ps1'
+[1.405s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/wayay/line_follower_ws/install/local_setup.sh'
+[1.405s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/wayay/line_follower_ws/install/_local_setup_util_sh.py'
+[1.406s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/wayay/line_follower_ws/install/setup.sh'
+[1.408s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/wayay/line_follower_ws/install/local_setup.bash'
+[1.408s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/wayay/line_follower_ws/install/setup.bash'
+[1.410s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/wayay/line_follower_ws/install/local_setup.zsh'
+[1.411s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/wayay/line_follower_ws/install/setup.zsh'
