@@ -10,6 +10,9 @@ setup.py
 ../../build/blue_line_follower/blue_line_follower.egg-info/top_level.txt
 ../../build/blue_line_follower/blue_line_follower.egg-info/zip-safe
 blue_line_follower/__init__.py
+blue_line_follower/aruco_diagnostic.py
+blue_line_follower/aruco_navigation_client.py
+blue_line_follower/aruco_navigation_server.py
 blue_line_follower/line_follower_node.py
 launch/simulation.launch.py
 resource/blue_line_follower

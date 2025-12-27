@@ -73,7 +73,7 @@
       </link>
     </model>
     
-    <!-- Blue Line Track - Curve 1 (right turn) 
+    <!-- Blue Line Track - Curve 1 (right turn) -->
     <model name="blue_line_curve1">
       <static>true</static>
       <link name="link">
@@ -92,7 +92,7 @@
           </material>
         </visual>
       </link>
-    </model>-->
+    </model>
     
     <!-- Blue Line Track - Straight 2 
     <model name="blue_line_straight2">

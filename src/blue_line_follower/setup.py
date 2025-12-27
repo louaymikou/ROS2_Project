@@ -25,7 +25,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'line_follower_node = blue_line_follower.line_follower_node:main'
+            'line_follower_node = blue_line_follower.line_follower_node:main',
+            'aruco_navigation_server = blue_line_follower.aruco_navigation_server:main',
+            'aruco_navigation_client = blue_line_follower.aruco_navigation_client:main',
+            'aruco_diagnostic = blue_line_follower.aruco_diagnostic:main',
         ],
     },
 )

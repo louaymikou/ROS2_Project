@@ -1,7 +1,13 @@
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_diagnostic.py
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/line_follower_node.py
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__init__.py
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_server.py
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_client.py
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/aruco_diagnostic.cpython-310.pyc
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/line_follower_node.cpython-310.pyc
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/__init__.cpython-310.pyc
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/aruco_navigation_server.cpython-310.pyc
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/aruco_navigation_client.cpython-310.pyc
 /home/wayay/line_follower_ws/install/blue_line_follower/share/ament_index/resource_index/packages/blue_line_follower
 /home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/package.xml
 /home/wayay/line_follower_ws/install/blue_line_follower/share/blue_line_follower/launch/simulation.launch.py
@@ -14,4 +20,7 @@
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info/zip-safe
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info/top_level.txt
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info/SOURCES.txt
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/blue_line_follower/aruco_diagnostic
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/blue_line_follower/aruco_navigation_client
+/home/wayay/line_follower_ws/install/blue_line_follower/lib/blue_line_follower/aruco_navigation_server
 /home/wayay/line_follower_ws/install/blue_line_follower/lib/blue_line_follower/line_follower_node

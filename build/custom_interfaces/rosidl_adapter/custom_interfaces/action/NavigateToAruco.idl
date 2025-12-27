@@ -1,0 +1,61 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from custom_interfaces/action/NavigateToAruco.action
+// generated code does not contain a copyright notice
+
+
+module custom_interfaces {
+  module action {
+    @verbatim (language="comment", text=
+      "========================================" "\n"
+      "GOAL - Numéro du marqueur ArUco cible" "\n"
+      "========================================" "\n"
+      "Numéro du marqueur ArUco à atteindre")
+    struct NavigateToAruco_Goal {
+      int32 target_aruco_id;
+    };
+    struct NavigateToAruco_Result {
+      @verbatim (language="comment", text=
+        "========================================" "\n"
+        "RESULT - Résultat de la navigation" "\n"
+        "========================================" "\n"
+        "Navigation réussie?")
+      boolean success;
+
+      @verbatim (language="comment", text=
+        "Numéro ArUco final atteint")
+      int32 final_aruco_id;
+
+      @verbatim (language="comment", text=
+        "Direction utilisée (true=avant, false=arrière)")
+      boolean went_forward;
+
+      @verbatim (language="comment", text=
+        "Temps total de navigation (secondes)")
+      float navigation_time;
+
+      @verbatim (language="comment", text=
+        "Distance parcourue (approximative)")
+      float distance_traveled;
+    };
+    struct NavigateToAruco_Feedback {
+      @verbatim (language="comment", text=
+        "========================================" "\n"
+        "FEEDBACK - Progression pendant navigation" "\n"
+        "========================================" "\n"
+        "Numéro ArUco actuellement détecté (0 si aucun)")
+      int32 current_aruco_id;
+
+      @verbatim (language="comment", text=
+        "Direction de navigation actuelle")
+      string current_direction;
+
+      @verbatim (language="comment", text=
+        "Temps écoulé (secondes)")
+      float elapsed_time;
+
+      @verbatim (language="comment", text=
+        "État de la navigation")
+      string status_message;
+    };
+  };
+};
