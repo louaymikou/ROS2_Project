@@ -1,0 +1,333 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mon_robot_hybrid">
+
+  <!-- ============================================================== -->
+  <!-- ROBOT HYBRIDE: Version avec Caméra + Ultrasons + IMU           -->
+  <!-- Alternative au LIDAR pour déploiement hardware réel            -->
+  <!-- ============================================================== -->
+
+  <xacro:macro name="inertial_box" params="mass x y z *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}" />
+      <inertia ixx="${(1/12) * mass * (y*y+z*z)}" ixy="0.0" ixz="0.0"
+               iyy="${(1/12) * mass * (x*x+z*z)}" iyz="0.0"
+               izz="${(1/12) * mass * (x*x+y*y)}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="inertial_cylinder" params="mass length radius *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}" />
+      <inertia ixx="${(1/12) * mass * (3*radius*radius + length*length)}" ixy="0.0" ixz="0.0"
+               iyy="${(1/12) * mass * (3*radius*radius + length*length)}" iyz="0.0"
+               izz="${(1/2) * mass * (radius*radius)}" />
+    </inertial>
+  </xacro:macro>
+
+  <!-- Enhanced Material Definitions -->
+  <material name="chassis_blue">
+    <color rgba="0.1 0.3 0.6 1"/>
+  </material>
+  <material name="wheel_dark">
+    <color rgba="0.15 0.15 0.15 1"/>
+  </material>
+  <material name="arm_orange">
+    <color rgba="0.9 0.4 0.1 1"/>
+  </material>
+  <material name="gripper_metal">
+    <color rgba="0.3 0.3 0.35 1"/>
+  </material>
+  <material name="accent_yellow">
+    <color rgba="1.0 0.8 0.0 1"/>
+  </material>
+
+  <link name="base_link"></link>
+
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin xyz="-0.3 0 0"/>
+  </joint>
+
+  <link name="chassis">
+    <visual>
+      <origin xyz="0.3 0 0.075"/>
+      <geometry><box size="0.9 0.9 0.15"/></geometry>
+      <material name="chassis_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.3 0 0.075"/>
+      <geometry><box size="0.9 0.9 0.15"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.5" x="0.9" y="0.9" z="0.15">
+        <origin xyz="0.3 0 0.015" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <xacro:macro name="wheel" params="prefix x_reflect y_reflect">
+    <link name="${prefix}_link">
+      <visual>
+        <geometry><cylinder radius="0.15" length="0.12"/></geometry>
+        <material name="wheel_dark"/>
+      </visual>
+      <collision>
+        <geometry><cylinder radius="0.15" length="0.12"/></geometry>
+      </collision>
+      <xacro:inertial_cylinder mass="0.1" length="0.12" radius="0.15">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </xacro:inertial_cylinder>
+    </link>
+
+    <joint name="${prefix}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${prefix}_link"/>
+      <origin xyz="${x_reflect*0.3} ${y_reflect*0.525} 0" rpy="-1.57 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:wheel prefix="front_left" x_reflect="1" y_reflect="1" />
+  <xacro:wheel prefix="front_right" x_reflect="1" y_reflect="-1" />
+  <xacro:wheel prefix="rear_left" x_reflect="-1" y_reflect="1" />
+  <xacro:wheel prefix="rear_right" x_reflect="-1" y_reflect="-1" />
+
+  <link name="arm_1_link">
+    <visual>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <geometry><box size="0.15 0.15 0.6"/></geometry>
+      <material name="arm_orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <geometry><box size="0.15 0.15 0.6"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.1" x="0.15" y="0.15" z="0.6">
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <joint name="shoulder_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="arm_1_link"/>
+    <origin xyz="0.3 0 0.15" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/> <limit lower="-1.57" upper="1.57" effort="10" velocity="1"/>
+    <dynamics damping="0.1" friction="0.1"/> 
+  </joint>
+
+  <link name="arm_2_link">
+    <visual>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <geometry><box size="0.12 0.12 0.6"/></geometry>
+      <material name="arm_orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <geometry><box size="0.12 0.12 0.6"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.1" x="0.12" y="0.12" z="0.6">
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <joint name="elbow_joint" type="revolute">
+    <parent link="arm_1_link"/>
+    <child link="arm_2_link"/>
+    <origin xyz="0 0 0.6" rpy="0 0 0"/> <axis xyz="0 1 0"/>
+    <limit lower="-2.5" upper="2.5" effort="10" velocity="1"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <!-- PINCE - Joint de rotation -->
+  <joint name="gripper_rotate_joint" type="revolute">
+    <parent link="arm_2_link"/>
+    <child link="gripper_base_link"/>
+    <origin xyz="0 0 0.6" rpy="0 0 -1.5708"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="50" velocity="1.0"/>
+    <dynamics damping="0.1" friction="0.1"/>
+  </joint>
+
+  <!-- PINCE - Base de la pince -->
+  <link name="gripper_base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.3 0.24 0.15"/></geometry>
+      <material name="gripper_metal"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.3 0.24 0.15"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.15" x="0.3" y="0.24" z="0.15">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <!-- DOIGT GAUCHE -->
+  <link name="gripper_left_link">
+    <visual>
+      <origin xyz="-0.15 0.15 0.12" rpy="0 0 0"/>
+      <geometry><box size="0.06 0.05 0.36"/></geometry>
+      <material name="gripper_metal"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.15 0.15 0.12" rpy="0 0 0"/>
+      <geometry><box size="0.06 0.05 0.36"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.10" x="0.06" y="0.05" z="0.36">
+      <origin xyz="-0.15 0.15 0.12" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <joint name="gripper_left_joint" type="prismatic">
+    <parent link="gripper_base_link"/>
+    <child link="gripper_left_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.60" upper="0.0" effort="300" velocity="0.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
+  </joint>
+
+  <!-- DOIGT DROIT -->
+  <link name="gripper_right_link">
+    <visual>
+      <origin xyz="0.15 0.15 0.12" rpy="0 0 0"/>
+      <geometry><box size="0.06 0.05 0.36"/></geometry>
+      <material name="gripper_metal"/>
+    </visual>
+    <collision>
+      <origin xyz="0.15 0.15 0.12" rpy="0 0 0"/>
+      <geometry><box size="0.06 0.05 0.36"/></geometry>
+    </collision>
+    <xacro:inertial_box mass="0.10" x="0.06" y="0.05" z="0.36">
+      <origin xyz="0.15 0.15 0.12" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <joint name="gripper_right_joint" type="prismatic">
+    <parent link="gripper_base_link"/>
+    <child link="gripper_right_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="-0.60" upper="0.0" effort="300" velocity="0.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
+  </joint>
+
+  <!-- ==================== ROS2 CONTROL ==================== -->
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    
+    <xacro:macro name="control_joint" params="name">
+      <joint name="${name}">
+        <command_interface name="velocity">
+          <param name="min">-10</param>
+          <param name="max">10</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+      </joint>
+    </xacro:macro>
+
+    <!-- Bras + Rotation Grip (POSITION) -->
+    <joint name="shoulder_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+    </joint>
+    <joint name="elbow_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+    </joint>
+    <joint name="gripper_rotate_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+    </joint>
+
+    <!-- Roues (VELOCITY) -->
+    <xacro:control_joint name="front_left_joint"/>
+    <xacro:control_joint name="front_right_joint"/>
+    <xacro:control_joint name="rear_left_joint"/>
+    <xacro:control_joint name="rear_right_joint"/>
+
+    <!-- Pince - Doigts (POSITION) -->
+    <joint name="gripper_left_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+    </joint>
+    <joint name="gripper_right_joint">
+        <command_interface name="position"/>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- Gazebo Material Colors -->
+  <gazebo reference="chassis">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="front_left_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>100.0</mu1>
+    <mu2>100.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+  </gazebo>
+  <gazebo reference="front_right_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>100.0</mu1>
+    <mu2>100.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+  </gazebo>
+  <gazebo reference="rear_left_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>100.0</mu1>
+    <mu2>100.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+  </gazebo>
+  <gazebo reference="rear_right_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>100.0</mu1>
+    <mu2>100.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+  </gazebo>
+  <gazebo reference="arm_1_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="arm_2_link">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="gripper_base_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="gripper_left_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="gripper_right_link">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <parameters>$(find my_robot_controller)/config/my_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+  <!-- ==================== INCLURE CAPTEURS HYBRIDES ==================== -->
+  <!-- Caméra + IMU + 8 Ultrasons au lieu du LIDAR -->
+  <xacro:include filename="$(find my_robot_controller)/description/hybrid_sensors.xacro" />
+
+</robot>

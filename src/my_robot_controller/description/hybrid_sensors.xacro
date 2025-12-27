@@ -1,0 +1,280 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ============================================================== -->
+  <!-- SYSTÈME HYBRIDE: Caméra + 8 Ultrasons + IMU                    -->
+  <!-- Alternative au LIDAR pour robot réel                           -->
+  <!-- ============================================================== -->
+
+  <!-- ==================== CAMERA RASPBERRY PI V2 ==================== -->
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.025 0.025 0.025"/>
+      </geometry>
+      <material name="camera_green">
+        <color rgba="0.0 0.8 0.0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.025 0.025 0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <!-- Camera optical frame (convention ROS: Z forward, X right, Y down) -->
+  <link name="camera_optical_frame"/>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="camera_link"/>
+    <!-- Position: avant du chassis, hauteur appropriée pour SLAM visuel -->
+    <origin xyz="0.75 0 0.2" rpy="0 0.1 0"/>
+  </joint>
+
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+  </joint>
+
+  <!-- Gazebo Camera Plugin - Simule Raspberry Pi Camera V2 -->
+  <gazebo reference="camera_link">
+    <material>Gazebo/Green</material>
+    <sensor name="camera" type="camera">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>30</update_rate>
+      <camera name="rgb_camera">
+        <horizontal_fov>1.089</horizontal_fov> <!-- 62.2 degrés -->
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>15.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_plugin" filename="libgazebo_ros_camera.so">
+        <ros>
+          <remapping>~/image_raw:=camera/image_raw</remapping>
+          <remapping>~/camera_info:=camera/camera_info</remapping>
+        </ros>
+        <frame_name>camera_optical_frame</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ==================== IMU MPU6050 ==================== -->
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.016 0.003"/>
+      </geometry>
+      <material name="imu_purple">
+        <color rgba="0.5 0.0 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.016 0.003"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="imu_link"/>
+    <!-- Position: centre du chassis pour stabilité -->
+    <origin xyz="0.3 0 0.16" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo IMU Plugin - Simule MPU6050 -->
+  <gazebo reference="imu_link">
+    <material>Gazebo/Purple</material>
+    <sensor name="imu_sensor" type="imu">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <imu>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0002</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0002</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.0002</stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.017</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.017</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.017</stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+      <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <remapping>~/out:=imu/data</remapping>
+        </ros>
+        <frame_name>imu_link</frame_name>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ==================== 8 CAPTEURS ULTRASONIQUES HC-SR04 ==================== -->
+  <!-- Macro pour créer un capteur ultrasonique -->
+  <xacro:macro name="ultrasonic_sensor" params="name parent x y z yaw">
+    <link name="${name}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.008" length="0.015"/>
+        </geometry>
+        <material name="ultrasonic_blue">
+          <color rgba="0.0 0.5 1.0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.008" length="0.015"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.01"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+      </inertial>
+    </link>
+
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}_link"/>
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 ${yaw}"/>
+    </joint>
+
+    <!-- Gazebo Range Sensor - Simule HC-SR04 (portée 2cm - 4m, angle 15°) -->
+    <gazebo reference="${name}_link">
+      <material>Gazebo/Blue</material>
+      <sensor name="${name}" type="ray">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>20</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>5</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.13</min_angle>  <!-- 15° total -->
+              <max_angle>0.13</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.02</min>
+            <max>4.0</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.02</stddev>
+          </noise>
+        </ray>
+        <plugin name="${name}_plugin" filename="libgazebo_ros_ray_sensor.so">
+          <ros>
+            <remapping>~/out:=ultrasonic/${name}</remapping>
+          </ros>
+          <output_type>sensor_msgs/Range</output_type>
+          <frame_name>${name}_link</frame_name>
+          <radiation_type>ultrasound</radiation_type>
+          <fov>0.26</fov>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- 8 capteurs ultrasoniques répartis à 45° autour du robot -->
+  <!-- Positions sur le périmètre du chassis (0.9m x 0.9m) -->
+  
+  <!-- AVANT -->
+  <xacro:ultrasonic_sensor name="ultrasonic_front" parent="chassis" 
+                           x="0.75" y="0" z="0.1" yaw="0"/>
+  
+  <!-- AVANT GAUCHE (45°) -->
+  <xacro:ultrasonic_sensor name="ultrasonic_front_left" parent="chassis" 
+                           x="0.62" y="0.32" z="0.1" yaw="0.785"/>
+  
+  <!-- GAUCHE -->
+  <xacro:ultrasonic_sensor name="ultrasonic_left" parent="chassis" 
+                           x="0.3" y="0.45" z="0.1" yaw="1.571"/>
+  
+  <!-- ARRIÈRE GAUCHE (135°) -->
+  <xacro:ultrasonic_sensor name="ultrasonic_rear_left" parent="chassis" 
+                           x="-0.02" y="0.32" z="0.1" yaw="2.356"/>
+  
+  <!-- ARRIÈRE -->
+  <xacro:ultrasonic_sensor name="ultrasonic_rear" parent="chassis" 
+                           x="-0.15" y="0" z="0.1" yaw="3.141"/>
+  
+  <!-- ARRIÈRE DROIT (225°) -->
+  <xacro:ultrasonic_sensor name="ultrasonic_rear_right" parent="chassis" 
+                           x="-0.02" y="-0.32" z="0.1" yaw="-2.356"/>
+  
+  <!-- DROIT -->
+  <xacro:ultrasonic_sensor name="ultrasonic_right" parent="chassis" 
+                           x="0.3" y="-0.45" z="0.1" yaw="-1.571"/>
+  
+  <!-- AVANT DROIT (315°) -->
+  <xacro:ultrasonic_sensor name="ultrasonic_front_right" parent="chassis" 
+                           x="0.62" y="-0.32" z="0.1" yaw="-0.785"/>
+
+</robot>
