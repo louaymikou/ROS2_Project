@@ -1,5 +1,8 @@
 slam_toolbox:
   ros__parameters:
+    # Simulation time
+    use_sim_time: true
+    
     # Plugin params
     solver_plugin: solver_plugins::CeresSolver
     ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
@@ -13,6 +16,7 @@ slam_toolbox:
     map_frame: map
     base_frame: base_link
     scan_topic: /scan
+    odom_topic: /diff_cont/odom
     use_map_saver: true
     mode: mapping
 
@@ -23,32 +27,33 @@ slam_toolbox:
     map_update_interval: 1.0  # Mise à jour fréquente
     resolution: 0.03  # Résolution plus fine
     max_laser_range: 15.0
+    minimum_laser_range: 0.15  # Doit être >= 0.15 pour ce LIDAR
     minimum_time_interval: 0.2
     transform_timeout: 0.3
     tf_buffer_duration: 60.
     stack_size_to_use: 40000000
     enable_interactive_mode: true
 
-    # General Parameters - HAUTE PRÉCISION
+    # General Parameters - OPTIMISÉ POUR NETTOYER LES ARTIFACTS
     use_scan_matching: true
     use_scan_barycenter: true
-    minimum_travel_distance: 0.1  # Capturer plus de scans
-    minimum_travel_heading: 0.1
-    scan_buffer_size: 15
-    scan_buffer_maximum_scan_distance: 15.0
-    link_match_minimum_response_fine: 0.8  # Très strict
-    link_scan_maximum_distance: 0.3  # Très strict
-    loop_search_maximum_distance: 1.0
-    do_loop_closing: false  # Désactivé pour éviter duplications
-    loop_match_minimum_chain_size: 25
-    loop_match_maximum_variance_coarse: 1.0
-    loop_match_minimum_response_coarse: 0.8
-    loop_match_minimum_response_fine: 0.9
+    minimum_travel_distance: 0.2  # Plus restrictif pour éviter les scans inutiles
+    minimum_travel_heading: 0.2  # Plus restrictif
+    scan_buffer_size: 10  # Réduit pour éviter les vieux scans
+    scan_buffer_maximum_scan_distance: 12.0
+    link_match_minimum_response_fine: 0.85  # Plus strict
+    link_scan_maximum_distance: 0.25  # Plus strict pour éviter mauvais matches
+    loop_search_maximum_distance: 1.5
+    do_loop_closing: true  # Activé pour corriger les erreurs
+    loop_match_minimum_chain_size: 30
+    loop_match_maximum_variance_coarse: 0.8  # Plus strict
+    loop_match_minimum_response_coarse: 0.85
+    loop_match_minimum_response_fine: 0.92
 
-    # Correlation Parameters - AMÉLIORATION PRÉCISION
-    correlation_search_space_dimension: 0.3
-    correlation_search_space_resolution: 0.01
-    correlation_search_space_smear_deviation: 0.05
+    # Correlation Parameters - RÉDUCTION DES ARTIFACTS
+    correlation_search_space_dimension: 0.25  # Plus restrictif
+    correlation_search_space_resolution: 0.015  # Moins précis mais plus stable
+    correlation_search_space_smear_deviation: 0.03  # Réduit le flou
 
     # Loop Closure Parameters - CONSERVATEUR
     loop_search_space_dimension: 4.0  # Plus petit

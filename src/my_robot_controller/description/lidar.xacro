@@ -25,11 +25,10 @@
     </inertial>
   </link>
 
-  <!-- Mount LIDAR on top center of chassis -->
+  <!-- Mount LIDAR on chassis -->
   <joint name="laser_joint" type="fixed">
     <parent link="chassis"/>
     <child link="laser_frame"/>
-    <!-- Position on top of chassis at center -->
     <origin xyz="0.3 0 0.17" rpy="0 0 0"/>
   </joint>
 

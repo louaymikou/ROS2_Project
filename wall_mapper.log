@@ -1,0 +1,13 @@
+[INFO] [1766760813.401923866] [wall_follower_mapper]: ╔═══════════════════════════════════════════════════╗
+[INFO] [1766760813.402411278] [wall_follower_mapper]: ║   WALL FOLLOWER MAPPER - Scan 360° + Mur         ║
+[INFO] [1766760813.402751520] [wall_follower_mapper]: ╚═══════════════════════════════════════════════════╝
+[INFO] [1766760815.413039481] [wall_follower_mapper]: 
+[INFO] [1766760815.414304838] [wall_follower_mapper]: 🚀 DÉBUT DU MAPPING
+[INFO] [1766760815.415804538] [wall_follower_mapper]: ⏸️  Pause 4s...
+[INFO] [1766760819.952042471] [wall_follower_mapper]: 
+[INFO] [1766760819.953445909] [wall_follower_mapper]: ══════════════════════════════════════════════════
+[INFO] [1766760819.954020559] [wall_follower_mapper]: ÉTAPE 1: SCAN 360° INITIAL
+[INFO] [1766760819.954745509] [wall_follower_mapper]: ══════════════════════════════════════════════════
+[INFO] [1766760819.955394480] [wall_follower_mapper]: 🔍 SCAN 360° COMPLET (30s)
+[INFO] [1766760850.549467320] [wall_follower_mapper]: ✅ Scan 360° terminé
+[INFO] [1766760850.550309178] [wall_follower_mapper]: ⏸️  Pause 4s...
