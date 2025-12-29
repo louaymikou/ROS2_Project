@@ -16,53 +16,51 @@ slam_toolbox:
     map_frame: map
     base_frame: base_link
     scan_topic: /scan
-    odom_topic: /diff_cont/odom
     use_map_saver: true
     mode: mapping
 
-    # Paramètres OPTIMISÉS POUR CARTE PARFAITE
+    # Simplified stable parameters
     debug_logging: false
     throttle_scans: 1
     transform_publish_period: 0.02
-    map_update_interval: 1.0  # Mise à jour fréquente
-    resolution: 0.03  # Résolution plus fine
-    max_laser_range: 15.0
-    minimum_laser_range: 0.15  # Doit être >= 0.15 pour ce LIDAR
-    minimum_time_interval: 0.2
-    transform_timeout: 0.3
-    tf_buffer_duration: 60.
+    map_update_interval: 2.0
+    resolution: 0.05
+    max_laser_range: 12.0
+    minimum_time_interval: 0.5
+    transform_timeout: 0.5
+    tf_buffer_duration: 30.
     stack_size_to_use: 40000000
     enable_interactive_mode: true
 
-    # General Parameters - OPTIMISÉ POUR NETTOYER LES ARTIFACTS
+    # General Parameters
     use_scan_matching: true
     use_scan_barycenter: true
-    minimum_travel_distance: 0.2  # Plus restrictif pour éviter les scans inutiles
-    minimum_travel_heading: 0.2  # Plus restrictif
-    scan_buffer_size: 10  # Réduit pour éviter les vieux scans
-    scan_buffer_maximum_scan_distance: 12.0
-    link_match_minimum_response_fine: 0.85  # Plus strict
-    link_scan_maximum_distance: 0.25  # Plus strict pour éviter mauvais matches
-    loop_search_maximum_distance: 1.5
-    do_loop_closing: true  # Activé pour corriger les erreurs
-    loop_match_minimum_chain_size: 30
-    loop_match_maximum_variance_coarse: 0.8  # Plus strict
-    loop_match_minimum_response_coarse: 0.85
-    loop_match_minimum_response_fine: 0.92
+    minimum_travel_distance: 0.3
+    minimum_travel_heading: 0.3
+    scan_buffer_size: 20
+    scan_buffer_maximum_scan_distance: 10.0
+    link_match_minimum_response_fine: 0.7
+    link_scan_maximum_distance: 1.0
+    loop_search_maximum_distance: 3.0
+    do_loop_closing: true
+    loop_match_minimum_chain_size: 10
+    loop_match_maximum_variance_coarse: 3.0
+    loop_match_minimum_response_coarse: 0.7
+    loop_match_minimum_response_fine: 0.7
 
-    # Correlation Parameters - RÉDUCTION DES ARTIFACTS
-    correlation_search_space_dimension: 0.25  # Plus restrictif
-    correlation_search_space_resolution: 0.015  # Moins précis mais plus stable
-    correlation_search_space_smear_deviation: 0.03  # Réduit le flou
+    # Correlation Parameters
+    correlation_search_space_dimension: 0.5
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
 
-    # Loop Closure Parameters - CONSERVATEUR
-    loop_search_space_dimension: 4.0  # Plus petit
+    # Loop Closure Parameters
+    loop_search_space_dimension: 8.0
     loop_search_space_resolution: 0.05
     loop_search_space_smear_deviation: 0.03
 
-    # Scan Matcher Parameters - STRICT
-    distance_variance_penalty: 0.3  # Plus strict
-    angle_variance_penalty: 0.5  # Plus strict
+    # Scan Matcher Parameters
+    distance_variance_penalty: 0.5
+    angle_variance_penalty: 1.0
     fine_search_angle_offset: 0.00349
     coarse_search_angle_offset: 0.349
     coarse_angle_resolution: 0.0349
