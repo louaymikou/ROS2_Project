@@ -133,8 +133,62 @@
     <!-- ========== PACKAGES POUR PICK & PLACE ========== -->
     
     <!-- Petit Package (Bleu) - 0.3x0.3x0.3m -->
+    <model name="small_package_1">
+      <pose>-3 5 0.15 0 0 0</pose>
+      <link name="package_link">
+        <inertial>
+          <mass>0.4</mass>
+          <inertia>
+            <ixx>0.003</ixx>
+            <iyy>0.003</iyy>
+            <izz>0.003</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.3 0.3 0.3</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.3 0.3 0.3</size></box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.4 0.9 1.0</ambient>
+            <diffuse>0.3 0.5 1.0 1.0</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
 
     <!-- Petit Package (Bleu) #2 -->
+    <model name="small_package_2">
+      <pose>-2 5.5 0.15 0 0 0</pose>
+      <link name="package_link">
+        <inertial>
+          <mass>0.4</mass>
+          <inertia>
+            <ixx>0.003</ixx>
+            <iyy>0.003</iyy>
+            <izz>0.003</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.3 0.3 0.3</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.3 0.3 0.3</size></box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.4 0.9 1.0</ambient>
+            <diffuse>0.3 0.5 1.0 1.0</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
 
     <!-- Grand Package (Orange) - 0.5x0.4x0.6m -->
     <model name="large_package_1">

@@ -14,7 +14,7 @@ def generate_launch_description():
     
     # Chemins des fichiers
     nav2_params_file = PathJoinSubstitution([pkg_share, 'config', 'nav2_params.yaml'])
-    map_file = os.path.expanduser('~/my_robot_map2.yaml')
+    map_file = '/home/ikram/ROS2_Project/my_robot_map.yaml'
     
     # Arguments
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
