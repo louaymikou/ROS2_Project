@@ -21,20 +21,25 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
-# Create scripts directory install
-install(
-  DIRECTORY scripts/
-  DESTINATION lib/${PROJECT_NAME}
-  USE_SOURCE_PERMISSIONS
-  PATTERN "*.py"
-)
-
-# Installer les scripts Python
+# Installer les scripts Python du dossier principal
 install(
   PROGRAMS
     ps4_controller.py
     simple_arm_control.py
     keyboard_controller.py
+    auto_mapper.py
+    auto_mapper_detailed.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# Installer les scripts du dossier scripts/
+install(
+  PROGRAMS
+    scripts/arm_action_server.py
+    scripts/pick_place_action_server.py
+    scripts/mission_orchestrator.py
+    scripts/autonomous_pick_and_store.py
+    scripts/autonomous_explorer.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
