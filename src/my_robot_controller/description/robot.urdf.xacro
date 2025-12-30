@@ -327,6 +327,18 @@
     </plugin>
   </gazebo>
 
+  <!-- Static sensor frame for LIDAR (direct child of base_link for Nav2) -->
+  <link name="base_scan"/>
+
+  <joint name="base_scan_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_scan"/>
+    <!-- Position: base_link is at chassis origin - 0.3
+         laser_frame is at chassis + 0.3, 0, 0.17
+         So from base_link: 0, 0, 0.17 -->
+    <origin xyz="0.0 0 0.17" rpy="0 0 0"/>
+  </joint>
+
   <!-- Include LIDAR sensor -->
   <xacro:include filename="$(find my_robot_controller)/description/lidar.xacro" />
 
