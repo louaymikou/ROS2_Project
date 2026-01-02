@@ -1,1 +1,1 @@
-rclcpp;hardware_interface;pluginlib;controller_manager;ament_lint_auto;ament_lint_common
+rclcpp;hardware_interface;pluginlib;controller_manager;sensor_msgs;geometry_msgs;cv_bridge;ament_lint_auto;ament_lint_common

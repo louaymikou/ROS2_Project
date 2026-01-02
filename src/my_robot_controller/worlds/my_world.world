@@ -19,7 +19,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
-              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
+              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/line_test.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -27,7 +27,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
+              <uri>file:///home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/line_test.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>

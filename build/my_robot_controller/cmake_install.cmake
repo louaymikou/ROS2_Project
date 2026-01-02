@@ -57,6 +57,8 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     "/home/wayay/ROS_PROJECT/src/my_robot_controller/ps4_controller.py"
     "/home/wayay/ROS_PROJECT/src/my_robot_controller/simple_arm_control.py"
     "/home/wayay/ROS_PROJECT/src/my_robot_controller/keyboard_controller.py"
+    "/home/wayay/ROS_PROJECT/src/my_robot_controller/line_follower.py"
+    "/home/wayay/ROS_PROJECT/src/my_robot_controller/camera_debug.py"
     )
 endif()
 

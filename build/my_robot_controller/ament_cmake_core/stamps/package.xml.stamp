@@ -13,6 +13,9 @@
   <depend>hardware_interface</depend>
   <depend>pluginlib</depend>
   <depend>controller_manager</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>cv_bridge</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -18,6 +18,8 @@ install(
     ps4_controller.py
     simple_arm_control.py
     keyboard_controller.py
+    line_follower.py
+    camera_debug.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
