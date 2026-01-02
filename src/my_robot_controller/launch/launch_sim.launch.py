@@ -31,7 +31,7 @@ def generate_launch_description():
                                    '-entity', 'my_bot',
                                    '-x', '0',
                                    '-y', '0',
-                                   '-z', '0.3'],  # Divisé par 2 : 0.6 -> 0.3
+                                   '-z', '0.4'],  # Divisé par 2 : 0.6 -> 0.3
                         output='screen')
 
     # 4. Robot State Publisher (Publie les transformations)

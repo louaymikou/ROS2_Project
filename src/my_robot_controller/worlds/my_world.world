@@ -14,7 +14,7 @@
     <!-- On charge votre map -->
     <model name="warehouse_map">
       <static>true</static>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0 0 0.002 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
@@ -40,484 +40,127 @@
       </link>
     </model>
 
-  </world>
-</sdf>
+    <!-- ========== OBSTACLES ========== -->
     
-    <!-- Mur NORD (en haut) -->
-    <model name="wall_north">
+    <!-- Obstacle 1 - Grande boîte -->
+    <model name="obstacle_box_1">
       <static>true</static>
-      <pose>0 8 0.5 0 0 0</pose>
+      <pose>3 2 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>16 0.2 1</size></box>
+            <box><size>1.0 0.5 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>16 0.2 1</size></box>
+            <box><size>1.0 0.5 1.0</size></box>
           </geometry>
           <material>
-            <ambient>0.2 0.5 0.8 1</ambient>
-            <diffuse>0.2 0.5 0.8 1</diffuse>
+            <ambient>0.8 0.2 0.2 1</ambient>
+            <diffuse>0.9 0.3 0.3 1</diffuse>
           </material>
         </visual>
       </link>
     </model>
 
-    <!-- Mur SUD (en bas) -->
-    <model name="wall_south">
+    <!-- Obstacle 2 - Cylindre -->
+    <model name="obstacle_cylinder_1">
       <static>true</static>
-      <pose>0 -8 0.5 0 0 0</pose>
+      <pose>-2 3 0.75 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>16 0.2 1</size></box>
+            <cylinder>
+              <radius>0.3</radius>
+              <length>1.5</length>
+            </cylinder>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>16 0.2 1</size></box>
+            <cylinder>
+              <radius>0.3</radius>
+              <length>1.5</length>
+            </cylinder>
           </geometry>
           <material>
-            <ambient>0.2 0.5 0.8 1</ambient>
-            <diffuse>0.2 0.5 0.8 1</diffuse>
+            <ambient>0.2 0.6 0.8 1</ambient>
+            <diffuse>0.3 0.7 0.9 1</diffuse>
           </material>
         </visual>
       </link>
     </model>
 
-    <!-- Mur EST (à droite) -->
-    <model name="wall_east">
+    <!-- Obstacle 3 - Petite boîte -->
+    <model name="obstacle_box_2">
       <static>true</static>
-      <pose>8 0 0.5 0 0 0</pose>
+      <pose>-3 -2 0.3 0 0 0.5</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.2 16 1</size></box>
+            <box><size>0.6 0.6 0.6</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.2 16 1</size></box>
+            <box><size>0.6 0.6 0.6</size></box>
           </geometry>
           <material>
-            <ambient>0.2 0.5 0.8 1</ambient>
-            <diffuse>0.2 0.5 0.8 1</diffuse>
+            <ambient>0.7 0.5 0.2 1</ambient>
+            <diffuse>0.8 0.6 0.3 1</diffuse>
           </material>
         </visual>
       </link>
     </model>
 
-    <!-- Mur OUEST (à gauche) -->
-    <model name="wall_west">
+    <!-- Obstacle 4 - Cylindre haut -->
+    <model name="obstacle_cylinder_2">
       <static>true</static>
-      <pose>-8 0 0.5 0 0 0</pose>
+      <pose>1 -3 1.0 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.2 16 1</size></box>
+            <cylinder>
+              <radius>0.25</radius>
+              <length>2.0</length>
+            </cylinder>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.2 16 1</size></box>
+            <cylinder>
+              <radius>0.25</radius>
+              <length>2.0</length>
+            </cylinder>
           </geometry>
           <material>
-            <ambient>0.2 0.5 0.8 1</ambient>
-            <diffuse>0.2 0.5 0.8 1</diffuse>
+            <ambient>0.3 0.8 0.3 1</ambient>
+            <diffuse>0.4 0.9 0.4 1</diffuse>
           </material>
         </visual>
       </link>
     </model>
 
-    <!-- ========== PACKAGES POUR PICK & PLACE ========== -->
     
-    <!-- Petit Package (Bleu) - 0.3x0.3x0.3m -->
 
-    <!-- Petit Package (Bleu) #2 -->
-
-    <!-- Grand Package (Orange) - 0.5x0.4x0.6m -->
-    <model name="large_package_1">
-      <pose>0 5.5 0.3 0 0 0</pose>
-      <link name="package_link">
-        <inertial>
-          <mass>1.2</mass>
-          <inertia>
-            <ixx>0.038</ixx>
-            <iyy>0.043</iyy>
-            <izz>0.021</izz>
-          </inertia>
-        </inertial>
+    <!-- Obstacle 6 - Caisse -->
+    <model name="obstacle_box_3">
+      <static>true</static>
+      <pose>4 -1 0.4 0 0 0.8</pose>
+      <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.5 0.4 0.6</size></box>
+            <box><size>0.8 0.8 0.8</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.5 0.4 0.6</size></box>
+            <box><size>0.8 0.8 0.8</size></box>
           </geometry>
           <material>
-            <ambient>1.0 0.5 0.1 1.0</ambient>
-            <diffuse>1.0 0.6 0.2 1.0</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Grand Package (Orange) #2 -->
-    <model name="large_package_2">
-      <pose>2 5 0.3 0 0 0</pose>
-      <link name="package_link">
-        <inertial>
-          <mass>1.2</mass>
-          <inertia>
-            <ixx>0.038</ixx>
-            <iyy>0.043</iyy>
-            <izz>0.021</izz>
-          </inertia>
-        </inertial>
-        <collision name="collision">
-          <geometry>
-            <box><size>0.5 0.4 0.6</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>0.5 0.4 0.6</size></box>
-          </geometry>
-          <material>
-            <ambient>1.0 0.5 0.1 1.0</ambient>
-            <diffuse>1.0 0.6 0.2 1.0</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-
-    <!-- ========== ÉTAGÈRE DE STOCKAGE AVEC CASIERS ========== -->
-    
-    <!-- Structure principale de l'étagère -->
-    <model name="storage_shelf_back">
-      <static>true</static>
-      <pose>6 -4 1.2 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>0.05 3.0 2.4</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>0.05 3.0 2.4</size></box>
-          </geometry>
-          <material>
-            <ambient>0.4 0.3 0.2 1</ambient>
-            <diffuse>0.5 0.4 0.3 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Poteaux verticaux gauche -->
-    <model name="storage_shelf_post_left">
-      <static>true</static>
-      <pose>6 -5.5 1.2 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>0.1 0.1 2.4</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>0.1 0.1 2.4</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.25 0.15 1</ambient>
-            <diffuse>0.4 0.35 0.25 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Poteaux verticaux droit -->
-    <model name="storage_shelf_post_right">
-      <static>true</static>
-      <pose>6 -2.5 1.2 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>0.1 0.1 2.4</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>0.1 0.1 2.4</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.25 0.15 1</ambient>
-            <diffuse>0.4 0.35 0.25 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- NIVEAU 1 - Tablette basse (0.6m) -->
-    <model name="shelf_level_1">
-      <static>true</static>
-      <pose>5.5 -4 0.6 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>1.0 3.0 0.03</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>1.0 3.0 0.03</size></box>
-          </geometry>
-          <material>
-            <ambient>0.5 0.4 0.3 1</ambient>
-            <diffuse>0.6 0.5 0.4 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- NIVEAU 2 - Tablette moyenne (1.2m) -->
-    <model name="shelf_level_2">
-      <static>true</static>
-      <pose>5.5 -4 1.2 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>1.0 3.0 0.03</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>1.0 3.0 0.03</size></box>
-          </geometry>
-          <material>
-            <ambient>0.5 0.4 0.3 1</ambient>
-            <diffuse>0.6 0.5 0.4 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- NIVEAU 3 - Tablette haute (1.8m) -->
-    <model name="shelf_level_3">
-      <static>true</static>
-      <pose>5.5 -4 1.8 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>1.0 3.0 0.03</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>1.0 3.0 0.03</size></box>
-          </geometry>
-          <material>
-            <ambient>0.5 0.4 0.3 1</ambient>
-            <diffuse>0.6 0.5 0.4 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Séparateurs verticaux pour créer des casiers -->
-    <!-- Séparateur 1 (entre casiers gauche et centre) -->
-    <model name="shelf_divider_1">
-      <static>true</static>
-      <pose>5.5 -3 1.2 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>0.9 0.03 2.4</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>0.9 0.03 2.4</size></box>
-          </geometry>
-          <material>
-            <ambient>0.45 0.35 0.25 1</ambient>
-            <diffuse>0.55 0.45 0.35 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Séparateur 2 (entre casiers centre et droit) -->
-    <model name="shelf_divider_2">
-      <static>true</static>
-      <pose>5.5 -5 1.2 0 0 0</pose>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box><size>0.9 0.03 2.4</size></box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box><size>0.9 0.03 2.4</size></box>
-          </geometry>
-          <material>
-            <ambient>0.45 0.35 0.25 1</ambient>
-            <diffuse>0.55 0.45 0.35 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Étiquettes des casiers (plaques colorées) -->
-    <!-- Niveau 1 - Casiers -->
-    <model name="shelf_label_1_1">
-      <static>true</static>
-      <pose>5.95 -2.5 0.6 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.7 0.3 1</ambient>
-            <diffuse>0.4 0.8 0.4 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="shelf_label_1_2">
-      <static>true</static>
-      <pose>5.95 -4 0.6 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.7 0.3 1</ambient>
-            <diffuse>0.4 0.8 0.4 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="shelf_label_1_3">
-      <static>true</static>
-      <pose>5.95 -5.5 0.6 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.7 0.3 1</ambient>
-            <diffuse>0.4 0.8 0.4 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Niveau 2 - Casiers -->
-    <model name="shelf_label_2_1">
-      <static>true</static>
-      <pose>5.95 -2.5 1.2 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.5 0.9 1</ambient>
-            <diffuse>0.4 0.6 1.0 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="shelf_label_2_2">
-      <static>true</static>
-      <pose>5.95 -4 1.2 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.5 0.9 1</ambient>
-            <diffuse>0.4 0.6 1.0 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="shelf_label_2_3">
-      <static>true</static>
-      <pose>5.95 -5.5 1.2 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.3 0.5 0.9 1</ambient>
-            <diffuse>0.4 0.6 1.0 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <!-- Niveau 3 - Casiers -->
-    <model name="shelf_label_3_1">
-      <static>true</static>
-      <pose>5.95 -2.5 1.8 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.9 0.5 0.2 1</ambient>
-            <diffuse>1.0 0.6 0.3 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="shelf_label_3_2">
-      <static>true</static>
-      <pose>5.95 -4 1.8 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.9 0.5 0.2 1</ambient>
-            <diffuse>1.0 0.6 0.3 1</diffuse>
-          </material>
-        </visual>
-      </link>
-    </model>
-
-    <model name="shelf_label_3_3">
-      <static>true</static>
-      <pose>5.95 -5.5 1.8 0 0 0</pose>
-      <link name="link">
-        <visual name="visual">
-          <geometry>
-            <box><size>0.02 0.8 0.15</size></box>
-          </geometry>
-          <material>
-            <ambient>0.9 0.5 0.2 1</ambient>
-            <diffuse>1.0 0.6 0.3 1</diffuse>
+            <ambient>0.6 0.4 0.2 1</ambient>
+            <diffuse>0.7 0.5 0.3 1</diffuse>
           </material>
         </visual>
       </link>
@@ -525,3 +168,4 @@
 
   </world>
 </sdf>
+ 
