@@ -8,18 +8,40 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
 
-# CMake build system files (if any stray)
+# CMake build system files
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
+*.cmake
 
-# VS Code settings (optional; uncomment if you prefer)
-#.vscode/
-build/
-install/
-log/
+# VS Code settings
+.vscode/
 
-# Docker environment file (contains local config)
+# Docker environment file
 .env
+
+# Temporary and log files
+*.log
+*.gv
+*.pdf
+
+# Backup files
+*.backup
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Map files (generated during runtime)
+*.pgm
+*.png
+my_robot_map.yaml
+
+# Test and debug scripts
+test_*.py
+*_test.py
+debug_*.py
