@@ -19,8 +19,8 @@
         <collision name="collision">
           <geometry>
             <mesh>
-              <!-- Use package path for Wharehouse.dae -->
-              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
+              <!-- Use absolute path from source -->
+              <uri>file:///home/wayay/ROS_PROJECT/src/my_robot_controller/models/Wharehouse.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -28,7 +28,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
+              <uri>file:///home/wayay/ROS_PROJECT/src/my_robot_controller/models/Wharehouse.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -40,7 +40,8 @@
       </link>
     </model>
 
-    <!-- ========== MURS POUR SLAM ========== -->
+  </world>
+</sdf>
     
     <!-- Mur NORD (en haut) -->
     <model name="wall_north">
