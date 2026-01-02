@@ -71,6 +71,17 @@ def generate_launch_description():
         output="screen"
     )
 
+    # Robot Localization - EKF for sensor fusion (wheel odom + IMU)
+    ekf_config = os.path.join(get_package_share_directory(pkg_name), 'config', 'ekf_params.yaml')
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[ekf_config, {'use_sim_time': True}],
+        remappings=[('odometry/filtered', 'odometry/local')]
+    )
+
     return LaunchDescription([
         gazebo,
         node_robot_state_publisher,
@@ -78,5 +89,6 @@ def generate_launch_description():
         spawn_diff_drive,
         spawn_joint_broad,
         spawn_arm,
-        spawn_gripper
+        spawn_gripper,
+        ekf_node
     ])

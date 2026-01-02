@@ -79,6 +79,19 @@ def generate_launch_description():
         output="screen"
     )
     
+    # Robot Localization - EKF for sensor fusion (wheel odom + IMU)
+    # During SLAM mapping, EKF only fuses sensors but doesn't publish TF
+    # SLAM Toolbox handles the full transform tree
+    ekf_config = os.path.join(pkg_share, 'config', 'ekf_params.yaml')
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[ekf_config, {'use_sim_time': True, 'publish_tf': False}],
+        remappings=[('odometry/filtered', 'odometry/local')]
+    )
+    
     # SLAM Toolbox
     slam_toolbox = Node(
         package='slam_toolbox',
@@ -96,5 +109,6 @@ def generate_launch_description():
         spawn_joint_broad,
         spawn_arm,
         spawn_gripper,
+        ekf_node,
         slam_toolbox,
     ])

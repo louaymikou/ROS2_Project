@@ -41,16 +41,16 @@
 
   <link name="base_link">
     <visual>
-      <origin xyz="0.3 0 0.075"/>
+      <origin xyz="0 0 0.075"/>
       <geometry><box size="0.9 0.9 0.15"/></geometry>
       <material name="chassis_blue"/>
     </visual>
     <collision>
-      <origin xyz="0.3 0 0.075"/>   
+      <origin xyz="0 0 0.075"/>   
       <geometry><box size="0.9 0.9 0.15"/></geometry>
     </collision>
     <xacro:inertial_box mass="5.0" x="0.9" y="0.9" z="0.15">
-        <origin xyz="0.3 0 0.015" rpy="0 0 0"/>
+        <origin xyz="0 0 0.075" rpy="0 0 0"/>
     </xacro:inertial_box>
   </link>
 
@@ -83,16 +83,16 @@
 
   <link name="arm_1_link">
     <visual>
-      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <origin xyz="-0.3 0 0.3" rpy="0 0 0"/>
       <geometry><box size="0.15 0.15 0.6"/></geometry>
       <material name="arm_orange"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <origin xyz="-0.3 0 0.3" rpy="0 0 0"/>
       <geometry><box size="0.15 0.15 0.6"/></geometry>
     </collision>
     <xacro:inertial_box mass="0.1" x="0.15" y="0.15" z="0.6">
-      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <origin xyz="-0.3 0 0.3" rpy="0 0 0"/>
     </xacro:inertial_box>
   </link>
 
@@ -122,7 +122,7 @@
   <joint name="elbow_joint" type="revolute">
     <parent link="arm_1_link"/>
     <child link="arm_2_link"/>
-    <origin xyz="0 0 0.6" rpy="0 0 0"/> <axis xyz="0 1 0"/>
+    <origin xyz="-0.3 0 0.6" rpy="0 0 0"/> <axis xyz="0 1 0"/>
     <limit lower="-2.5" upper="2.5" effort="10" velocity="1"/>
     <dynamics damping="0.1" friction="0.1"/>
   </joint>

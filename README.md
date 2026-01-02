@@ -1,6 +1,16 @@
 # ROS2 Mobile Robot Project
 
-🤖 Mobile robot with teleoperation, SLAM mapping, and navigation capabilities.
+🤖 Mobile robot with teleoperation, SLAM mapping, navigation capabilities, and **IMU sensor fusion** for improved odometry.
+
+## 🆕 Nouveautés - Intégration IMU
+
+✨ **Fusion de capteurs avec robot_localization**
+- L'IMU est maintenant intégré pour améliorer la précision de l'odométrie
+- Fusion Extended Kalman Filter (EKF) : Wheel Encoders + IMU
+- Meilleure orientation et détection de glissement
+- Topic d'odométrie fusionnée : `/odometry/local`
+
+📖 Voir [docs/IMU_INTEGRATION_GUIDE.md](docs/IMU_INTEGRATION_GUIDE.md) pour les détails
 
 ## 📁 Project Structure
 
@@ -8,16 +18,24 @@
 ROS_PROJECT/
 ├── docs/                    # Documentation
 │   ├── README.md           # Main project documentation
-│   └── INSTALLATION_GUIDE.md
+│   ├── INSTALLATION_GUIDE.md
+│   └── IMU_INTEGRATION_GUIDE.md  # 🆕 Guide d'intégration IMU
 ├── maps/                    # Generated maps
 │   ├── my_robot_map.pgm
 │   ├── my_robot_map.png
 │   └── my_robot_map.yaml
 ├── config/                  # Configuration files
 │   ├── slam_params.yaml
+│   ├── ekf_params.yaml     # 🆕 Configuration EKF pour fusion IMU
 │   └── nav2_params/
 ├── src/                     # Source code
 │   └── my_robot_controller/
+│       ├── description/
+│       │   └── imu.xacro   # 🆕 Description du capteur IMU
+│       ├── launch/
+│       │   └── robot_localization.launch.py  # 🆕 Launch EKF
+│       └── ...
+├── test_imu_integration.sh  # 🆕 Script de test IMU
 └── .gitignore
 
 ```
@@ -29,11 +47,21 @@ See [docs/README.md](docs/README.md) for complete documentation.
 ### Installation
 
 ```bash
+# Install dependencies (including robot_localization)
+sudo apt install ros-humble-robot-localization
+
 # Build workspace
 cd ~/ROS_PROJECT
 source /opt/ros/humble/setup.bash
 colcon build --symlink-install
 source install/setup.bash
+```
+
+### Test IMU Integration
+
+```bash
+# Test que l'IMU fonctionne correctement
+./test_imu_integration.sh
 ```
 
 ---
@@ -42,7 +70,7 @@ source install/setup.bash
 
 ### ÉTAPE 1: Créer une Carte avec SLAM
 
-**Terminal 1 - Lancer SLAM Mapping:**
+**Terminal 1 - Lancer SLAM Mapping (avec IMU):**
 
 ```bash
 cd ~/ROS_PROJECT
