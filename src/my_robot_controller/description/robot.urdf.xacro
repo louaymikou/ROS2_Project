@@ -323,4 +323,7 @@
   <!-- Include LIDAR sensor -->
   <xacro:include filename="$(find my_robot_controller)/description/lidar.xacro" />
 
+  <!-- Include IMU sensor -->
+  <xacro:include filename="$(find my_robot_controller)/description/imu.xacro" />
+
 </robot>
