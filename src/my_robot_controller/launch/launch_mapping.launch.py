@@ -19,7 +19,7 @@ def generate_launch_description():
             ])
         ),
         
-        # Lancement du SLAM Toolbox avec remapping
+        # Lancement du SLAM Toolbox
         Node(
             package='slam_toolbox',
             executable='async_slam_toolbox_node',
@@ -28,9 +28,6 @@ def generate_launch_description():
             parameters=[
                 slam_params_file,
                 {'use_sim_time': True}
-            ],
-            remappings=[
-                ('/odom', '/diff_cont/odom')
             ]
         )
     ])
