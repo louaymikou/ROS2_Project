@@ -36,11 +36,6 @@ Makefile
 .DS_Store
 Thumbs.db
 
-# Map files (generated during runtime)
-*.pgm
-*.png
-my_robot_map.yaml
-
 # Test and debug scripts
 test_*.py
 *_test.py
