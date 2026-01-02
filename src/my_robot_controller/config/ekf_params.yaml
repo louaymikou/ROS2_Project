@@ -1,10 +1,11 @@
 ### ekf config file for robot_localization
+### Fuses wheel odometry + IMU for stable odom->base_link transform
 ekf_filter_node:
   ros__parameters:
     use_sim_time: true
     
-    # Frequency of the filter (Hz)
-    frequency: 50.0
+    # Frequency of the filter (Hz) - Higher for better IMU integration
+    frequency: 100.0
     
     # Delay between sensor messages and odometry publication (seconds)
     sensor_timeout: 0.1
@@ -12,9 +13,9 @@ ekf_filter_node:
     # If true, publishes acceleration state as well
     publish_acceleration: false
     
-    # If true, publishes the transform from world_frame to base_link_frame
-    # Set to FALSE during SLAM mapping to avoid conflicts with SLAM Toolbox
-    publish_tf: false
+    # CRITICAL: EKF publishes odom->base_link TF with fused sensor data
+    # This provides stable odometry for SLAM mapping
+    publish_tf: true
     
     # Frames
     map_frame: map
@@ -22,18 +23,16 @@ ekf_filter_node:
     base_link_frame: base_link
     world_frame: odom  # EKF operates in the odom frame
     
-    # Topic for odometry output
-    # This will be the fused odometry from wheel encoders + IMU
-    
-    # Define which sensors to fuse
-    # We'll fuse:
-    # 1. Wheel odometry from differential drive controller
-    # 2. IMU data for orientation and angular velocity
+    # Two-sensor fusion strategy:
+    # 1. Wheel odometry provides: linear velocity (x, y) and yaw rate
+    # 2. IMU provides: absolute orientation and angular velocity
+    # This combination corrects wheel slip and drift for stable SLAM mapping
     
     # Wheel Odometry Configuration (odom0)
+    # Use velocities from wheel encoders, NOT position (avoids drift accumulation)
     odom0: /diff_cont/odom
-    odom0_config: [true,  true,  true,     # x, y, z position - not used (we use velocities instead)
-                   false, false, false,    # roll, pitch, yaw - not used from wheel odom
+    odom0_config: [false, false, false,    # x, y, z position - DO NOT USE (drifts over time)
+                   false, false, false,    # roll, pitch, yaw - DO NOT USE from wheel odom
                    true,  true,  false,    # x_dot, y_dot, z_dot - USE linear velocities
                    false, false, true,     # roll_dot, pitch_dot, yaw_dot - USE yaw velocity
                    false, false, false]    # x_ddot, y_ddot, z_ddot - accelerations not used
@@ -42,12 +41,13 @@ ekf_filter_node:
     odom0_queue_size: 10
     
     # IMU Configuration (imu0)
+    # IMU provides stable orientation (especially yaw) to correct wheel odometry drift
     imu0: /imu/data
-    imu0_config: [false,  false,  false,     # x, y, z position - not provided by IMU
-                  true,  true,  true,      # roll, pitch, yaw - USE orientation from IMU
+    imu0_config: [false, false, false,     # x, y, z position - not provided by IMU
+                  true,  true,  true,      # roll, pitch, yaw - USE orientation from IMU (CRITICAL)
                   false, false, false,     # x_dot, y_dot, z_dot - not provided
                   true,  true,  true,      # roll_dot, pitch_dot, yaw_dot - USE angular velocities
-                  true,  true,  true]      # x_ddot, y_ddot, z_ddot - USE linear accelerations
+                  false, false, false]     # x_ddot, y_ddot, z_ddot - Don't use accelerations (drift)
     imu0_differential: false
     imu0_relative: false
     imu0_queue_size: 10

@@ -72,13 +72,14 @@ def generate_launch_description():
     )
 
     # Robot Localization - EKF for sensor fusion (wheel odom + IMU)
+    # EKF publishes odom->base_link TF with fused IMU+wheel data
     ekf_config = os.path.join(get_package_share_directory(pkg_name), 'config', 'ekf_params.yaml')
     ekf_node = Node(
         package='robot_localization',
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=[ekf_config, {'use_sim_time': True}],
+        parameters=[ekf_config, {'use_sim_time': True, 'publish_tf': True}],
         remappings=[('odometry/filtered', 'odometry/local')]
     )
 

@@ -11,11 +11,13 @@ slam_toolbox:
     ceres_dogleg_type: TRADITIONAL_DOGLEG
     ceres_loss_function: None
 
-    # ROS Parameters
+    # ROS Parameters - Using fused odometry from EKF (IMU + wheel)
     odom_frame: odom
     map_frame: map
     base_frame: base_link
     scan_topic: /scan
+    # Use fused odometry from robot_localization EKF for better pose estimation
+    odom_topic: /odometry/local
     use_map_saver: true
     mode: mapping
 
