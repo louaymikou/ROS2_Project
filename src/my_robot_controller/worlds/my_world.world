@@ -12,15 +12,15 @@
     </include>
 
     <!-- On charge votre map -->
-    <model name="my_blender_map">
+    <model name="warehouse_map">
       <static>true</static>
       <pose>0 0 0 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
             <mesh>
-              <!-- Use package path that works in Docker -->
-              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/my_map.stl</uri>
+              <!-- Use package path for Wharehouse.dae -->
+              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -28,7 +28,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/my_map.stl</uri>
+              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -524,4 +524,3 @@
 
   </world>
 </sdf>
-
