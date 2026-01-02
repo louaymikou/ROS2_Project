@@ -380,6 +380,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     "/home/wayay/ROS_PROJECT/src/my_robot_controller/keyboard_controller.py"
     "/home/wayay/ROS_PROJECT/src/my_robot_controller/pick_and_place_server.py"
     "/home/wayay/ROS_PROJECT/src/my_robot_controller/pick_and_place_client.py"
+    "/home/wayay/ROS_PROJECT/src/my_robot_controller/autonomous_navigation.py"
     )
 endif()
 

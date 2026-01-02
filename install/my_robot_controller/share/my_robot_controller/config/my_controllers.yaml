@@ -23,7 +23,7 @@ diff_cont:
     wheel_radius: 0.15      # CORRIGÉ: correspond au URDF
     use_stamped_vel: false
     publish_rate: 50.0
-    base_frame_id: base_link
+    base_frame_id: base_footprint
     odom_frame_id: odom
     enable_odom_tf: true
     # Use effort command interface instead of velocity

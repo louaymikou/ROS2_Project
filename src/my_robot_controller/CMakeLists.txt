@@ -29,6 +29,7 @@ install(
     keyboard_controller.py
     pick_and_place_server.py
     pick_and_place_client.py
+    autonomous_navigation.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

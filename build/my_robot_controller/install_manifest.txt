@@ -55,10 +55,11 @@
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/description/robot.urdf.xacro
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/launch_sim_with_ps4.launch.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/launch_sim.launch.py
-/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/slam.launch.py
-/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/navigation.launch.py
+/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/slam_launch.py
+/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/navigation_launch.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/launch/launch_sim_with_keyboard.launch.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/config/my_controllers.yaml
+/home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/config/slam_params.yaml
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/config/nav2_params.yaml
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/worlds/my_world.world
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/models/my_map.stl
@@ -68,6 +69,7 @@
 /home/wayay/ROS_PROJECT/install/my_robot_controller/lib/my_robot_controller/keyboard_controller.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/lib/my_robot_controller/pick_and_place_server.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/lib/my_robot_controller/pick_and_place_client.py
+/home/wayay/ROS_PROJECT/install/my_robot_controller/lib/my_robot_controller/autonomous_navigation.py
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/ament_index/resource_index/package_run_dependencies/my_robot_controller
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/ament_index/resource_index/parent_prefix_path/my_robot_controller
 /home/wayay/ROS_PROJECT/install/my_robot_controller/share/my_robot_controller/environment/ament_prefix_path.sh
