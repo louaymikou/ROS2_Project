@@ -26,15 +26,7 @@ ROS_PROJECT/
 
 See [docs/README.md](docs/README.md) for complete documentation.
 
-### Docker (Recommended)
-
-```bash
-# Build and run
-docker compose build
-docker compose up ros2
-```
-
-### Native Installation
+### Installation
 
 ```bash
 # Build workspace
@@ -58,7 +50,6 @@ ros2 launch my_robot_controller autonomous_mission.launch.py
 - ✅ Pick and place operations
 - ✅ PS4 controller support
 - ✅ Keyboard control
-- ✅ Docker containerization
 
 ---
 
