@@ -12,9 +12,9 @@ ekf_filter_node:
     # If true, publishes acceleration state as well
     publish_acceleration: false
     
-    # If true, publishes the transform from world_frame to base_link_frame
-    # Set to FALSE during SLAM mapping to avoid conflicts with SLAM Toolbox
-    publish_tf: false
+    # CRITICAL: EKF publishes odom->base_link transform
+    # This replaces diff_drive's TF with IMU-fused odometry
+    publish_tf: true
     
     # Frames
     map_frame: map
