@@ -66,7 +66,7 @@ def generate_launch_description():
 
     # Nœud du contrôleur clavier
     keyboard_controller_node = ExecuteProcess(
-        cmd=['python3', os.path.join(get_package_share_directory(pkg_name), '..', '..', '..', 'src', pkg_name, 'keyboard_controller.py')],
+        cmd=['python3', os.path.join(get_package_share_directory(pkg_name), '..', '..', '..', 'src', pkg_name, 'nodes', 'controllers', 'keyboard_controller.py')],
         output='screen'
     )
 

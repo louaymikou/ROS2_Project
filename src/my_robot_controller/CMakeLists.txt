@@ -17,22 +17,27 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
 
 install(
-  DIRECTORY description launch config worlds models action
+  DIRECTORY description launch config worlds models action nodes
   DESTINATION share/${PROJECT_NAME}
 )
 
-# Installer les scripts Python du dossier principal
+# Install Python nodes from organized structure
 install(
   PROGRAMS
-    ps4_controller.py
-    simple_arm_control.py
-    keyboard_controller.py
-    auto_mapper.py
-    auto_mapper_detailed.py
+    nodes/controllers/ps4_controller.py
+    nodes/controllers/keyboard_controller.py
+    nodes/mappers/auto_mapper.py
+    nodes/mappers/auto_mapper_detailed.py
+    nodes/mappers/wall_follower_mapper.py
+    nodes/navigation/navigate_to_package.py
+    nodes/navigation/set_initial_pose.py
+    nodes/navigation/backward_to_wall.py
+    nodes/arm_control/simple_arm_control.py
+    nodes/arm_control/pick_package.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Installer les scripts du dossier scripts/
+# Install scripts from scripts/ folder
 install(
   PROGRAMS
     scripts/arm_action_server.py
