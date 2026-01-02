@@ -6,18 +6,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
-find_package(geometry_msgs REQUIRED)
-
-# Generate custom actions
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "action/PickPlace.action"
-  "action/MoveArm.action"
-  DEPENDENCIES geometry_msgs
-)
 
 install(
-  DIRECTORY description launch config worlds models action nodes
+  DIRECTORY description launch config worlds models nodes
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -32,19 +23,6 @@ install(
     nodes/navigation/navigate_to_package.py
     nodes/navigation/set_initial_pose.py
     nodes/navigation/backward_to_wall.py
-    nodes/arm_control/simple_arm_control.py
-    nodes/arm_control/pick_package.py
-  DESTINATION lib/${PROJECT_NAME}
-)
-
-# Install scripts from scripts/ folder
-install(
-  PROGRAMS
-    scripts/arm_action_server.py
-    scripts/pick_place_action_server.py
-    scripts/mission_orchestrator.py
-    scripts/autonomous_pick_and_store.py
-    scripts/autonomous_explorer.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

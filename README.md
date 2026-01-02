@@ -1,6 +1,6 @@
-# ROS2 Mobile Manipulator Project
+# ROS2 Mobile Robot Project
 
-🤖 Autonomous pick-and-place mobile manipulator with SLAM navigation and robotic arm control.
+🤖 Mobile robot with teleoperation, SLAM mapping, and navigation capabilities.
 
 ## 📁 Project Structure
 
@@ -34,8 +34,8 @@ source /opt/ros/humble/setup.bash
 colcon build --symlink-install
 source install/setup.bash
 
-# Run autonomous mission
-ros2 launch my_robot_controller autonomous_mission.launch.py
+# Run simulation with keyboard control
+ros2 launch my_robot_controller launch_sim_with_keyboard.launch.py
 ```
 
 ## 📖 Documentation
@@ -45,11 +45,11 @@ ros2 launch my_robot_controller autonomous_mission.launch.py
 
 ## 🎯 Features
 
-- ✅ Autonomous navigation with Nav2
 - ✅ SLAM mapping with slam_toolbox
-- ✅ Pick and place operations
-- ✅ PS4 controller support
-- ✅ Keyboard control
+- ✅ Teleoperation (keyboard/PS4 controller)
+- ✅ Nav2 navigation support
+- ✅ ros2_control for robot control
+- ✅ Gazebo simulation
 
 ---
 

@@ -1,18 +1,18 @@
-# ROS2 Mobile Manipulator Project
+# ROS2 Mobile Robot Project
 
 ## 🤖 Project Overview
 
-Autonomous pick-and-place mobile manipulator with:
+Mobile robot with teleoperation and mapping capabilities:
 
 - 4-wheel differential drive base
-- 3-DOF robotic arm + 2-finger gripper
-- SLAM-based navigation (LIDAR sensor)
-- Nav2 autonomous navigation
-- Action-based control architecture
+- 3-DOF robotic arm + 2-finger gripper (hardware only)
+- SLAM-based mapping (LIDAR sensor)
+- Nav2 navigation support
+- Teleoperation control (keyboard/PS4)
 
 ---
 
-## � Prerequisites
+## 📋 Prerequisites
 
 ### Install Dependencies
 
@@ -27,14 +27,17 @@ sudo apt install -y ros-humble-slam-toolbox ros-humble-navigation2 ros-humble-na
 # ros2_control
 sudo apt install -y ros-humble-ros2-control ros-humble-ros2-controllers ros-humble-gazebo-ros2-control
 
-# Teleop tools (optional)
+# Teleop tools
 sudo apt install -y ros-humble-teleop-twist-keyboard
+
+# PS4 controller support (optional)
+sudo apt install -y ros-humble-joy
 ```
 
 ### Build Workspace
 
 ```bash
-cd ~/ROS2_Project/ROS2_Project
+cd ~/ROS_PROJECT
 source /opt/ros/humble/setup.bash
 colcon build --symlink-install
 source install/setup.bash
@@ -44,56 +47,49 @@ source install/setup.bash
 
 ## 🚀 Usage Modes
 
-### 1️⃣ **AUTONOMOUS MISSION** (Recommended - New!)
+### 1️⃣ **BASIC SIMULATION**
 
-**Pick object from Point A → Place at Point B → Return to A**
-
-**Terminal 1 - Launch System:**
+Launch Gazebo simulation with the robot:
 
 ```bash
-cd ~/ROS2_Project/ROS2_Project
-source /opt/ros/humble/setup.bash
 source install/setup.bash
-ros2 launch my_robot_controller autonomous_mission.launch.py
+ros2 launch my_robot_controller launch_sim.launch.py
 ```
-
-**Wait ~15-20 seconds for Nav2 initialization**
-
-**Terminal 2 - Start Mission:**
-
-```bash
-cd ~/ROS2_Project/ROS2_Project
-source install/setup.bash
-ros2 run my_robot_controller mission_orchestrator.py
-```
-
-**Watch the robot autonomously:**
-
-- Navigate to cube location (Point A: 0, 5.5)
-- Pick cube with arm + gripper
-- Navigate to drop-off (Point B: 3, 0)
-- Place cube
-- Return to Point A
-
-**Mission duration:** ~2-3 minutes
 
 ---
 
-### 2️⃣ **MANUAL CONTROL - PS4 Controller**
+### 2️⃣ **KEYBOARD CONTROL**
+
+Launch simulation with keyboard controller:
+
+```bash
+source install/setup.bash
+ros2 launch my_robot_controller launch_sim_with_keyboard.launch.py
+```
+
+**Controls:**
+- `w` - Forward
+- `s` - Backward
+- `a` - Turn left
+- `d` - Turn right
+- `x` - Stop
+- `q` - Quit
+
+---
+
+### 3️⃣ **PS4 CONTROLLER**
+
+Launch simulation with PS4 controller:
 
 ```bash
 source install/setup.bash
 ros2 launch my_robot_controller launch_sim_with_ps4.launch.py
 ```
 
----
-
-### 3️⃣ **MANUAL CONTROL - Keyboard (All-in-One)**
-
-```bash
-source install/setup.bash
-ros2 launch my_robot_controller launch_sim_with_keyboard.launch.py
-```
+**Controls:**
+- Left Stick - Drive (forward/backward/turn)
+- Right Stick - Arm control (up/down)
+- R1/L1 - Gripper control
 
 ---
 
@@ -110,36 +106,21 @@ ros2 launch my_robot_controller launch_sim.launch.py
 
 ```bash
 source install/setup.bash
-python3 src/my_robot_controller/keyboard_controller.py
+python3 src/my_robot_controller/nodes/controllers/keyboard_controller.py
 ```
 
----
-
-### 5️⃣ **MANUAL CONTROL - Teleop + Arm**
-
-**Terminal 1 - Simulation:**
-
-```bash
-source install/setup.bash
-ros2 launch my_robot_controller launch_sim.launch.py
-```
-
-**Terminal 2 - Base Teleop:**
+Or use teleop_twist_keyboard:
 
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args -r /cmd_vel:=/diff_cont/cmd_vel_unstamped
 ```
 
-**Terminal 3 - Arm Control:**
-
-```bash
-python3 src/my_robot_controller/simple_arm_control.py
-```
-
 ---
 
-### 6️⃣ **SLAM MAPPING** (Build Map First Time)
+### 5️⃣ **SLAM MAPPING**
+
+Create a map of the environment:
 
 **Terminal 1 - SLAM Launch:**
 
@@ -151,7 +132,7 @@ ros2 launch my_robot_controller slam_mapping.launch.py
 **Terminal 2 - Drive Around:**
 
 ```bash
-python3 src/my_robot_controller/keyboard_controller.py
+python3 src/my_robot_controller/nodes/controllers/keyboard_controller.py
 # OR use teleop_twist_keyboard
 ```
 
@@ -166,15 +147,15 @@ ros2 run nav2_map_server map_saver_cli -f ~/ROS_PROJECT/maps/my_map
 ## 📊 System Architecture
 
 ```
-Mission Orchestrator (A→B→A logic)
+Teleoperation (Keyboard/PS4)
     ↓
-Pick/Place Action Server (navigation + manipulation)
-    ↓
-Nav2 (path planning) + Arm Action Server
-    ↓
-SLAM (localization) + ros2_control (arm/gripper/base)
+ros2_control (diff_cont, arm_controller, gripper_controller)
     ↓
 Gazebo Simulation + LIDAR Sensor
+    ↓
+SLAM (slam_toolbox) → Map Generation
+    ↓
+Nav2 (optional navigation)
 ```
 
 ---
@@ -188,11 +169,6 @@ source /opt/ros/humble/setup.bash
 source install/setup.bash
 ```
 
-### Nav2 won't start
-
-- Wait longer (up to 30 seconds on slower machines)
-- Check SLAM is publishing `/map` topic: `ros2 topic list | grep map`
-
 ### Robot doesn't move
 
 ```bash
@@ -202,24 +178,70 @@ ros2 control list_controllers
 # Should show: diff_cont, arm_controller, gripper_controller, joint_broad
 ```
 
-### High resource usage
+### Controllers not loading
 
-- See `RESOURCE_OPTIMIZATION.md` for 6GB RAM VM tuning
-- Gazebo runs headless by default (no GUI to save memory)
+```bash
+# Check controller manager
+ros2 control list_hardware_interfaces
+```
+
+### LIDAR not working
+
+Check that the LIDAR sensor is publishing data:
+
+```bash
+ros2 topic echo /scan
+```
 
 ---
 
-## 📚 Documentation
+## 📁 Project Structure
 
-- `AUTONOMOUS_SYSTEM_PLAN.md` - Complete technical architecture
-- `SETUP_AND_USAGE_GUIDE.md` - Detailed setup instructions
-- `RESOURCE_OPTIMIZATION.md` - Performance tuning for low-spec VMs
-- `QUICK_REFERENCE.md` - Command cheat sheet
-- `QUICK_SUMMARY.md` - High-level overview
+```
+ROS_PROJECT/
+├── src/my_robot_controller/
+│   ├── nodes/
+│   │   ├── controllers/       # Keyboard & PS4 controllers
+│   │   ├── mappers/          # SLAM mapping utilities
+│   │   └── navigation/       # Navigation helpers
+│   ├── launch/               # Launch files
+│   ├── config/               # Configuration files
+│   ├── description/          # URDF robot description
+│   ├── worlds/              # Gazebo world files
+│   └── models/              # 3D models
+├── maps/                     # Generated maps
+├── docs/                     # Documentation
+└── config/                  # Global config files
+```
 
 ---
 
-## 🎯 Quick Start (First Time Setup)
+## 🎯 Available Launch Files
+
+| Launch File | Description |
+|------------|-------------|
+| `launch_sim.launch.py` | Basic simulation only |
+| `launch_sim_with_keyboard.launch.py` | Simulation + keyboard control |
+| `launch_sim_with_ps4.launch.py` | Simulation + PS4 controller |
+| `slam_mapping.launch.py` | SLAM mapping mode |
+| `launch_mapping.launch.py` | Alternative mapping launch |
+
+---
+
+## 🎮 ros2_control Controllers
+
+The robot uses the following controllers:
+
+1. **diff_cont** - Differential drive controller for base mobility
+2. **joint_broad** - Joint state broadcaster
+3. **arm_controller** - Position controller for robotic arm joints
+4. **gripper_controller** - Position controller for gripper fingers
+
+All controllers are automatically spawned during launch.
+
+---
+
+## 📖 Quick Start (First Time Setup)
 
 ```bash
 # 1. Install dependencies
@@ -228,19 +250,17 @@ sudo apt install -y ros-humble-slam-toolbox ros-humble-navigation2 \
   ros-humble-gazebo-ros2-control
 
 # 2. Build workspace
-cd ~/ROS2_Project/ROS2_Project
+cd ~/ROS_PROJECT
 source /opt/ros/humble/setup.bash
 colcon build --symlink-install
 source install/setup.bash
 
-# 3. Run autonomous mission
-ros2 launch my_robot_controller autonomous_mission.launch.py
-# Wait 15s, then in new terminal:
-ros2 run my_robot_controller mission_orchestrator.py
+# 3. Run simulation with keyboard control
+ros2 launch my_robot_controller launch_sim_with_keyboard.launch.py
 ```
 
 ---
 
-**Project Status:** ✅ Complete - Autonomous pick-and-place system operational  
-**Last Updated:** December 20, 2025  
-**Branch:** `lamiae` (development), `main` (stable)
+**Project Status:** ✅ Complete - Teleoperation and SLAM mapping operational  
+**Last Updated:** January 2, 2026  
+**Branch:** `ikram`
