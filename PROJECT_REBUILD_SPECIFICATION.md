@@ -831,7 +831,7 @@ class EnhancedKeyboardController(Node):
   <name>my_robot_controller</name>
   <version>1.0.0</version>
   <description>Mobile robot with SLAM, Nav2, and teleoperation capabilities</description>
-  <maintainer email="louaymikou17@gmail.com">louaymikou</maintainer>
+  <maintainer email="lamiaehadi14@gmail.com">lamiaehadi</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -1457,9 +1457,9 @@ ros2 topic echo <topic_name>
 
 ## 📧 CONTACT & SUPPORT
 
-- **Maintainer:** louaymikou
-- **Email:** louaymikou17@gmail.com
-- **Repository:** https://github.com/louaymikou/ROS2_Project
+- **Maintainer:** lamiaehadi
+- **Email:** lamiaehadi14@gmail.com
+- **Repository:** https://github.com/Lamiaehadi/ros2_robot_control_project
 
 ---
 
