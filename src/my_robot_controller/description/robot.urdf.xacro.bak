@@ -281,11 +281,9 @@
   <gazebo reference="gripper_left_link"><material>Gazebo/Grey</material></gazebo>
   <gazebo reference="gripper_right_link"><material>Gazebo/Grey</material></gazebo>
 
-  <!-- Gazebo ros2_control system plugin with controller params -->
+  <!-- Gazebo ros2_control system plugin (params passed via spawners) -->
   <gazebo>
-    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
-      <parameters>$(find my_robot_controller)/config/my_controllers.yaml</parameters>
-    </plugin>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so"/>
   </gazebo>
 
   <!-- IMU sensor on base -->
@@ -323,10 +321,8 @@
         <bias_stddev>0.0001</bias_stddev>
       </noise>
       <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
-        <ros>
-          <namespace>/</namespace>
-          <remapping>imu:=/imu</remapping>
-        </ros>
+        <ros><namespace>/</namespace></ros>
+        <topicName>imu</topicName>
         <frameName>imu_link</frameName>
       </plugin>
     </sensor>

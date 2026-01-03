@@ -25,11 +25,11 @@
     </inertial>
   </link>
 
-  <!-- Mount LIDAR on chassis -->
+  <!-- Mount LIDAR on base_link for stable localization -->
   <joint name="laser_joint" type="fixed">
-    <parent link="chassis"/>
+    <parent link="base_link"/>
     <child link="laser_frame"/>
-    <origin xyz="0.3 0 0.17" rpy="0 0 0"/>
+    <origin xyz="0.0 0 0.32" rpy="0 0 0"/>
   </joint>
 
   <!-- Gazebo LIDAR Plugin - OPTIMISÉ POUR SLAM -->
@@ -37,11 +37,11 @@
     <sensor name="laser" type="ray">
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
-      <update_rate>20</update_rate>
+      <update_rate>10</update_rate>
       <ray>
         <scan>
           <horizontal>
-            <samples>720</samples>
+            <samples>360</samples>
             <resolution>1</resolution>
             <min_angle>-3.14159</min_angle>
             <max_angle>3.14159</max_angle>
