@@ -20,7 +20,7 @@
           <geometry>
             <mesh>
               <!-- Use package path that works in Docker -->
-              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/my_map.stl</uri>
+              <uri>package://my_robot_controller/models/my_map.stl</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -28,7 +28,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>file:///ros2_ws/install/my_robot_controller/share/my_robot_controller/models/my_map.stl</uri>
+              <uri>package://my_robot_controller/models/my_map.stl</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
