@@ -2,43 +2,43 @@ amcl:
   ros__parameters:
     use_sim_time: True
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
-    set_initial_pose: false  # Laisser AMCL trouver
-    always_reset_initial_pose: true  # Reset à chaque fois  # Laisser AMCL trouver  # Reset à chaque fois
+    set_initial_pose: true
+    always_reset_initial_pose: false
     tf_broadcast: true
     base_frame_id: "base_link"
     global_frame_id: "map"
     odom_frame_id: "odom"
     scan_topic: "/scan"
     map_topic: "/map"
-    robot_radius: 0.50  # Réduit pour permettre passage
+    robot_radius: 0.65
     # Filter parameters
-    min_particles: 1000  # Plus de particules contre kidnapping  # Réduit pour performance mais ajusté
-    max_particles: 5000  # Beaucoup plus pour sécurité  # Moins de particules mais mieux distribuées
-    pf_err: 0.25  # Très tolérant = garde beaucoup de particules  # Plus tolérant = plus de particules actives
+    min_particles: 2000
+    max_particles: 8000
+    pf_err: 0.05
     pf_z: 0.99
-    recovery_alpha_slow: 0.01  # Plus agressif
-    recovery_alpha_fast: 0.5  # Plus agressif
+    recovery_alpha_slow: 0.001
+    recovery_alpha_fast: 0.1
     # Laser model parameters
     laser_max_range: 12.0
     laser_min_range: 0.2
-    laser_likelihood_max_dist: 2.0  # Réduit pour éviter faux positifs
+    laser_likelihood_max_dist: 3.0
     laser_model_type: "likelihood_field"
-    max_beams: 120  # Réduit pour meilleure performance et stabilité
-    z_hit: 0.70  # Moins de confiance = moins de sauts  # Légèrement réduit
+    max_beams: 180
+    z_hit: 0.95
     z_short: 0.02
     z_max: 0.02
-    z_rand: 0.15  # Beaucoup plus de tolérance  # Augmenté pour tolérer plus de bruit aléatoire
-    sigma_hit: 0.3  # Très tolérant  # Plus tolérant au bruit
+    z_rand: 0.01
+    sigma_hit: 0.1
     # Motion model parameters (reduced for better tracking)
-    alpha1: 2.0  # Très tolérant au glissement  # Augmenté pour robot 4 roues  # Bruit de rotation dû à la rotation
-    alpha2: 2.0  # Très tolérant au glissement  # Augmenté pour robot 4 roues  # Bruit de rotation dû à la translation
-    alpha3: 1.5  # Très tolérant au glissement  # Augmenté pour robot 4 roues  # Bruit de translation dû à la translation
-    alpha4: 2.0  # Très tolérant au glissement  # Augmenté pour robot 4 roues  # Bruit de translation dû à la rotation
+    alpha1: 0.4
+    alpha2: 0.5
+    alpha3: 0.2
+    alpha4: 0.4
     alpha5: 0.1
-    update_min_d: 0.20  # Moins de mises à jour  # Augmenté pour moins de mises à jour brusques
-    update_min_a: 0.20  # Moins de mises à jour  # Augmenté pour moins de mises à jour brusques
-    resample_interval: 1  # Plus fréquent  # Moins fréquent pour plus de stabilité
-    transform_tolerance: 0.2  # Réduit de 1.0 pour éviter les sauts
+    update_min_d: 0.02
+    update_min_a: 0.03
+    resample_interval: 1
+    transform_tolerance: 1.0
     initial_pose:
       x: 0.0
       y: 0.0
@@ -124,7 +124,7 @@ controller_server:
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
     min_theta_velocity_threshold: 0.001
-    failure_tolerance: 2.0  # Plus tolérant
+    failure_tolerance: 0.5
     progress_checker_plugins: ["progress_checker"]
     goal_checker_plugins: ["general_goal_checker"]
     controller_plugins: ["FollowPath"]
@@ -132,8 +132,8 @@ controller_server:
     # Progress checker parameters
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.3  # Moins strict
-      movement_time_allowance: 30.0  # Plus de temps avant abandon
+      required_movement_radius: 0.5
+      movement_time_allowance: 15.0
     
     # Goal checker parameters
     general_goal_checker:
@@ -148,11 +148,11 @@ controller_server:
       debug_trajectory_details: True
       min_vel_x: -0.2
       min_vel_y: 0.0
-      max_vel_x: 0.20  # Encore plus lent pour sécurité  # Réduit pour meilleure réaction  # Réduit pour meilleur suivi
+      max_vel_x: 0.4
       max_vel_y: 0.0
-      max_vel_theta: 0.5  # Rotation plus lente  # Réduit pour robot skid-steer
+      max_vel_theta: 0.8
       min_speed_xy: 0.0
-      max_speed_xy: 0.20  # Encore plus lent  # Réduit pour meilleure réaction  # Réduit pour meilleur suivi
+      max_speed_xy: 0.4
       min_speed_theta: 0.0
       acc_lim_x: 2.5
       acc_lim_y: 0.0
@@ -166,19 +166,19 @@ controller_server:
       sim_time: 1.2
       linear_granularity: 0.05
       angular_granularity: 0.025
-      transform_tolerance: 0.2  # Réduit pour éviter les sauts
+      transform_tolerance: 0.5
       xy_goal_tolerance: 0.15
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      BaseObstacle.scale: 10.0  # ENCORE PLUS pour ne JAMAIS pousser  # AUGMENTÉ de 0.02 pour ÉVITER obstacles!
-      PathAlign.scale: 32.0  # Réduit pour équilibrer
+      BaseObstacle.scale: 0.02
+      PathAlign.scale: 48.0
       PathAlign.forward_point_distance: 0.15
-      GoalAlign.scale: 24.0  # Réduit pour équilibrer
+      GoalAlign.scale: 32.0
       GoalAlign.forward_point_distance: 0.15
-      PathDist.scale: 24.0  # Réduit pour équilibrer
-      GoalDist.scale: 24.0  # Réduit pour équilibrer
+      PathDist.scale: 48.0
+      GoalDist.scale: 32.0
       RotateToGoal.scale: 32.0
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
@@ -195,7 +195,7 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.50  # Réduit pour permettre passage  # Your robot is 0.9m x 0.9m, diagonal = ~0.636m
+      robot_radius: 0.65  # Your robot is 0.9m x 0.9m, diagonal = ~0.636m
       plugins: ["voxel_layer", "inflation_layer"]
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
@@ -219,8 +219,8 @@ local_costmap:
           obstacle_min_range: 0.15
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 5.0  # Plus agressif
-        inflation_radius: 0.55  # Réduit de 0.8 pour permettre passage
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.8
       always_send_full_costmap: True
 
 global_costmap:
@@ -231,7 +231,7 @@ global_costmap:
       global_frame: map
       robot_base_frame: base_link
       use_sim_time: True
-      robot_radius: 0.50  # Réduit pour permettre passage
+      robot_radius: 0.65
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -254,8 +254,8 @@ global_costmap:
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 5.0  # Plus agressif
-        inflation_radius: 0.55  # Réduit de 0.8 pour permettre passage
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.8
       always_send_full_costmap: True
 
 planner_server:
@@ -295,7 +295,7 @@ behavior_server:
       plugin: "nav2_behaviors/Wait"
     global_frame: odom
     robot_base_frame: base_link
-    transform_tolerance: 0.2  # Réduit pour éviter les sauts
+    transform_tolerance: 0.5
     use_sim_time: true
     simulate_ahead_time: 2.0
     max_rotational_vel: 1.0
