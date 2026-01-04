@@ -32,7 +32,7 @@ diff_cont:
     wheel_radius: 0.15
 
     # Skid-steer compensation for 4-wheel robots (reduce if turning is too slow).
-    wheel_separation_multiplier: 1.8
+    wheel_separation_multiplier: 1.2  # Réduit pour skid-steer (était 1.8 - trop!)
     left_wheel_radius_multiplier: 1.0
     right_wheel_radius_multiplier: 1.0
 
@@ -45,8 +45,8 @@ diff_cont:
     open_loop: false                   # Use wheel feedback from Gazebo (preferred)
 
     # Covariances help AMCL fuse odom sensibly.
-    pose_covariance_diagonal: [0.01, 0.01, 0.1, 0.1, 0.1, 0.05]
-    twist_covariance_diagonal: [0.01, 0.01, 0.1, 0.1, 0.1, 0.05]
+    pose_covariance_diagonal: [0.1, 0.1, 1.0, 1.0, 1.0, 0.5]  # Augmenté: moins de confiance en odom
+    twist_covariance_diagonal: [0.1, 0.1, 1.0, 1.0, 1.0, 0.5]  # Augmenté: moins de confiance
 
     # Velocity input. Unstamped Twist if you relay from Nav2.
     use_stamped_vel: false

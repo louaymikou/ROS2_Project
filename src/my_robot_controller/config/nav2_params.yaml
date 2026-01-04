@@ -12,33 +12,33 @@ amcl:
     map_topic: "/map"
     robot_radius: 0.65
     # Filter parameters
-    min_particles: 2000
-    max_particles: 8000
-    pf_err: 0.05
+    min_particles: 3000  # AUGMENTÉ pour coins symétriques!  # Réduit de 2000
+    max_particles: 10000  # AUGMENTÉ pour plus d'hypothèses!  # Réduit de 8000
+    pf_err: 0.25  # Plus tolérant = garde plus de particules  # Augmenté: moins de recalculs brusques
     pf_z: 0.99
-    recovery_alpha_slow: 0.001
-    recovery_alpha_fast: 0.1
+    recovery_alpha_slow: 0.0001  # Active anti-kidnapping
+    recovery_alpha_fast: 0.0  # Désactive fast (garde slow only)
     # Laser model parameters
     laser_max_range: 12.0
     laser_min_range: 0.2
     laser_likelihood_max_dist: 3.0
     laser_model_type: "likelihood_field"
-    max_beams: 180
-    z_hit: 0.95
+    max_beams: 180  # AUGMENTÉ: plus de détails dans coins  # Réduit pour performance
+    z_hit: 0.75  # Réduit: moins de confiance aveugle au laser
     z_short: 0.02
     z_max: 0.02
-    z_rand: 0.01
-    sigma_hit: 0.1
+    z_rand: 0.15  # Plus de tolérance aux lectures ambiguës  # Augmenté: plus de tolérance au bruit
+    sigma_hit: 0.2  # Augmenté: laser moins précis
     # Motion model parameters (reduced for better tracking)
-    alpha1: 0.4
-    alpha2: 0.5
-    alpha3: 0.2
-    alpha4: 0.4
+    alpha1: 1.5  # Augmenté: rotation cause plus d'erreur trans
+    alpha2: 1.5  # Augmenté: translation cause erreur rotation
+    alpha3: 1.0  # Augmenté: translation cause erreur trans
+    alpha4: 2.0  # Augmenté: rotation cause erreur rotation (skid!)
     alpha5: 0.1
-    update_min_d: 0.02
-    update_min_a: 0.03
+    update_min_d: 0.01  # Update plus fréquent
+    update_min_a: 0.02  # Update rotation plus fréquent
     resample_interval: 1
-    transform_tolerance: 1.0
+    transform_tolerance: 0.3  # Un peu plus tolérant  # Réduit de 1.0s à 0.2s
     initial_pose:
       x: 0.0
       y: 0.0
@@ -339,7 +339,7 @@ collision_monitor:
     cmd_vel_in_topic: "cmd_vel_smoothed"
     cmd_vel_out_topic: "cmd_vel"
     state_topic: "collision_monitor_state"
-    transform_tolerance: 0.2
+    transform_tolerance: 0.3  # Un peu plus tolérant
     source_timeout: 1.0
     base_shift_correction: True
     stop_pub_timeout: 2.0
