@@ -40,13 +40,7 @@ class ArucoDiagnostic(Node):
     def _process_camera(self, msg, camera_name):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-            
-            # Only detect ArUco at the bottom 15% of the camera image
-            height, width, _ = cv_image.shape
-            aruco_detect_start = int(height * 0.85)  # Bottom 15%
-            aruco_roi = cv_image[aruco_detect_start:height, 0:width]
-            
-            gray = cv2.cvtColor(aruco_roi, cv2.COLOR_BGR2GRAY)
+            gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
             
             corners, ids, rejected = self.aruco_detector.detectMarkers(gray)
             

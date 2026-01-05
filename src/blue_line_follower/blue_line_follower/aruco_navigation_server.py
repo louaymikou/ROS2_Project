@@ -72,6 +72,17 @@ class ArucoNavigationServer(Node):
             self.rear_ultrasonic_callback,
             10)
         
+        # Publishers pour afficher les images avec détections ArUco
+        self.front_aruco_pub = self.create_publisher(
+            Image,
+            '/front_camera/aruco_detection',
+            10)
+        
+        self.rear_aruco_pub = self.create_publisher(
+            Image,
+            '/rear_camera/aruco_detection',
+            10)
+        
         # Service clients pour contrôler le robot
         self.enable_movement_client = self.create_client(SetBool, 'enable_movement')
         self.set_direction_client = self.create_client(SetBool, 'set_forward_direction')
@@ -97,6 +108,9 @@ class ArucoNavigationServer(Node):
         self.get_logger().info('🎯 ArUco Navigation Server Ready')
         self.get_logger().info('   Action: /navigate_to_aruco')
         self.get_logger().info(f'   Obstacle detection: {self.obstacle_threshold}m')
+        self.get_logger().info('   ArUco topics:')
+        self.get_logger().info('     - /front_camera/aruco_detection')
+        self.get_logger().info('     - /rear_camera/aruco_detection')
         self.get_logger().info('=================================')
 
     def front_ultrasonic_callback(self, msg):
@@ -123,24 +137,67 @@ class ArucoNavigationServer(Node):
 
     def front_camera_callback(self, data):
         """Callback pour la caméra avant"""
-        if self.is_navigating and self.went_forward:
-            self._detect_aruco(data)
+        if self.is_navigating:
+            # Pendant la recherche initiale (current_aruco_id is None), on check les deux caméras
+            # Sinon on ne check que la caméra dans la direction de navigation
+            if self.current_aruco_id is None or self.went_forward:
+                self._detect_aruco(data, self.front_aruco_pub, "FRONT")
 
     def rear_camera_callback(self, data):
         """Callback pour la caméra arrière"""
-        if self.is_navigating and not self.went_forward:
-            self._detect_aruco(data)
+        if self.is_navigating:
+            # Pendant la recherche initiale (current_aruco_id is None), on check les deux caméras
+            # Sinon on ne check que la caméra dans la direction de navigation
+            if self.current_aruco_id is None or not self.went_forward:
+                self._detect_aruco(data, self.rear_aruco_pub, "REAR")
 
-    def _detect_aruco(self, image_msg):
-        """Détecte les marqueurs ArUco dans l'image"""
+    def _detect_aruco(self, image_msg, publisher, camera_name):
+        """Détecte les marqueurs ArUco dans l'image et publie l'image avec les détections"""
         try:
             cv_image = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
-            gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+            display_image = cv_image.copy()
+            
+            # Crop to center region (e.g., middle 60% of image)
+            height, width = cv_image.shape[:2]
+            crop_width = int(width * 0.6)
+            crop_height = int(height * 0.6)
+            x_start = (width - crop_width) // 2
+            y_start = (height - crop_height) // 2
+            
+            # Dessiner le rectangle de la zone de détection
+            cv2.rectangle(display_image, (x_start, y_start), 
+                         (x_start + crop_width, y_start + crop_height), 
+                         (0, 255, 0), 2)
+            
+            cropped_image = cv_image[y_start:y_start + crop_height, x_start:x_start + crop_width]
+            gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
             
             corners, ids, rejected = self.aruco_detector.detectMarkers(gray)
             
             if ids is not None and len(ids) > 0:
                 detected_id = int(ids[0][0])
+                
+                # Ajuster les coins pour l'image complète
+                adjusted_corners = []
+                for corner in corners:
+                    adjusted_corner = corner.copy()
+                    adjusted_corner[:, :, 0] += x_start
+                    adjusted_corner[:, :, 1] += y_start
+                    adjusted_corners.append(adjusted_corner)
+                
+                # Dessiner les marqueurs détectés sur l'image complète
+                cv2.aruco.drawDetectedMarkers(display_image, adjusted_corners, ids)
+                
+                # Afficher l'ID et le nombre de détections
+                cv2.putText(display_image, f'{camera_name} Camera', 
+                           (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
+                           1, (0, 255, 0), 2)
+                cv2.putText(display_image, f'ArUco ID: {detected_id}', 
+                           (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 
+                           1, (0, 255, 0), 2)
+                cv2.putText(display_image, f'Detections: {self.aruco_detection_count}/{self.required_detections}', 
+                           (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 
+                           1, (0, 255, 0), 2)
                 
                 # Détection avec filtrage
                 if detected_id == self.current_aruco_id:
@@ -156,8 +213,16 @@ class ArucoNavigationServer(Node):
                     )
             else:
                 # Pas de marqueur détecté
+                cv2.putText(display_image, f'{camera_name} Camera - NO ArUco', 
+                           (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
+                           1, (0, 0, 255), 2)
+                
                 if self.aruco_detection_count > 0:
                     self.aruco_detection_count -= 1
+            
+            # Publier l'image avec les détections
+            detection_msg = self.bridge.cv2_to_imgmsg(display_image, "bgr8")
+            publisher.publish(detection_msg)
                     
         except Exception as e:
             self.get_logger().error(f'Erreur détection ArUco: {str(e)}')

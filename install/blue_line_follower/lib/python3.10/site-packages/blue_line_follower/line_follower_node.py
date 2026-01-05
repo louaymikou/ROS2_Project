@@ -256,11 +256,11 @@ class LineFollowerNode(Node):
             roi_start_row = int(height * 0.4)  # Start at 40% down from top (bottom 60%)
             roi_frame = current_frame[roi_start_row:height, 0:width]
             
-            # Detect ArUco markers ONLY at the very bottom of the camera frame
-            # This ensures markers are detected only when the robot is directly on top of them
-            height, width, _ = current_frame.shape
-            aruco_detect_start = int(height * 0.85)  # Bottom 15% of full camera image
-            aruco_roi = current_frame[aruco_detect_start:height, 0:width]
+            # Detect ArUco markers in the bottom portion of the ROI (bottom 20% of ROI)
+            # This ensures markers are detected only when very close to the robot
+            roi_height, roi_width, _ = roi_frame.shape
+            aruco_detect_start = int(roi_height * 0.8)  # Bottom 20% of ROI
+            aruco_roi = roi_frame[aruco_detect_start:roi_height, 0:roi_width]
             
             # Only detect if ROI is valid
             if aruco_roi.shape[0] > 20:  # At least 20 pixels tall
