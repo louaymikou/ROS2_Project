@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, TimerAction, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import xacro
@@ -34,15 +34,7 @@ def generate_launch_description():
         launch_arguments={'world': world_file_path}.items()
     )
     
-    # Spawn robot
-    spawn_entity = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
-        arguments=['-topic', 'robot_description', '-entity', 'my_bot', '-x', '0', '-y', '0', '-z', '0.3'],
-        output='screen'
-    )
-    
-    # Robot state publisher
+    # Robot state publisher - START IMMEDIATELY
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -50,7 +42,15 @@ def generate_launch_description():
         parameters=[robot_description, {'use_sim_time': True}]
     )
     
-    # Controllers
+    # Spawn robot - DELAY 3 SECONDS
+    spawn_entity = Node(
+        package='gazebo_ros',
+        executable='spawn_entity.py',
+        arguments=['-topic', 'robot_description', '-entity', 'my_bot', '-x', '0', '-y', '0', '-z', '0.25'],
+        output='screen'
+    )
+    
+    # Controllers - DELAY 5 SECONDS
     spawn_diff_drive = Node(
         package="controller_manager",
         executable="spawner",
@@ -79,20 +79,7 @@ def generate_launch_description():
         output="screen"
     )
     
-    # Robot Localization - EKF for sensor fusion (wheel odom + IMU)
-    # EKF publishes odom->base_link TF with fused IMU+wheel data
-    # SLAM Toolbox publishes map->odom TF
-    ekf_config = os.path.join(pkg_share, 'config', 'ekf_params.yaml')
-    ekf_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
-        output='screen',
-        parameters=[ekf_config, {'use_sim_time': True}],
-        remappings=[('odometry/filtered', 'odom/filtered')]
-    )
-    
-    # SLAM Toolbox - uses EKF-fused odom->base_link TF
+    # SLAM Toolbox - DELAY 8 SECONDS
     slam_toolbox = Node(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
@@ -100,15 +87,23 @@ def generate_launch_description():
         output='screen',
         parameters=[slam_params_file, {'use_sim_time': True}]
     )
-    
+        
     return LaunchDescription([
-        gazebo,
-        robot_state_publisher,
-        spawn_entity,
-        spawn_diff_drive,
-        spawn_joint_broad,
-        spawn_arm,
-        spawn_gripper,
-        ekf_node,
-        slam_toolbox,
-    ])
+            # Start immediately
+            gazebo,
+            robot_state_publisher,
+            
+            # Wait for Gazebo
+            TimerAction(period=3.0, actions=[spawn_entity]),
+            
+            # Spawn controllers
+            TimerAction(period=5.0, actions=[
+                spawn_diff_drive,
+                spawn_joint_broad,
+                spawn_arm,
+                spawn_gripper
+            ]),
+            
+            # Start SLAM
+            TimerAction(period=7.0, actions=[slam_toolbox])
+        ])

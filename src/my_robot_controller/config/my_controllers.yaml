@@ -19,17 +19,17 @@ diff_cont:
   ros__parameters:
     left_wheel_names: ["front_left_joint", "rear_left_joint"]
     right_wheel_names: ["front_right_joint", "rear_right_joint"]
-    wheel_separation: 0.90  # CORRIGÉ: 0.45 * 2 (matches centered chassis)
+    wheel_separation: 1.16 # CORRIGÉ: 0.525 * 2
     wheel_radius: 0.15      # CORRIGÉ: correspond au URDF
     use_stamped_vel: false
     publish_rate: 50.0
-    base_frame_id: base_link
+    base_frame_id: base_footprint
     odom_frame_id: odom
-    enable_odom_tf: false   # DISABLED - EKF publishes fused odom->base_link TF
+    enable_odom_tf: true
     # Paramètres d'odométrie - CRITIQUE: forte covariance en rotation
     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.1]  # Dernière valeur = rotation Z
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.1]  # SLAM sait que rotation est imprécise
-    open_loop: false  # Utilise feedback des roues
+    open_loop: true  # Utilise feedback des roues
     reference_timeout: 1.0
     state_publish_period: 0.02
 

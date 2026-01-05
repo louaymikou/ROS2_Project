@@ -80,7 +80,7 @@ def generate_launch_description():
         name='ekf_filter_node',
         output='screen',
         parameters=[ekf_config, {'use_sim_time': True}],
-        remappings=[('odometry/filtered', 'odom/filtered')]
+        remappings=[('odometry/filtered', 'odom')]
     )
 
     return LaunchDescription([

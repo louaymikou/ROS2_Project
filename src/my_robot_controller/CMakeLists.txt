@@ -8,7 +8,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY description launch config worlds models nodes
+  DIRECTORY description launch config worlds models nodes maps
   DESTINATION share/${PROJECT_NAME}
 )
 
