@@ -516,6 +516,8 @@ custom_interfaces__action__NavigateToAruco_Feedback__init(custom_interfaces__act
     custom_interfaces__action__NavigateToAruco_Feedback__fini(msg);
     return false;
   }
+  // obstacle_detected
+  // obstacle_distance
   return true;
 }
 
@@ -531,6 +533,8 @@ custom_interfaces__action__NavigateToAruco_Feedback__fini(custom_interfaces__act
   // elapsed_time
   // status_message
   rosidl_runtime_c__String__fini(&msg->status_message);
+  // obstacle_detected
+  // obstacle_distance
 }
 
 bool
@@ -557,6 +561,14 @@ custom_interfaces__action__NavigateToAruco_Feedback__are_equal(const custom_inte
   if (!rosidl_runtime_c__String__are_equal(
       &(lhs->status_message), &(rhs->status_message)))
   {
+    return false;
+  }
+  // obstacle_detected
+  if (lhs->obstacle_detected != rhs->obstacle_detected) {
+    return false;
+  }
+  // obstacle_distance
+  if (lhs->obstacle_distance != rhs->obstacle_distance) {
     return false;
   }
   return true;
@@ -586,6 +598,10 @@ custom_interfaces__action__NavigateToAruco_Feedback__copy(
   {
     return false;
   }
+  // obstacle_detected
+  output->obstacle_detected = input->obstacle_detected;
+  // obstacle_distance
+  output->obstacle_distance = input->obstacle_distance;
   return true;
 }
 

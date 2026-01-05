@@ -550,6 +550,10 @@ cdr_serialize(
   cdr << ros_message.elapsed_time;
   // Member: status_message
   cdr << ros_message.status_message;
+  // Member: obstacle_detected
+  cdr << (ros_message.obstacle_detected ? true : false);
+  // Member: obstacle_distance
+  cdr << ros_message.obstacle_distance;
   return true;
 }
 
@@ -570,6 +574,16 @@ cdr_deserialize(
 
   // Member: status_message
   cdr >> ros_message.status_message;
+
+  // Member: obstacle_detected
+  {
+    uint8_t tmp;
+    cdr >> tmp;
+    ros_message.obstacle_detected = tmp ? true : false;
+  }
+
+  // Member: obstacle_distance
+  cdr >> ros_message.obstacle_distance;
 
   return true;
 }  // NOLINT(readability/fn_size)
@@ -607,6 +621,18 @@ get_serialized_size(
   current_alignment += padding +
     eprosima::fastcdr::Cdr::alignment(current_alignment, padding) +
     (ros_message.status_message.size() + 1);
+  // Member: obstacle_detected
+  {
+    size_t item_size = sizeof(ros_message.obstacle_detected);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
+  // Member: obstacle_distance
+  {
+    size_t item_size = sizeof(ros_message.obstacle_distance);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
 
   return current_alignment - initial_alignment;
 }
@@ -675,6 +701,23 @@ max_serialized_size_NavigateToAruco_Feedback(
     }
   }
 
+  // Member: obstacle_detected
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint8_t);
+    current_alignment += array_size * sizeof(uint8_t);
+  }
+
+  // Member: obstacle_distance
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint32_t);
+    current_alignment += array_size * sizeof(uint32_t) +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, sizeof(uint32_t));
+  }
+
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
     // All members are plain, and type is not empty.
@@ -683,7 +726,7 @@ max_serialized_size_NavigateToAruco_Feedback(
     using DataType = custom_interfaces::action::NavigateToAruco_Feedback;
     is_plain =
       (
-      offsetof(DataType, status_message) +
+      offsetof(DataType, obstacle_distance) +
       last_member_size
       ) == ret_val;
   }

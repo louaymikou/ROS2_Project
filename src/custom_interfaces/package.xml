@@ -12,6 +12,8 @@
   <build_depend>rosidl_default_generators</build_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
   
+  <buildtool_depend>rosidl_typesupport_c</buildtool_depend>
+  <buildtool_depend>rosidl_typesupport_cpp</buildtool_depend>
 
   <build_depend>action_msgs</build_depend>
   <exec_depend>action_msgs</exec_depend>

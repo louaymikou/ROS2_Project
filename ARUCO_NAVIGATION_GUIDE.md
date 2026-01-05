@@ -10,6 +10,8 @@ Ce système permet au robot de naviguer automatiquement vers un marqueur ArUco s
 - **Détection stable** : Requiert plusieurs détections consécutives pour éviter les faux positifs
 - **Feedback en temps réel** : Affiche la progression de la navigation
 - **Annulation possible** : Permet d'arrêter la navigation à tout moment
+- **Détection d'obstacles** : Capteurs ultrasoniques avant et arrière qui arrêtent le robot si un obstacle est détecté à moins de 30cm
+- **Reprise automatique** : Le robot reprend la navigation dès que l'obstacle est enlevé
 
 ### Logique de direction
 
@@ -18,6 +20,11 @@ Ce système permet au robot de naviguer automatiquement vers un marqueur ArUco s
 - **Déjà arrivé** : Si le numéro du marqueur cible = numéro du marqueur actuel
 
 ## 🚀 Démarrage rapide
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+```
 
 ### Étape 1 : Lancer la simulation
 
@@ -185,6 +192,8 @@ int32 current_aruco_id   # ArUco actuellement détecté
 string current_direction # Direction actuelle (AVANT/ARRIÈRE)
 float32 elapsed_time     # Temps écoulé
 string status_message    # Message de statut
+bool obstacle_detected   # Obstacle présent (true/false)
+float32 obstacle_distance # Distance de l'obstacle (mètres)
 ```
 
 ### Result (Résultat)
@@ -230,6 +239,21 @@ Le robot doit pouvoir détecter un marqueur ArUco avant de commencer la navigati
 ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}"
 ```
 
+### Le robot s'arrête et attend
+
+Si le robot s'arrête pendant la navigation avec un message "🚨 OBSTACLE DÉTECTÉ", cela signifie qu'un capteur ultrasonique a détecté un obstacle à moins de 30cm dans la direction de déplacement.
+
+**Solutions :**
+1. Retirez l'obstacle physique du chemin du robot
+2. Le robot reprendra automatiquement la navigation dès que l'obstacle est enlevé
+3. Vérifiez les topics des capteurs : `/front_ultrasonic/range` et `/rear_ultrasonic/range`
+
+**Vérifier les capteurs ultrasoniques :**
+```bash
+ros2 topic echo /front_ultrasonic/range
+ros2 topic echo /rear_ultrasonic/range
+```
+
 ## 📝 Architecture du système
 
 ```
@@ -246,6 +270,7 @@ ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}"
 │  - Détermine direction              │
 │  - Envoie feedback                  │
 │  - Contrôle via services            │
+│  - Surveille obstacles              │
 └──────────────┬──────────────────────┘
                │
                ▼
@@ -255,8 +280,25 @@ ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}"
 │  - Détecte ligne bleue              │
 │  - Détecte marqueurs ArUco          │
 │  - Contrôle moteurs                 │
+│  - Surveille capteurs ultrasoniques │
+│  - Arrête si obstacle < 30cm        │
 └─────────────────────────────────────┘
+               │
+       ┌───────┴──────┐
+       ▼              ▼
+┌──────────┐  ┌──────────┐
+│ Caméras  │  │Ultrason  │
+│ (x2)     │  │ (x2)     │
+│- Avant   │  │- Avant   │
+│- Arrière │  │- Arrière │
+└──────────┘  └──────────┘
 ```
+
+### Composants matériels (simulation)
+
+- **2 Caméras** : Avant et arrière pour détecter la ligne bleue et les marqueurs ArUco
+- **2 Capteurs ultrasoniques** : Placés sous chaque caméra, portée de 2m, déclenchement à 30cm
+- **4 Roues** : Configuration différentielle pour la locomotion
 
 ## 📚 En savoir plus
 

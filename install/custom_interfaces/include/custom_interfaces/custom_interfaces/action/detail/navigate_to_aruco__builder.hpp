@@ -169,16 +169,48 @@ namespace action
 namespace builder
 {
 
+class Init_NavigateToAruco_Feedback_obstacle_distance
+{
+public:
+  explicit Init_NavigateToAruco_Feedback_obstacle_distance(::custom_interfaces::action::NavigateToAruco_Feedback & msg)
+  : msg_(msg)
+  {}
+  ::custom_interfaces::action::NavigateToAruco_Feedback obstacle_distance(::custom_interfaces::action::NavigateToAruco_Feedback::_obstacle_distance_type arg)
+  {
+    msg_.obstacle_distance = std::move(arg);
+    return std::move(msg_);
+  }
+
+private:
+  ::custom_interfaces::action::NavigateToAruco_Feedback msg_;
+};
+
+class Init_NavigateToAruco_Feedback_obstacle_detected
+{
+public:
+  explicit Init_NavigateToAruco_Feedback_obstacle_detected(::custom_interfaces::action::NavigateToAruco_Feedback & msg)
+  : msg_(msg)
+  {}
+  Init_NavigateToAruco_Feedback_obstacle_distance obstacle_detected(::custom_interfaces::action::NavigateToAruco_Feedback::_obstacle_detected_type arg)
+  {
+    msg_.obstacle_detected = std::move(arg);
+    return Init_NavigateToAruco_Feedback_obstacle_distance(msg_);
+  }
+
+private:
+  ::custom_interfaces::action::NavigateToAruco_Feedback msg_;
+};
+
 class Init_NavigateToAruco_Feedback_status_message
 {
 public:
   explicit Init_NavigateToAruco_Feedback_status_message(::custom_interfaces::action::NavigateToAruco_Feedback & msg)
   : msg_(msg)
   {}
-  ::custom_interfaces::action::NavigateToAruco_Feedback status_message(::custom_interfaces::action::NavigateToAruco_Feedback::_status_message_type arg)
+  Init_NavigateToAruco_Feedback_obstacle_detected status_message(::custom_interfaces::action::NavigateToAruco_Feedback::_status_message_type arg)
   {
     msg_.status_message = std::move(arg);
-    return std::move(msg_);
+    return Init_NavigateToAruco_Feedback_obstacle_detected(msg_);
   }
 
 private:

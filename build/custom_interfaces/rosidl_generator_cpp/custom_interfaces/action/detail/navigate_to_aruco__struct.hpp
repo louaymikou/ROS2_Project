@@ -326,6 +326,8 @@ struct NavigateToAruco_Feedback_
       this->current_direction = "";
       this->elapsed_time = 0.0f;
       this->status_message = "";
+      this->obstacle_detected = false;
+      this->obstacle_distance = 0.0f;
     }
   }
 
@@ -340,6 +342,8 @@ struct NavigateToAruco_Feedback_
       this->current_direction = "";
       this->elapsed_time = 0.0f;
       this->status_message = "";
+      this->obstacle_detected = false;
+      this->obstacle_distance = 0.0f;
     }
   }
 
@@ -356,6 +360,12 @@ struct NavigateToAruco_Feedback_
   using _status_message_type =
     std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>;
   _status_message_type status_message;
+  using _obstacle_detected_type =
+    bool;
+  _obstacle_detected_type obstacle_detected;
+  using _obstacle_distance_type =
+    float;
+  _obstacle_distance_type obstacle_distance;
 
   // setters for named parameter idiom
   Type & set__current_aruco_id(
@@ -380,6 +390,18 @@ struct NavigateToAruco_Feedback_
     const std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>> & _arg)
   {
     this->status_message = _arg;
+    return *this;
+  }
+  Type & set__obstacle_detected(
+    const bool & _arg)
+  {
+    this->obstacle_detected = _arg;
+    return *this;
+  }
+  Type & set__obstacle_distance(
+    const float & _arg)
+  {
+    this->obstacle_distance = _arg;
     return *this;
   }
 
@@ -435,6 +457,12 @@ struct NavigateToAruco_Feedback_
       return false;
     }
     if (this->status_message != other.status_message) {
+      return false;
+    }
+    if (this->obstacle_detected != other.obstacle_detected) {
+      return false;
+    }
+    if (this->obstacle_distance != other.obstacle_distance) {
       return false;
     }
     return true;

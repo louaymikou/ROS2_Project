@@ -115,12 +115,20 @@ class ArucoNavigationClient(Node):
         current_id = feedback.current_aruco_id
         direction_symbol = '➡️' if 'AVANT' in feedback.current_direction else '⬅️'
         
-        # Afficher la progression
-        self.get_logger().info(
-            f'{direction_symbol} ArUco: {current_id} | '
-            f'⏱️  {feedback.elapsed_time:.1f}s | '
-            f'{feedback.status_message}'
-        )
+        # Vérifier si un obstacle est détecté
+        if feedback.obstacle_detected:
+            self.get_logger().warn(
+                f'🚨 OBSTACLE! Distance: {feedback.obstacle_distance:.2f}m | '
+                f'⏱️  {feedback.elapsed_time:.1f}s | '
+                f'{feedback.status_message}'
+            )
+        else:
+            # Afficher la progression normale
+            self.get_logger().info(
+                f'{direction_symbol} ArUco: {current_id} | '
+                f'⏱️  {feedback.elapsed_time:.1f}s | '
+                f'{feedback.status_message}'
+            )
 
 
 def main(args=None):

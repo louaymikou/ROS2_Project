@@ -343,7 +343,7 @@ void NavigateToAruco_Feedback_fini_function(void * message_memory)
   typed_message->~NavigateToAruco_Feedback();
 }
 
-static const ::rosidl_typesupport_introspection_cpp::MessageMember NavigateToAruco_Feedback_message_member_array[4] = {
+static const ::rosidl_typesupport_introspection_cpp::MessageMember NavigateToAruco_Feedback_message_member_array[6] = {
   {
     "current_aruco_id",  // name
     ::rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32,  // type
@@ -411,13 +411,47 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMember NavigateToAru
     nullptr,  // fetch(index, &value) function pointer
     nullptr,  // assign(index, value) function pointer
     nullptr  // resize(index) function pointer
+  },
+  {
+    "obstacle_detected",  // name
+    ::rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN,  // type
+    0,  // upper bound of string
+    nullptr,  // members of sub message
+    false,  // is array
+    0,  // array size
+    false,  // is upper bound
+    offsetof(custom_interfaces::action::NavigateToAruco_Feedback, obstacle_detected),  // bytes offset in struct
+    nullptr,  // default value
+    nullptr,  // size() function pointer
+    nullptr,  // get_const(index) function pointer
+    nullptr,  // get(index) function pointer
+    nullptr,  // fetch(index, &value) function pointer
+    nullptr,  // assign(index, value) function pointer
+    nullptr  // resize(index) function pointer
+  },
+  {
+    "obstacle_distance",  // name
+    ::rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT,  // type
+    0,  // upper bound of string
+    nullptr,  // members of sub message
+    false,  // is array
+    0,  // array size
+    false,  // is upper bound
+    offsetof(custom_interfaces::action::NavigateToAruco_Feedback, obstacle_distance),  // bytes offset in struct
+    nullptr,  // default value
+    nullptr,  // size() function pointer
+    nullptr,  // get_const(index) function pointer
+    nullptr,  // get(index) function pointer
+    nullptr,  // fetch(index, &value) function pointer
+    nullptr,  // assign(index, value) function pointer
+    nullptr  // resize(index) function pointer
   }
 };
 
 static const ::rosidl_typesupport_introspection_cpp::MessageMembers NavigateToAruco_Feedback_message_members = {
   "custom_interfaces::action",  // message namespace
   "NavigateToAruco_Feedback",  // message name
-  4,  // number of fields
+  6,  // number of fields
   sizeof(custom_interfaces::action::NavigateToAruco_Feedback),
   NavigateToAruco_Feedback_message_member_array,  // message members
   NavigateToAruco_Feedback_init_function,  // function to initialize message memory (memory has to be allocated)

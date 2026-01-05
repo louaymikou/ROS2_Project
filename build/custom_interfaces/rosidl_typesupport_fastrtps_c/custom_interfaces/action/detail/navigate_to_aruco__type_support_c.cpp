@@ -575,6 +575,16 @@ static bool _NavigateToAruco_Feedback__cdr_serialize(
     cdr << str->data;
   }
 
+  // Field name: obstacle_detected
+  {
+    cdr << (ros_message->obstacle_detected ? true : false);
+  }
+
+  // Field name: obstacle_distance
+  {
+    cdr << ros_message->obstacle_distance;
+  }
+
   return true;
 }
 
@@ -629,6 +639,18 @@ static bool _NavigateToAruco_Feedback__cdr_deserialize(
     }
   }
 
+  // Field name: obstacle_detected
+  {
+    uint8_t tmp;
+    cdr >> tmp;
+    ros_message->obstacle_detected = tmp ? true : false;
+  }
+
+  // Field name: obstacle_distance
+  {
+    cdr >> ros_message->obstacle_distance;
+  }
+
   return true;
 }  // NOLINT(readability/fn_size)
 
@@ -666,6 +688,18 @@ size_t get_serialized_size_custom_interfaces__action__NavigateToAruco_Feedback(
   current_alignment += padding +
     eprosima::fastcdr::Cdr::alignment(current_alignment, padding) +
     (ros_message->status_message.size + 1);
+  // field.name obstacle_detected
+  {
+    size_t item_size = sizeof(ros_message->obstacle_detected);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
+  // field.name obstacle_distance
+  {
+    size_t item_size = sizeof(ros_message->obstacle_distance);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
 
   return current_alignment - initial_alignment;
 }
@@ -735,6 +769,21 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Feedback(
         1;
     }
   }
+  // member: obstacle_detected
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint8_t);
+    current_alignment += array_size * sizeof(uint8_t);
+  }
+  // member: obstacle_distance
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint32_t);
+    current_alignment += array_size * sizeof(uint32_t) +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, sizeof(uint32_t));
+  }
 
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
@@ -744,7 +793,7 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Feedback(
     using DataType = custom_interfaces__action__NavigateToAruco_Feedback;
     is_plain =
       (
-      offsetof(DataType, status_message) +
+      offsetof(DataType, obstacle_distance) +
       last_member_size
       ) == ret_val;
   }

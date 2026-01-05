@@ -40,3 +40,9 @@ float32 elapsed_time
 
 # État de la navigation
 string status_message
+
+# Obstacle détecté (true si obstacle présent)
+bool obstacle_detected
+
+# Distance de l'obstacle (mètres, 0.0 si pas d'obstacle)
+float32 obstacle_distance

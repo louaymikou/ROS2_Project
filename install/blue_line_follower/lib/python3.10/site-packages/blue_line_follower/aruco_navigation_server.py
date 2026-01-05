@@ -14,7 +14,7 @@ from rclpy.node import Node
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.callback_groups import ReentrantCallbackGroup
 from custom_interfaces.action import NavigateToAruco
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, Range
 from std_srvs.srv import SetBool
 from cv_bridge import CvBridge
 import cv2
@@ -41,6 +41,11 @@ class ArucoNavigationServer(Node):
         self.aruco_detection_count = 0
         self.required_detections = 2  # Nombre de détections consécutives requises (réduit pour plus de réactivité)
         
+        # Obstacle detection
+        self.front_obstacle_distance = float('inf')
+        self.rear_obstacle_distance = float('inf')
+        self.obstacle_threshold = 0.3  # 30cm
+        
         # Subscribe to both cameras
         self.front_subscription = self.create_subscription(
             Image,
@@ -52,6 +57,19 @@ class ArucoNavigationServer(Node):
             Image,
             '/rear_camera/image_raw',
             self.rear_camera_callback,
+            10)
+        
+        # Subscribe to ultrasonic sensors
+        self.front_ultrasonic_subscription = self.create_subscription(
+            Range,
+            '/front_ultrasonic/range',
+            self.front_ultrasonic_callback,
+            10)
+        
+        self.rear_ultrasonic_subscription = self.create_subscription(
+            Range,
+            '/rear_ultrasonic/range',
+            self.rear_ultrasonic_callback,
             10)
         
         # Service clients pour contrôler le robot
@@ -78,7 +96,30 @@ class ArucoNavigationServer(Node):
         self.get_logger().info('=================================')
         self.get_logger().info('🎯 ArUco Navigation Server Ready')
         self.get_logger().info('   Action: /navigate_to_aruco')
+        self.get_logger().info(f'   Obstacle detection: {self.obstacle_threshold}m')
         self.get_logger().info('=================================')
+
+    def front_ultrasonic_callback(self, msg):
+        """Callback pour le capteur ultrason avant"""
+        self.front_obstacle_distance = msg.range
+
+    def rear_ultrasonic_callback(self, msg):
+        """Callback pour le capteur ultrason arrière"""
+        self.rear_obstacle_distance = msg.range
+    
+    def is_obstacle_detected(self):
+        """Vérifie s'il y a un obstacle dans la direction de navigation"""
+        if self.went_forward:
+            return self.front_obstacle_distance < self.obstacle_threshold
+        else:
+            return self.rear_obstacle_distance < self.obstacle_threshold
+    
+    def get_obstacle_distance(self):
+        """Retourne la distance de l'obstacle dans la direction de navigation"""
+        if self.went_forward:
+            return self.front_obstacle_distance
+        else:
+            return self.rear_obstacle_distance
 
     def front_camera_callback(self, data):
         """Callback pour la caméra avant"""
@@ -176,6 +217,8 @@ class ArucoNavigationServer(Node):
             feedback_msg.current_direction = 'Recherche position initiale...'
             feedback_msg.elapsed_time = time.time() - self.start_time
             feedback_msg.status_message = 'Détection de la position de départ'
+            feedback_msg.obstacle_detected = False
+            feedback_msg.obstacle_distance = 0.0
             goal_handle.publish_feedback(feedback_msg)
         
         if self.current_aruco_id is None:
@@ -214,11 +257,42 @@ class ArucoNavigationServer(Node):
         feedback_interval = 1.0  # Envoyer feedback chaque seconde
         last_movement_check = time.time()
         movement_check_interval = 3.0  # Réactiver le mouvement toutes les 3 secondes
+        obstacle_wait_start = None  # Temps où l'obstacle a été détecté
         
         while True:
             # Vérifier l'annulation
             if goal_handle.is_cancel_requested:
                 return self._handle_cancellation(goal_handle)
+            
+            # Vérifier la présence d'obstacles
+            obstacle_present = self.is_obstacle_detected()
+            obstacle_distance = self.get_obstacle_distance()
+            
+            if obstacle_present:
+                if obstacle_wait_start is None:
+                    obstacle_wait_start = time.time()
+                    direction = "AVANT" if self.went_forward else "ARRIÈRE"
+                    self.get_logger().warn(f'🚨 OBSTACLE DÉTECTÉ {direction}: {obstacle_distance:.2f}m - EN ATTENTE...')
+                
+                # Envoyer feedback d'obstacle
+                wait_time = time.time() - obstacle_wait_start
+                feedback_msg.obstacle_detected = True
+                feedback_msg.obstacle_distance = obstacle_distance
+                feedback_msg.current_aruco_id = current_id if 'current_id' in locals() else 0
+                feedback_msg.current_direction = direction_text
+                feedback_msg.elapsed_time = time.time() - self.start_time
+                feedback_msg.status_message = f'⚠️ OBSTACLE à {obstacle_distance:.2f}m - Attente: {wait_time:.1f}s'
+                goal_handle.publish_feedback(feedback_msg)
+                
+                # Le robot attend que l'obstacle soit enlevé
+                time.sleep(0.5)
+                continue
+            else:
+                # Plus d'obstacle
+                if obstacle_wait_start is not None:
+                    wait_duration = time.time() - obstacle_wait_start
+                    self.get_logger().info(f'✅ Obstacle enlevé après {wait_duration:.1f}s - Reprise de la navigation')
+                    obstacle_wait_start = None
             
             # Réinitialiser le timeout si un nouveau marqueur est détecté
             current_id = self.current_aruco_id if self.current_aruco_id is not None else 0
@@ -250,6 +324,8 @@ class ArucoNavigationServer(Node):
             
             # Envoyer feedback périodiquement
             if time.time() - last_feedback_time >= feedback_interval:
+                feedback_msg.obstacle_detected = False
+                feedback_msg.obstacle_distance = obstacle_distance
                 feedback_msg.current_aruco_id = current_id
                 feedback_msg.current_direction = direction_text
                 feedback_msg.elapsed_time = time.time() - self.start_time

@@ -394,6 +394,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         '_current_direction',
         '_elapsed_time',
         '_status_message',
+        '_obstacle_detected',
+        '_obstacle_distance',
     ]
 
     _fields_and_field_types = {
@@ -401,6 +403,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         'current_direction': 'string',
         'elapsed_time': 'float',
         'status_message': 'string',
+        'obstacle_detected': 'boolean',
+        'obstacle_distance': 'float',
     }
 
     SLOT_TYPES = (
@@ -408,6 +412,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         rosidl_parser.definition.UnboundedString(),  # noqa: E501
         rosidl_parser.definition.BasicType('float'),  # noqa: E501
         rosidl_parser.definition.UnboundedString(),  # noqa: E501
+        rosidl_parser.definition.BasicType('boolean'),  # noqa: E501
+        rosidl_parser.definition.BasicType('float'),  # noqa: E501
     )
 
     def __init__(self, **kwargs):
@@ -418,6 +424,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         self.current_direction = kwargs.get('current_direction', str())
         self.elapsed_time = kwargs.get('elapsed_time', float())
         self.status_message = kwargs.get('status_message', str())
+        self.obstacle_detected = kwargs.get('obstacle_detected', bool())
+        self.obstacle_distance = kwargs.get('obstacle_distance', float())
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -455,6 +463,10 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         if self.elapsed_time != other.elapsed_time:
             return False
         if self.status_message != other.status_message:
+            return False
+        if self.obstacle_detected != other.obstacle_detected:
+            return False
+        if self.obstacle_distance != other.obstacle_distance:
             return False
         return True
 
@@ -518,6 +530,34 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
                 isinstance(value, str), \
                 "The 'status_message' field must be of type 'str'"
         self._status_message = value
+
+    @builtins.property
+    def obstacle_detected(self):
+        """Message field 'obstacle_detected'."""
+        return self._obstacle_detected
+
+    @obstacle_detected.setter
+    def obstacle_detected(self, value):
+        if __debug__:
+            assert \
+                isinstance(value, bool), \
+                "The 'obstacle_detected' field must be of type 'bool'"
+        self._obstacle_detected = value
+
+    @builtins.property
+    def obstacle_distance(self):
+        """Message field 'obstacle_distance'."""
+        return self._obstacle_distance
+
+    @obstacle_distance.setter
+    def obstacle_distance(self, value):
+        if __debug__:
+            assert \
+                isinstance(value, float), \
+                "The 'obstacle_distance' field must be of type 'float'"
+            assert not (value < -3.402823466e+38 or value > 3.402823466e+38) or math.isinf(value), \
+                "The 'obstacle_distance' field must be a float in [-3.402823466e+38, 3.402823466e+38]"
+        self._obstacle_distance = value
 
 
 # Import statements for member types

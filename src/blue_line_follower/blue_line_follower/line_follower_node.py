@@ -6,7 +6,7 @@ Based on the algorithm from the Jupyter notebook training material.
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, Range
 from geometry_msgs.msg import Twist
 from std_srvs.srv import SetBool
 from cv_bridge import CvBridge
@@ -51,6 +51,12 @@ class LineFollowerNode(Node):
         # Movement control: robot only moves when enabled
         self.movement_enabled = False
         
+        # Obstacle detection variables
+        self.front_obstacle_distance = float('inf')  # Distance to front obstacle (m)
+        self.rear_obstacle_distance = float('inf')   # Distance to rear obstacle (m)
+        self.obstacle_threshold = 0.3  # Stop if obstacle closer than 30cm
+        self.obstacle_detected = False
+        
         # Subscribe to front camera topic
         self.front_subscription = self.create_subscription(
             Image,
@@ -63,6 +69,20 @@ class LineFollowerNode(Node):
             Image,
             '/rear_camera/image_raw',
             self.rear_camera_callback,
+            10)
+        
+        # Subscribe to front ultrasonic sensor
+        self.front_ultrasonic_subscription = self.create_subscription(
+            Range,
+            '/front_ultrasonic/range',
+            self.front_ultrasonic_callback,
+            10)
+        
+        # Subscribe to rear ultrasonic sensor
+        self.rear_ultrasonic_subscription = self.create_subscription(
+            Range,
+            '/rear_ultrasonic/range',
+            self.rear_ultrasonic_callback,
             10)
         
         # Publisher for velocity commands
@@ -89,6 +109,51 @@ class LineFollowerNode(Node):
         self.get_logger().info('MOVEMENT IS DISABLED - Use: ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}" to start')
         self.get_logger().info('Forward: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: true}"')
         self.get_logger().info('Backward: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}"')
+        self.get_logger().info(f'Obstacle detection enabled: Stop if closer than {self.obstacle_threshold}m')
+    
+    def front_ultrasonic_callback(self, msg):
+        """
+        Callback for front ultrasonic sensor
+        """
+        self.front_obstacle_distance = msg.range
+        self.check_obstacle_status()
+    
+    def rear_ultrasonic_callback(self, msg):
+        """
+        Callback for rear ultrasonic sensor
+        """
+        self.rear_obstacle_distance = msg.range
+        self.check_obstacle_status()
+    
+    def check_obstacle_status(self):
+        """
+        Check if there's an obstacle in the current direction of travel
+        """
+        was_blocked = self.obstacle_detected
+        
+        if self.forward_direction:
+            # Going forward, check front sensor
+            self.obstacle_detected = self.front_obstacle_distance < self.obstacle_threshold
+        else:
+            # Going backward, check rear sensor
+            self.obstacle_detected = self.rear_obstacle_distance < self.obstacle_threshold
+        
+        # Log when obstacle status changes
+        if self.obstacle_detected and not was_blocked:
+            direction = "FRONT" if self.forward_direction else "REAR"
+            distance = self.front_obstacle_distance if self.forward_direction else self.rear_obstacle_distance
+            self.get_logger().warn(f'🚨 OBSTACLE DETECTED {direction}: {distance:.2f}m - Robot STOPPED!')
+        elif not self.obstacle_detected and was_blocked:
+            self.get_logger().info('✅ Obstacle cleared - Robot can continue')
+    
+    def get_obstacle_info(self):
+        """
+        Get current obstacle information for the active direction
+        """
+        if self.forward_direction:
+            return self.obstacle_detected, self.front_obstacle_distance
+        else:
+            return self.obstacle_detected, self.rear_obstacle_distance
     
     def enable_movement_callback(self, request, response):
         """
@@ -310,9 +375,16 @@ class LineFollowerNode(Node):
             if line:
                 self.get_logger().debug(f"Error: {error} | Angular Z: {cmd.angular.z}")
 
-            # Send the command to execute ONLY if movement is enabled
+            # Send the command to execute ONLY if movement is enabled AND no obstacle
             if self.movement_enabled:
-                self.publisher.publish(cmd)
+                # Check for obstacles in the direction of travel
+                if self.obstacle_detected:
+                    # STOP! Obstacle detected
+                    stop_cmd = Twist()
+                    self.publisher.publish(stop_cmd)
+                else:
+                    # Safe to move
+                    self.publisher.publish(cmd)
             else:
                 # Ensure robot is stopped when movement is disabled
                 stop_cmd = Twist()

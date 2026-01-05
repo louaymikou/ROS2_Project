@@ -87,6 +87,10 @@ typedef struct custom_interfaces__action__NavigateToAruco_Feedback
   float elapsed_time;
   /// État de la navigation
   rosidl_runtime_c__String status_message;
+  /// Obstacle détecté (true si obstacle présent)
+  bool obstacle_detected;
+  /// Distance de l'obstacle (mètres, 0.0 si pas d'obstacle)
+  float obstacle_distance;
 } custom_interfaces__action__NavigateToAruco_Feedback;
 
 // Struct for a sequence of custom_interfaces__action__NavigateToAruco_Feedback.

@@ -56,6 +56,14 @@ module custom_interfaces {
       @verbatim (language="comment", text=
         "État de la navigation")
       string status_message;
+
+      @verbatim (language="comment", text=
+        "Obstacle détecté (true si obstacle présent)")
+      boolean obstacle_detected;
+
+      @verbatim (language="comment", text=
+        "Distance de l'obstacle (mètres, 0.0 si pas d'obstacle)")
+      float obstacle_distance;
     };
   };
 };
