@@ -22,6 +22,8 @@ extern "C"
 typedef struct custom_interfaces__action__NavigateToAruco_Goal
 {
   int32_t target_aruco_id;
+  /// Retourner à ArUco 0 après avoir atteint la cible
+  bool return_to_zero;
 } custom_interfaces__action__NavigateToAruco_Goal;
 
 // Struct for a sequence of custom_interfaces__action__NavigateToAruco_Goal.
@@ -53,6 +55,8 @@ typedef struct custom_interfaces__action__NavigateToAruco_Result
   float navigation_time;
   /// Distance parcourue (approximative)
   float distance_traveled;
+  /// A effectué le retour à ArUco 0
+  bool returned_to_zero;
 } custom_interfaces__action__NavigateToAruco_Result;
 
 // Struct for a sequence of custom_interfaces__action__NavigateToAruco_Result.

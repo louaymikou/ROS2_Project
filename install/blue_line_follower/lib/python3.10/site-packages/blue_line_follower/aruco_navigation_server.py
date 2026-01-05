@@ -132,10 +132,17 @@ class ArucoNavigationServer(Node):
             self._detect_aruco(data)
 
     def _detect_aruco(self, image_msg):
-        """Détecte les marqueurs ArUco dans l'image"""
+        """Détecte les marqueurs ArUco dans l'image (seulement en bas)"""
         try:
             cv_image = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
-            gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+            
+            # Only detect ArUco at the bottom 15% of the camera image
+            height, width, _ = cv_image.shape
+            aruco_detect_start = int(height * 0.85)  # Bottom 15%
+            aruco_roi = cv_image[aruco_detect_start:height, 0:width]
+            
+            # Convert to grayscale and detect
+            gray = cv2.cvtColor(aruco_roi, cv2.COLOR_BGR2GRAY)
             
             corners, ids, rejected = self.aruco_detector.detectMarkers(gray)
             
@@ -320,7 +327,15 @@ class ArucoNavigationServer(Node):
                 self.get_logger().info(f'🎯 Marqueur cible {self.target_id} atteint!')
                 # Attendre un peu pour stabiliser
                 time.sleep(0.5)
-                return self._return_success(goal_handle, self.target_id)
+                
+                # Vérifier si on doit retourner à ArUco 0
+                if goal_handle.request.return_to_zero and self.target_id != 0:
+                    self.get_logger().info('🔄 Retour à ArUco 0...')
+                    return_result = self._navigate_to_zero(goal_handle, feedback_msg)
+                    if return_result:
+                        return return_result
+                
+                return self._return_success(goal_handle, self.target_id, goal_handle.request.return_to_zero)
             
             # Envoyer feedback périodiquement
             if time.time() - last_feedback_time >= feedback_interval:
@@ -365,6 +380,111 @@ class ArucoNavigationServer(Node):
         future = self.set_direction_client.call_async(request)
         return True
 
+    def _navigate_to_zero(self, goal_handle, feedback_msg):
+        """Navigue vers ArUco 0 après avoir atteint la cible"""
+        self.get_logger().info('🔙 Démarrage du retour vers ArUco 0...')
+        
+        # Réinitialiser pour la navigation de retour
+        return_target = 0
+        current_position = self.current_aruco_id
+        
+        # Déterminer la direction pour retourner à 0
+        if return_target < current_position:
+            # Marche arrière
+            self.went_forward = False
+            direction_text = "ARRIÈRE (rear camera)"
+            self.get_logger().info(f'⬅️ ArUco 0 est avant, marche arrière')
+            self._set_direction(False)
+        else:
+            # Marche avant
+            self.went_forward = True
+            direction_text = "AVANT (front camera)"
+            self.get_logger().info(f'➡️ ArUco 0 est après, marche avant')
+            self._set_direction(True)
+        
+        # Navigation vers 0
+        segment_timeout = 60.0
+        last_aruco_change_time = time.time()
+        last_detected_aruco = current_position
+        last_feedback_time = time.time()
+        feedback_interval = 1.0
+        last_movement_check = time.time()
+        movement_check_interval = 3.0
+        obstacle_wait_start = None
+        
+        while True:
+            if goal_handle.is_cancel_requested:
+                return self._handle_cancellation(goal_handle)
+            
+            # Vérifier obstacles
+            obstacle_present = self.is_obstacle_detected()
+            obstacle_distance = self.get_obstacle_distance()
+            
+            if obstacle_present:
+                if obstacle_wait_start is None:
+                    obstacle_wait_start = time.time()
+                    direction = "AVANT" if self.went_forward else "ARRIÈRE"
+                    self.get_logger().warn(f'🚨 OBSTACLE DÉTECTÉ {direction}: {obstacle_distance:.2f}m - EN ATTENTE...')
+                
+                wait_time = time.time() - obstacle_wait_start
+                feedback_msg.obstacle_detected = True
+                feedback_msg.obstacle_distance = obstacle_distance
+                feedback_msg.status_message = f'⚠️ OBSTACLE à {obstacle_distance:.2f}m - Attente: {wait_time:.1f}s (Retour à 0)'
+                goal_handle.publish_feedback(feedback_msg)
+                time.sleep(0.5)
+                continue
+            else:
+                if obstacle_wait_start is not None:
+                    wait_duration = time.time() - obstacle_wait_start
+                    self.get_logger().info(f'✅ Obstacle enlevé après {wait_duration:.1f}s - Reprise du retour')
+                    obstacle_wait_start = None
+            
+            # Vérifier nouveau marqueur
+            current_id = self.current_aruco_id if self.current_aruco_id is not None else 0
+            if current_id > 0 and current_id != last_detected_aruco:
+                last_aruco_change_time = time.time()
+                last_detected_aruco = current_id
+                self.get_logger().info(f'🔄 Nouveau marqueur détecté: ArUco {current_id}')
+            
+            # Timeout
+            time_since_last_change = time.time() - last_aruco_change_time
+            if time_since_last_change > segment_timeout:
+                self.get_logger().warn(f'⏱️ Timeout pendant retour à 0')
+                return self._return_failure(goal_handle)
+            
+            # Réactiver mouvement
+            if time.time() - last_movement_check >= movement_check_interval:
+                self._enable_movement(True)
+                self._set_direction(self.went_forward)
+                last_movement_check = time.time()
+            
+            # Vérifier si on a atteint 0
+            if (self.current_aruco_id == 0 and 
+                self.aruco_detection_count >= self.required_detections):
+                self.get_logger().info(f'🏁 ArUco 0 atteint! Retour terminé!')
+                time.sleep(0.5)
+                return None  # Retourner None pour indiquer succès
+            
+            # Feedback
+            if time.time() - last_feedback_time >= feedback_interval:
+                feedback_msg.obstacle_detected = False
+                feedback_msg.obstacle_distance = obstacle_distance
+                feedback_msg.current_aruco_id = current_id
+                feedback_msg.current_direction = direction_text + " (Retour)"
+                feedback_msg.elapsed_time = time.time() - self.start_time
+                
+                if current_id > 0:
+                    distance = abs(0 - current_id)
+                    feedback_msg.status_message = f'🔙 Retour: ArUco {current_id} → 0 (distance: {distance})'
+                else:
+                    feedback_msg.status_message = '🔙 Retour vers ArUco 0...'
+                
+                goal_handle.publish_feedback(feedback_msg)
+                self.get_logger().info(f'📊 {feedback_msg.status_message}')
+                last_feedback_time = time.time()
+            
+            time.sleep(0.1)
+
     def _handle_cancellation(self, goal_handle):
         """Gère l'annulation de la navigation"""
         self._enable_movement(False)
@@ -382,7 +502,7 @@ class ArucoNavigationServer(Node):
         
         return result
 
-    def _return_success(self, goal_handle, final_id):
+    def _return_success(self, goal_handle, final_id, returned_to_zero=False):
         """Retourne un résultat de succès"""
         self._enable_movement(False)
         goal_handle.succeed()
@@ -393,6 +513,7 @@ class ArucoNavigationServer(Node):
         result.went_forward = self.went_forward
         result.navigation_time = time.time() - self.start_time
         result.distance_traveled = 0.0  # TODO: calculer distance réelle
+        result.returned_to_zero = returned_to_zero
         
         self.is_navigating = False
         
@@ -401,6 +522,8 @@ class ArucoNavigationServer(Node):
         self.get_logger().info(f'   ArUco final: {final_id}')
         self.get_logger().info(f'   Direction: {"AVANT" if self.went_forward else "ARRIÈRE"}')
         self.get_logger().info(f'   Temps: {result.navigation_time:.1f}s')
+        if returned_to_zero:
+            self.get_logger().info('   🔄 Retour à ArUco 0 effectué')
         self.get_logger().info('=================================')
         
         return result

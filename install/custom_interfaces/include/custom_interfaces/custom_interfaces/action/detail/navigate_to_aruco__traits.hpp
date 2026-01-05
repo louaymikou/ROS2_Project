@@ -29,6 +29,13 @@ inline void to_flow_style_yaml(
   {
     out << "target_aruco_id: ";
     rosidl_generator_traits::value_to_yaml(msg.target_aruco_id, out);
+    out << ", ";
+  }
+
+  // member: return_to_zero
+  {
+    out << "return_to_zero: ";
+    rosidl_generator_traits::value_to_yaml(msg.return_to_zero, out);
   }
   out << "}";
 }  // NOLINT(readability/fn_size)
@@ -44,6 +51,16 @@ inline void to_block_style_yaml(
     }
     out << "target_aruco_id: ";
     rosidl_generator_traits::value_to_yaml(msg.target_aruco_id, out);
+    out << "\n";
+  }
+
+  // member: return_to_zero
+  {
+    if (indentation > 0) {
+      out << std::string(indentation, ' ');
+    }
+    out << "return_to_zero: ";
+    rosidl_generator_traits::value_to_yaml(msg.return_to_zero, out);
     out << "\n";
   }
 }  // NOLINT(readability/fn_size)
@@ -149,6 +166,13 @@ inline void to_flow_style_yaml(
   {
     out << "distance_traveled: ";
     rosidl_generator_traits::value_to_yaml(msg.distance_traveled, out);
+    out << ", ";
+  }
+
+  // member: returned_to_zero
+  {
+    out << "returned_to_zero: ";
+    rosidl_generator_traits::value_to_yaml(msg.returned_to_zero, out);
   }
   out << "}";
 }  // NOLINT(readability/fn_size)
@@ -204,6 +228,16 @@ inline void to_block_style_yaml(
     }
     out << "distance_traveled: ";
     rosidl_generator_traits::value_to_yaml(msg.distance_traveled, out);
+    out << "\n";
+  }
+
+  // member: returned_to_zero
+  {
+    if (indentation > 0) {
+      out << std::string(indentation, ' ');
+    }
+    out << "returned_to_zero: ";
+    rosidl_generator_traits::value_to_yaml(msg.returned_to_zero, out);
     out << "\n";
   }
 }  // NOLINT(readability/fn_size)

@@ -4,6 +4,9 @@
 # Numéro du marqueur ArUco à atteindre
 int32 target_aruco_id
 
+# Retourner à ArUco 0 après avoir atteint la cible
+bool return_to_zero
+
 ---
 
 # ========================================
@@ -23,6 +26,9 @@ float32 navigation_time
 
 # Distance parcourue (approximative)
 float32 distance_traveled
+
+# A effectué le retour à ArUco 0
+bool returned_to_zero
 
 ---
 

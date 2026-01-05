@@ -56,14 +56,17 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
 
     __slots__ = [
         '_target_aruco_id',
+        '_return_to_zero',
     ]
 
     _fields_and_field_types = {
         'target_aruco_id': 'int32',
+        'return_to_zero': 'boolean',
     }
 
     SLOT_TYPES = (
         rosidl_parser.definition.BasicType('int32'),  # noqa: E501
+        rosidl_parser.definition.BasicType('boolean'),  # noqa: E501
     )
 
     def __init__(self, **kwargs):
@@ -71,6 +74,7 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
             'Invalid arguments passed to constructor: %s' % \
             ', '.join(sorted(k for k in kwargs.keys() if '_' + k not in self.__slots__))
         self.target_aruco_id = kwargs.get('target_aruco_id', int())
+        self.return_to_zero = kwargs.get('return_to_zero', bool())
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -103,6 +107,8 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
             return False
         if self.target_aruco_id != other.target_aruco_id:
             return False
+        if self.return_to_zero != other.return_to_zero:
+            return False
         return True
 
     @classmethod
@@ -124,6 +130,19 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
             assert value >= -2147483648 and value < 2147483648, \
                 "The 'target_aruco_id' field must be an integer in [-2147483648, 2147483647]"
         self._target_aruco_id = value
+
+    @builtins.property
+    def return_to_zero(self):
+        """Message field 'return_to_zero'."""
+        return self._return_to_zero
+
+    @return_to_zero.setter
+    def return_to_zero(self, value):
+        if __debug__:
+            assert \
+                isinstance(value, bool), \
+                "The 'return_to_zero' field must be of type 'bool'"
+        self._return_to_zero = value
 
 
 # Import statements for member types
@@ -187,6 +206,7 @@ class NavigateToAruco_Result(metaclass=Metaclass_NavigateToAruco_Result):
         '_went_forward',
         '_navigation_time',
         '_distance_traveled',
+        '_returned_to_zero',
     ]
 
     _fields_and_field_types = {
@@ -195,6 +215,7 @@ class NavigateToAruco_Result(metaclass=Metaclass_NavigateToAruco_Result):
         'went_forward': 'boolean',
         'navigation_time': 'float',
         'distance_traveled': 'float',
+        'returned_to_zero': 'boolean',
     }
 
     SLOT_TYPES = (
@@ -203,6 +224,7 @@ class NavigateToAruco_Result(metaclass=Metaclass_NavigateToAruco_Result):
         rosidl_parser.definition.BasicType('boolean'),  # noqa: E501
         rosidl_parser.definition.BasicType('float'),  # noqa: E501
         rosidl_parser.definition.BasicType('float'),  # noqa: E501
+        rosidl_parser.definition.BasicType('boolean'),  # noqa: E501
     )
 
     def __init__(self, **kwargs):
@@ -214,6 +236,7 @@ class NavigateToAruco_Result(metaclass=Metaclass_NavigateToAruco_Result):
         self.went_forward = kwargs.get('went_forward', bool())
         self.navigation_time = kwargs.get('navigation_time', float())
         self.distance_traveled = kwargs.get('distance_traveled', float())
+        self.returned_to_zero = kwargs.get('returned_to_zero', bool())
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -253,6 +276,8 @@ class NavigateToAruco_Result(metaclass=Metaclass_NavigateToAruco_Result):
         if self.navigation_time != other.navigation_time:
             return False
         if self.distance_traveled != other.distance_traveled:
+            return False
+        if self.returned_to_zero != other.returned_to_zero:
             return False
         return True
 
@@ -332,6 +357,19 @@ class NavigateToAruco_Result(metaclass=Metaclass_NavigateToAruco_Result):
                 "The 'distance_traveled' field must be a float in [-3.402823466e+38, 3.402823466e+38]"
         self._distance_traveled = value
 
+    @builtins.property
+    def returned_to_zero(self):
+        """Message field 'returned_to_zero'."""
+        return self._returned_to_zero
+
+    @returned_to_zero.setter
+    def returned_to_zero(self, value):
+        if __debug__:
+            assert \
+                isinstance(value, bool), \
+                "The 'returned_to_zero' field must be of type 'bool'"
+        self._returned_to_zero = value
+
 
 # Import statements for member types
 
@@ -394,6 +432,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         '_current_direction',
         '_elapsed_time',
         '_status_message',
+        '_obstacle_detected',
+        '_obstacle_distance',
     ]
 
     _fields_and_field_types = {
@@ -401,6 +441,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         'current_direction': 'string',
         'elapsed_time': 'float',
         'status_message': 'string',
+        'obstacle_detected': 'boolean',
+        'obstacle_distance': 'float',
     }
 
     SLOT_TYPES = (
@@ -408,6 +450,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         rosidl_parser.definition.UnboundedString(),  # noqa: E501
         rosidl_parser.definition.BasicType('float'),  # noqa: E501
         rosidl_parser.definition.UnboundedString(),  # noqa: E501
+        rosidl_parser.definition.BasicType('boolean'),  # noqa: E501
+        rosidl_parser.definition.BasicType('float'),  # noqa: E501
     )
 
     def __init__(self, **kwargs):
@@ -418,6 +462,8 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         self.current_direction = kwargs.get('current_direction', str())
         self.elapsed_time = kwargs.get('elapsed_time', float())
         self.status_message = kwargs.get('status_message', str())
+        self.obstacle_detected = kwargs.get('obstacle_detected', bool())
+        self.obstacle_distance = kwargs.get('obstacle_distance', float())
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -455,6 +501,10 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
         if self.elapsed_time != other.elapsed_time:
             return False
         if self.status_message != other.status_message:
+            return False
+        if self.obstacle_detected != other.obstacle_detected:
+            return False
+        if self.obstacle_distance != other.obstacle_distance:
             return False
         return True
 
@@ -518,6 +568,34 @@ class NavigateToAruco_Feedback(metaclass=Metaclass_NavigateToAruco_Feedback):
                 isinstance(value, str), \
                 "The 'status_message' field must be of type 'str'"
         self._status_message = value
+
+    @builtins.property
+    def obstacle_detected(self):
+        """Message field 'obstacle_detected'."""
+        return self._obstacle_detected
+
+    @obstacle_detected.setter
+    def obstacle_detected(self, value):
+        if __debug__:
+            assert \
+                isinstance(value, bool), \
+                "The 'obstacle_detected' field must be of type 'bool'"
+        self._obstacle_detected = value
+
+    @builtins.property
+    def obstacle_distance(self):
+        """Message field 'obstacle_distance'."""
+        return self._obstacle_distance
+
+    @obstacle_distance.setter
+    def obstacle_distance(self, value):
+        if __debug__:
+            assert \
+                isinstance(value, float), \
+                "The 'obstacle_distance' field must be of type 'float'"
+            assert not (value < -3.402823466e+38 or value > 3.402823466e+38) or math.isinf(value), \
+                "The 'obstacle_distance' field must be a float in [-3.402823466e+38, 3.402823466e+38]"
+        self._obstacle_distance = value
 
 
 # Import statements for member types

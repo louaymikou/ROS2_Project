@@ -12,6 +12,10 @@ module custom_interfaces {
       "Numéro du marqueur ArUco à atteindre")
     struct NavigateToAruco_Goal {
       int32 target_aruco_id;
+
+      @verbatim (language="comment", text=
+        "Retourner à ArUco 0 après avoir atteint la cible")
+      boolean return_to_zero;
     };
     struct NavigateToAruco_Result {
       @verbatim (language="comment", text=
@@ -36,6 +40,10 @@ module custom_interfaces {
       @verbatim (language="comment", text=
         "Distance parcourue (approximative)")
       float distance_traveled;
+
+      @verbatim (language="comment", text=
+        "A effectué le retour à ArUco 0")
+      boolean returned_to_zero;
     };
     struct NavigateToAruco_Feedback {
       @verbatim (language="comment", text=

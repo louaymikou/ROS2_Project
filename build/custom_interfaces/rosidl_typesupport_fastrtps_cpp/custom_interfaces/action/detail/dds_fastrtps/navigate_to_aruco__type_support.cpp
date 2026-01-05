@@ -34,6 +34,8 @@ cdr_serialize(
 {
   // Member: target_aruco_id
   cdr << ros_message.target_aruco_id;
+  // Member: return_to_zero
+  cdr << (ros_message.return_to_zero ? true : false);
   return true;
 }
 
@@ -45,6 +47,13 @@ cdr_deserialize(
 {
   // Member: target_aruco_id
   cdr >> ros_message.target_aruco_id;
+
+  // Member: return_to_zero
+  {
+    uint8_t tmp;
+    cdr >> tmp;
+    ros_message.return_to_zero = tmp ? true : false;
+  }
 
   return true;
 }  // NOLINT(readability/fn_size)
@@ -65,6 +74,12 @@ get_serialized_size(
   // Member: target_aruco_id
   {
     size_t item_size = sizeof(ros_message.target_aruco_id);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
+  // Member: return_to_zero
+  {
+    size_t item_size = sizeof(ros_message.return_to_zero);
     current_alignment += item_size +
       eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
   }
@@ -101,6 +116,14 @@ max_serialized_size_NavigateToAruco_Goal(
       eprosima::fastcdr::Cdr::alignment(current_alignment, sizeof(uint32_t));
   }
 
+  // Member: return_to_zero
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint8_t);
+    current_alignment += array_size * sizeof(uint8_t);
+  }
+
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
     // All members are plain, and type is not empty.
@@ -109,7 +132,7 @@ max_serialized_size_NavigateToAruco_Goal(
     using DataType = custom_interfaces::action::NavigateToAruco_Goal;
     is_plain =
       (
-      offsetof(DataType, target_aruco_id) +
+      offsetof(DataType, return_to_zero) +
       last_member_size
       ) == ret_val;
   }
@@ -254,6 +277,8 @@ cdr_serialize(
   cdr << ros_message.navigation_time;
   // Member: distance_traveled
   cdr << ros_message.distance_traveled;
+  // Member: returned_to_zero
+  cdr << (ros_message.returned_to_zero ? true : false);
   return true;
 }
 
@@ -285,6 +310,13 @@ cdr_deserialize(
 
   // Member: distance_traveled
   cdr >> ros_message.distance_traveled;
+
+  // Member: returned_to_zero
+  {
+    uint8_t tmp;
+    cdr >> tmp;
+    ros_message.returned_to_zero = tmp ? true : false;
+  }
 
   return true;
 }  // NOLINT(readability/fn_size)
@@ -329,6 +361,12 @@ get_serialized_size(
   // Member: distance_traveled
   {
     size_t item_size = sizeof(ros_message.distance_traveled);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
+  // Member: returned_to_zero
+  {
+    size_t item_size = sizeof(ros_message.returned_to_zero);
     current_alignment += item_size +
       eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
   }
@@ -399,6 +437,14 @@ max_serialized_size_NavigateToAruco_Result(
       eprosima::fastcdr::Cdr::alignment(current_alignment, sizeof(uint32_t));
   }
 
+  // Member: returned_to_zero
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint8_t);
+    current_alignment += array_size * sizeof(uint8_t);
+  }
+
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
     // All members are plain, and type is not empty.
@@ -407,7 +453,7 @@ max_serialized_size_NavigateToAruco_Result(
     using DataType = custom_interfaces::action::NavigateToAruco_Result;
     is_plain =
       (
-      offsetof(DataType, distance_traveled) +
+      offsetof(DataType, returned_to_zero) +
       last_member_size
       ) == ret_val;
   }

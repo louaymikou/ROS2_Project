@@ -28,11 +28,13 @@ class ArucoNavigationClient(Node):
             'navigate_to_aruco'
         )
 
-    def send_goal(self, target_id):
+    def send_goal(self, target_id, return_to_zero=False):
         """
         Demande de naviguer vers un marqueur ArUco spécifique.
         """
         self.get_logger().info(f'🎯 Demande de navigation vers ArUco {target_id}...')
+        if return_to_zero:
+            self.get_logger().info('🔄 Avec retour à ArUco 0')
         
         # Attendre le serveur
         self.get_logger().info('⏳ Attente du serveur d\'action...')
@@ -43,6 +45,7 @@ class ArucoNavigationClient(Node):
         # Créer l'objectif
         goal_msg = NavigateToAruco.Goal()
         goal_msg.target_aruco_id = target_id
+        goal_msg.return_to_zero = return_to_zero
         
         # Envoyer l'objectif de manière asynchrone
         self.send_goal_future = self.action_client.send_goal_async(
@@ -90,6 +93,8 @@ class ArucoNavigationClient(Node):
             self.get_logger().info(f'   Direction: {"AVANT" if result.went_forward else "ARRIÈRE"}')
             self.get_logger().info(f'   Temps: {result.navigation_time:.1f}s')
             self.get_logger().info(f'   Distance: {result.distance_traveled:.2f}m')
+            if result.returned_to_zero:
+                self.get_logger().info('   🏁 Retourné à ArUco 0')
         elif status == GoalStatus.STATUS_CANCELED:
             self.get_logger().warn('🛑 NAVIGATION ANNULÉE')
             self.get_logger().info(f'   Dernier ArUco: {result.final_aruco_id}')
@@ -135,9 +140,10 @@ def main(args=None):
     rclpy.init(args=args)
     
     # Vérifier les arguments de ligne de commande
-    if len(sys.argv) != 2:
-        print('Usage: ros2 run blue_line_follower aruco_navigation_client <aruco_id>')
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print('Usage: ros2 run blue_line_follower aruco_navigation_client <aruco_id> [--return]')
         print('Exemple: ros2 run blue_line_follower aruco_navigation_client 5')
+        print('Exemple avec retour: ros2 run blue_line_follower aruco_navigation_client 5 --return')
         return
     
     try:
@@ -149,11 +155,14 @@ def main(args=None):
         print('Erreur: Veuillez fournir un numéro valide')
         return
     
+    # Vérifier si l'option --return est présente
+    return_to_zero = len(sys.argv) == 3 and sys.argv[2] == '--return'
+    
     # Créer le client
     client = ArucoNavigationClient()
     
     # Envoyer la demande de navigation
-    if not client.send_goal(target_id):
+    if not client.send_goal(target_id, return_to_zero):
         return
     
     # Continuer jusqu'à la fin

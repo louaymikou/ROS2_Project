@@ -21,16 +21,32 @@ namespace action
 namespace builder
 {
 
+class Init_NavigateToAruco_Goal_return_to_zero
+{
+public:
+  explicit Init_NavigateToAruco_Goal_return_to_zero(::custom_interfaces::action::NavigateToAruco_Goal & msg)
+  : msg_(msg)
+  {}
+  ::custom_interfaces::action::NavigateToAruco_Goal return_to_zero(::custom_interfaces::action::NavigateToAruco_Goal::_return_to_zero_type arg)
+  {
+    msg_.return_to_zero = std::move(arg);
+    return std::move(msg_);
+  }
+
+private:
+  ::custom_interfaces::action::NavigateToAruco_Goal msg_;
+};
+
 class Init_NavigateToAruco_Goal_target_aruco_id
 {
 public:
   Init_NavigateToAruco_Goal_target_aruco_id()
   : msg_(::rosidl_runtime_cpp::MessageInitialization::SKIP)
   {}
-  ::custom_interfaces::action::NavigateToAruco_Goal target_aruco_id(::custom_interfaces::action::NavigateToAruco_Goal::_target_aruco_id_type arg)
+  Init_NavigateToAruco_Goal_return_to_zero target_aruco_id(::custom_interfaces::action::NavigateToAruco_Goal::_target_aruco_id_type arg)
   {
     msg_.target_aruco_id = std::move(arg);
-    return std::move(msg_);
+    return Init_NavigateToAruco_Goal_return_to_zero(msg_);
   }
 
 private:
@@ -63,16 +79,32 @@ namespace action
 namespace builder
 {
 
+class Init_NavigateToAruco_Result_returned_to_zero
+{
+public:
+  explicit Init_NavigateToAruco_Result_returned_to_zero(::custom_interfaces::action::NavigateToAruco_Result & msg)
+  : msg_(msg)
+  {}
+  ::custom_interfaces::action::NavigateToAruco_Result returned_to_zero(::custom_interfaces::action::NavigateToAruco_Result::_returned_to_zero_type arg)
+  {
+    msg_.returned_to_zero = std::move(arg);
+    return std::move(msg_);
+  }
+
+private:
+  ::custom_interfaces::action::NavigateToAruco_Result msg_;
+};
+
 class Init_NavigateToAruco_Result_distance_traveled
 {
 public:
   explicit Init_NavigateToAruco_Result_distance_traveled(::custom_interfaces::action::NavigateToAruco_Result & msg)
   : msg_(msg)
   {}
-  ::custom_interfaces::action::NavigateToAruco_Result distance_traveled(::custom_interfaces::action::NavigateToAruco_Result::_distance_traveled_type arg)
+  Init_NavigateToAruco_Result_returned_to_zero distance_traveled(::custom_interfaces::action::NavigateToAruco_Result::_distance_traveled_type arg)
   {
     msg_.distance_traveled = std::move(arg);
-    return std::move(msg_);
+    return Init_NavigateToAruco_Result_returned_to_zero(msg_);
   }
 
 private:

@@ -63,6 +63,9 @@ cd ~/Ros/ROS2_Project
 source install/setup.bash
 # Exemple : naviguer vers ArUco numéro 5
 ros2 run blue_line_follower aruco_navigation_client 5
+
+# Exemple avec retour automatique à ArUco 0
+ros2 run blue_line_follower aruco_navigation_client 5 --return
 ```
 
 #### Option B : Utiliser la ligne de commande
@@ -70,7 +73,11 @@ ros2 run blue_line_follower aruco_navigation_client 5
 ```bash
 cd ~/Ros/ROS2_Project
 source install/setup.bash
-ros2 action send_goal /navigate_to_aruco custom_interfaces/action/NavigateToAruco "{target_aruco_id: 5}" --feedback
+# Navigation simple
+ros2 action send_goal /navigate_to_aruco custom_interfaces/action/NavigateToAruco "{target_aruco_id: 5, return_to_zero: false}" --feedback
+
+# Navigation avec retour à ArUco 0
+ros2 action send_goal /navigate_to_aruco custom_interfaces/action/NavigateToAruco "{target_aruco_id: 5, return_to_zero: true}" --feedback
 ```
 
 ## 🎯 Exemples d'utilisation
@@ -184,6 +191,7 @@ ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}"
 ### Goal (Objectif)
 ```
 int32 target_aruco_id    # Numéro du marqueur ArUco cible (0-49)
+bool return_to_zero      # Retourner à ArUco 0 après avoir atteint la cible
 ```
 
 ### Feedback (Retour d'information)
@@ -203,6 +211,7 @@ int32 final_aruco_id     # ArUco final atteint
 bool went_forward        # Direction utilisée
 float32 navigation_time  # Temps total
 float32 distance_traveled # Distance parcourue
+bool returned_to_zero    # A effectué le retour à ArUco 0
 ```
 
 ## 🐛 Dépannage

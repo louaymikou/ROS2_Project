@@ -54,6 +54,11 @@ static bool _NavigateToAruco_Goal__cdr_serialize(
     cdr << ros_message->target_aruco_id;
   }
 
+  // Field name: return_to_zero
+  {
+    cdr << (ros_message->return_to_zero ? true : false);
+  }
+
   return true;
 }
 
@@ -69,6 +74,13 @@ static bool _NavigateToAruco_Goal__cdr_deserialize(
   // Field name: target_aruco_id
   {
     cdr >> ros_message->target_aruco_id;
+  }
+
+  // Field name: return_to_zero
+  {
+    uint8_t tmp;
+    cdr >> tmp;
+    ros_message->return_to_zero = tmp ? true : false;
   }
 
   return true;
@@ -91,6 +103,12 @@ size_t get_serialized_size_custom_interfaces__action__NavigateToAruco_Goal(
   // field.name target_aruco_id
   {
     size_t item_size = sizeof(ros_message->target_aruco_id);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
+  // field.name return_to_zero
+  {
+    size_t item_size = sizeof(ros_message->return_to_zero);
     current_alignment += item_size +
       eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
   }
@@ -131,6 +149,13 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Goal(
     current_alignment += array_size * sizeof(uint32_t) +
       eprosima::fastcdr::Cdr::alignment(current_alignment, sizeof(uint32_t));
   }
+  // member: return_to_zero
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint8_t);
+    current_alignment += array_size * sizeof(uint8_t);
+  }
 
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
@@ -140,7 +165,7 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Goal(
     using DataType = custom_interfaces__action__NavigateToAruco_Goal;
     is_plain =
       (
-      offsetof(DataType, target_aruco_id) +
+      offsetof(DataType, return_to_zero) +
       last_member_size
       ) == ret_val;
   }
@@ -268,6 +293,11 @@ static bool _NavigateToAruco_Result__cdr_serialize(
     cdr << ros_message->distance_traveled;
   }
 
+  // Field name: returned_to_zero
+  {
+    cdr << (ros_message->returned_to_zero ? true : false);
+  }
+
   return true;
 }
 
@@ -307,6 +337,13 @@ static bool _NavigateToAruco_Result__cdr_deserialize(
   // Field name: distance_traveled
   {
     cdr >> ros_message->distance_traveled;
+  }
+
+  // Field name: returned_to_zero
+  {
+    uint8_t tmp;
+    cdr >> tmp;
+    ros_message->returned_to_zero = tmp ? true : false;
   }
 
   return true;
@@ -353,6 +390,12 @@ size_t get_serialized_size_custom_interfaces__action__NavigateToAruco_Result(
   // field.name distance_traveled
   {
     size_t item_size = sizeof(ros_message->distance_traveled);
+    current_alignment += item_size +
+      eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
+  }
+  // field.name returned_to_zero
+  {
+    size_t item_size = sizeof(ros_message->returned_to_zero);
     current_alignment += item_size +
       eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
   }
@@ -423,6 +466,13 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Result(
     current_alignment += array_size * sizeof(uint32_t) +
       eprosima::fastcdr::Cdr::alignment(current_alignment, sizeof(uint32_t));
   }
+  // member: returned_to_zero
+  {
+    size_t array_size = 1;
+
+    last_member_size = array_size * sizeof(uint8_t);
+    current_alignment += array_size * sizeof(uint8_t);
+  }
 
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
@@ -432,7 +482,7 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Result(
     using DataType = custom_interfaces__action__NavigateToAruco_Result;
     is_plain =
       (
-      offsetof(DataType, distance_traveled) +
+      offsetof(DataType, returned_to_zero) +
       last_member_size
       ) == ret_val;
   }

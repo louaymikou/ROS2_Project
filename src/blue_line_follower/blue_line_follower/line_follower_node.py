@@ -256,14 +256,23 @@ class LineFollowerNode(Node):
             roi_start_row = int(height * 0.4)  # Start at 40% down from top (bottom 60%)
             roi_frame = current_frame[roi_start_row:height, 0:width]
             
-            # Detect ArUco markers ONLY in the ROI region
-            gray_roi = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2GRAY)
-            corners, ids, rejected = self.aruco_detector.detectMarkers(gray_roi)
+            # Detect ArUco markers in the bottom portion of the ROI (bottom 20% of ROI)
+            # This ensures markers are detected only when very close to the robot
+            roi_height, roi_width, _ = roi_frame.shape
+            aruco_detect_start = int(roi_height * 0.8)  # Bottom 20% of ROI
+            aruco_roi = roi_frame[aruco_detect_start:roi_height, 0:roi_width]
+            
+            # Only detect if ROI is valid
+            if aruco_roi.shape[0] > 20:  # At least 20 pixels tall
+                gray_aruco = cv2.cvtColor(aruco_roi, cv2.COLOR_BGR2GRAY)
+                corners, ids, rejected = self.aruco_detector.detectMarkers(gray_aruco)
+            else:
+                corners, ids, rejected = None, None, None
             
             # Display detected ArUco markers
             if ids is not None and len(ids) > 0:
-                # Draw detected markers on ROI
-                cv2.aruco.drawDetectedMarkers(roi_frame, corners, ids)
+                # Draw detected markers on the aruco detection region
+                cv2.aruco.drawDetectedMarkers(aruco_roi, corners, ids)
                 
                 # Check if this is a new detection (avoid spam)
                 current_time = time.time()

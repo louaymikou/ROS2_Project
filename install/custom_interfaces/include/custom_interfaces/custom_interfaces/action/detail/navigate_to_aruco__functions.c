@@ -18,6 +18,7 @@ custom_interfaces__action__NavigateToAruco_Goal__init(custom_interfaces__action_
     return false;
   }
   // target_aruco_id
+  // return_to_zero
   return true;
 }
 
@@ -28,6 +29,7 @@ custom_interfaces__action__NavigateToAruco_Goal__fini(custom_interfaces__action_
     return;
   }
   // target_aruco_id
+  // return_to_zero
 }
 
 bool
@@ -38,6 +40,10 @@ custom_interfaces__action__NavigateToAruco_Goal__are_equal(const custom_interfac
   }
   // target_aruco_id
   if (lhs->target_aruco_id != rhs->target_aruco_id) {
+    return false;
+  }
+  // return_to_zero
+  if (lhs->return_to_zero != rhs->return_to_zero) {
     return false;
   }
   return true;
@@ -53,6 +59,8 @@ custom_interfaces__action__NavigateToAruco_Goal__copy(
   }
   // target_aruco_id
   output->target_aruco_id = input->target_aruco_id;
+  // return_to_zero
+  output->return_to_zero = input->return_to_zero;
   return true;
 }
 
@@ -247,6 +255,7 @@ custom_interfaces__action__NavigateToAruco_Result__init(custom_interfaces__actio
   // went_forward
   // navigation_time
   // distance_traveled
+  // returned_to_zero
   return true;
 }
 
@@ -261,6 +270,7 @@ custom_interfaces__action__NavigateToAruco_Result__fini(custom_interfaces__actio
   // went_forward
   // navigation_time
   // distance_traveled
+  // returned_to_zero
 }
 
 bool
@@ -289,6 +299,10 @@ custom_interfaces__action__NavigateToAruco_Result__are_equal(const custom_interf
   if (lhs->distance_traveled != rhs->distance_traveled) {
     return false;
   }
+  // returned_to_zero
+  if (lhs->returned_to_zero != rhs->returned_to_zero) {
+    return false;
+  }
   return true;
 }
 
@@ -310,6 +324,8 @@ custom_interfaces__action__NavigateToAruco_Result__copy(
   output->navigation_time = input->navigation_time;
   // distance_traveled
   output->distance_traveled = input->distance_traveled;
+  // returned_to_zero
+  output->returned_to_zero = input->returned_to_zero;
   return true;
 }
 

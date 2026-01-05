@@ -59,6 +59,15 @@ bool custom_interfaces__action__navigate_to_aruco__goal__convert_from_py(PyObjec
     ros_message->target_aruco_id = (int32_t)PyLong_AsLong(field);
     Py_DECREF(field);
   }
+  {  // return_to_zero
+    PyObject * field = PyObject_GetAttrString(_pymsg, "return_to_zero");
+    if (!field) {
+      return false;
+    }
+    assert(PyBool_Check(field));
+    ros_message->return_to_zero = (Py_True == field);
+    Py_DECREF(field);
+  }
 
   return true;
 }
@@ -86,6 +95,17 @@ PyObject * custom_interfaces__action__navigate_to_aruco__goal__convert_to_py(voi
     field = PyLong_FromLong(ros_message->target_aruco_id);
     {
       int rc = PyObject_SetAttrString(_pymessage, "target_aruco_id", field);
+      Py_DECREF(field);
+      if (rc) {
+        return NULL;
+      }
+    }
+  }
+  {  // return_to_zero
+    PyObject * field = NULL;
+    field = PyBool_FromLong(ros_message->return_to_zero ? 1 : 0);
+    {
+      int rc = PyObject_SetAttrString(_pymessage, "return_to_zero", field);
       Py_DECREF(field);
       if (rc) {
         return NULL;
@@ -190,6 +210,15 @@ bool custom_interfaces__action__navigate_to_aruco__result__convert_from_py(PyObj
     ros_message->distance_traveled = (float)PyFloat_AS_DOUBLE(field);
     Py_DECREF(field);
   }
+  {  // returned_to_zero
+    PyObject * field = PyObject_GetAttrString(_pymsg, "returned_to_zero");
+    if (!field) {
+      return false;
+    }
+    assert(PyBool_Check(field));
+    ros_message->returned_to_zero = (Py_True == field);
+    Py_DECREF(field);
+  }
 
   return true;
 }
@@ -261,6 +290,17 @@ PyObject * custom_interfaces__action__navigate_to_aruco__result__convert_to_py(v
     field = PyFloat_FromDouble(ros_message->distance_traveled);
     {
       int rc = PyObject_SetAttrString(_pymessage, "distance_traveled", field);
+      Py_DECREF(field);
+      if (rc) {
+        return NULL;
+      }
+    }
+  }
+  {  // returned_to_zero
+    PyObject * field = NULL;
+    field = PyBool_FromLong(ros_message->returned_to_zero ? 1 : 0);
+    {
+      int rc = PyObject_SetAttrString(_pymessage, "returned_to_zero", field);
       Py_DECREF(field);
       if (rc) {
         return NULL;
@@ -371,6 +411,24 @@ bool custom_interfaces__action__navigate_to_aruco__feedback__convert_from_py(PyO
     Py_DECREF(encoded_field);
     Py_DECREF(field);
   }
+  {  // obstacle_detected
+    PyObject * field = PyObject_GetAttrString(_pymsg, "obstacle_detected");
+    if (!field) {
+      return false;
+    }
+    assert(PyBool_Check(field));
+    ros_message->obstacle_detected = (Py_True == field);
+    Py_DECREF(field);
+  }
+  {  // obstacle_distance
+    PyObject * field = PyObject_GetAttrString(_pymsg, "obstacle_distance");
+    if (!field) {
+      return false;
+    }
+    assert(PyFloat_Check(field));
+    ros_message->obstacle_distance = (float)PyFloat_AS_DOUBLE(field);
+    Py_DECREF(field);
+  }
 
   return true;
 }
@@ -443,6 +501,28 @@ PyObject * custom_interfaces__action__navigate_to_aruco__feedback__convert_to_py
     }
     {
       int rc = PyObject_SetAttrString(_pymessage, "status_message", field);
+      Py_DECREF(field);
+      if (rc) {
+        return NULL;
+      }
+    }
+  }
+  {  // obstacle_detected
+    PyObject * field = NULL;
+    field = PyBool_FromLong(ros_message->obstacle_detected ? 1 : 0);
+    {
+      int rc = PyObject_SetAttrString(_pymessage, "obstacle_detected", field);
+      Py_DECREF(field);
+      if (rc) {
+        return NULL;
+      }
+    }
+  }
+  {  // obstacle_distance
+    PyObject * field = NULL;
+    field = PyFloat_FromDouble(ros_message->obstacle_distance);
+    {
+      int rc = PyObject_SetAttrString(_pymessage, "obstacle_distance", field);
       Py_DECREF(field);
       if (rc) {
         return NULL;

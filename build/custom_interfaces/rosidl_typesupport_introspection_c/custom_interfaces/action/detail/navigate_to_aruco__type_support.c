@@ -31,7 +31,7 @@ void custom_interfaces__action__NavigateToAruco_Goal__rosidl_typesupport_introsp
   custom_interfaces__action__NavigateToAruco_Goal__fini(message_memory);
 }
 
-static rosidl_typesupport_introspection_c__MessageMember custom_interfaces__action__NavigateToAruco_Goal__rosidl_typesupport_introspection_c__NavigateToAruco_Goal_message_member_array[1] = {
+static rosidl_typesupport_introspection_c__MessageMember custom_interfaces__action__NavigateToAruco_Goal__rosidl_typesupport_introspection_c__NavigateToAruco_Goal_message_member_array[2] = {
   {
     "target_aruco_id",  // name
     rosidl_typesupport_introspection_c__ROS_TYPE_INT32,  // type
@@ -48,13 +48,30 @@ static rosidl_typesupport_introspection_c__MessageMember custom_interfaces__acti
     NULL,  // fetch(index, &value) function pointer
     NULL,  // assign(index, value) function pointer
     NULL  // resize(index) function pointer
+  },
+  {
+    "return_to_zero",  // name
+    rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN,  // type
+    0,  // upper bound of string
+    NULL,  // members of sub message
+    false,  // is array
+    0,  // array size
+    false,  // is upper bound
+    offsetof(custom_interfaces__action__NavigateToAruco_Goal, return_to_zero),  // bytes offset in struct
+    NULL,  // default value
+    NULL,  // size() function pointer
+    NULL,  // get_const(index) function pointer
+    NULL,  // get(index) function pointer
+    NULL,  // fetch(index, &value) function pointer
+    NULL,  // assign(index, value) function pointer
+    NULL  // resize(index) function pointer
   }
 };
 
 static const rosidl_typesupport_introspection_c__MessageMembers custom_interfaces__action__NavigateToAruco_Goal__rosidl_typesupport_introspection_c__NavigateToAruco_Goal_message_members = {
   "custom_interfaces__action",  // message namespace
   "NavigateToAruco_Goal",  // message name
-  1,  // number of fields
+  2,  // number of fields
   sizeof(custom_interfaces__action__NavigateToAruco_Goal),
   custom_interfaces__action__NavigateToAruco_Goal__rosidl_typesupport_introspection_c__NavigateToAruco_Goal_message_member_array,  // message members
   custom_interfaces__action__NavigateToAruco_Goal__rosidl_typesupport_introspection_c__NavigateToAruco_Goal_init_function,  // function to initialize message memory (memory has to be allocated)
@@ -119,7 +136,7 @@ void custom_interfaces__action__NavigateToAruco_Result__rosidl_typesupport_intro
   custom_interfaces__action__NavigateToAruco_Result__fini(message_memory);
 }
 
-static rosidl_typesupport_introspection_c__MessageMember custom_interfaces__action__NavigateToAruco_Result__rosidl_typesupport_introspection_c__NavigateToAruco_Result_message_member_array[5] = {
+static rosidl_typesupport_introspection_c__MessageMember custom_interfaces__action__NavigateToAruco_Result__rosidl_typesupport_introspection_c__NavigateToAruco_Result_message_member_array[6] = {
   {
     "success",  // name
     rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN,  // type
@@ -204,13 +221,30 @@ static rosidl_typesupport_introspection_c__MessageMember custom_interfaces__acti
     NULL,  // fetch(index, &value) function pointer
     NULL,  // assign(index, value) function pointer
     NULL  // resize(index) function pointer
+  },
+  {
+    "returned_to_zero",  // name
+    rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN,  // type
+    0,  // upper bound of string
+    NULL,  // members of sub message
+    false,  // is array
+    0,  // array size
+    false,  // is upper bound
+    offsetof(custom_interfaces__action__NavigateToAruco_Result, returned_to_zero),  // bytes offset in struct
+    NULL,  // default value
+    NULL,  // size() function pointer
+    NULL,  // get_const(index) function pointer
+    NULL,  // get(index) function pointer
+    NULL,  // fetch(index, &value) function pointer
+    NULL,  // assign(index, value) function pointer
+    NULL  // resize(index) function pointer
   }
 };
 
 static const rosidl_typesupport_introspection_c__MessageMembers custom_interfaces__action__NavigateToAruco_Result__rosidl_typesupport_introspection_c__NavigateToAruco_Result_message_members = {
   "custom_interfaces__action",  // message namespace
   "NavigateToAruco_Result",  // message name
-  5,  // number of fields
+  6,  // number of fields
   sizeof(custom_interfaces__action__NavigateToAruco_Result),
   custom_interfaces__action__NavigateToAruco_Result__rosidl_typesupport_introspection_c__NavigateToAruco_Result_message_member_array,  // message members
   custom_interfaces__action__NavigateToAruco_Result__rosidl_typesupport_introspection_c__NavigateToAruco_Result_init_function,  // function to initialize message memory (memory has to be allocated)

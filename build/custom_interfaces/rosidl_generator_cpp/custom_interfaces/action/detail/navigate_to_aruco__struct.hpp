@@ -39,6 +39,7 @@ struct NavigateToAruco_Goal_
       rosidl_runtime_cpp::MessageInitialization::ZERO == _init)
     {
       this->target_aruco_id = 0l;
+      this->return_to_zero = false;
     }
   }
 
@@ -49,6 +50,7 @@ struct NavigateToAruco_Goal_
       rosidl_runtime_cpp::MessageInitialization::ZERO == _init)
     {
       this->target_aruco_id = 0l;
+      this->return_to_zero = false;
     }
   }
 
@@ -56,12 +58,21 @@ struct NavigateToAruco_Goal_
   using _target_aruco_id_type =
     int32_t;
   _target_aruco_id_type target_aruco_id;
+  using _return_to_zero_type =
+    bool;
+  _return_to_zero_type return_to_zero;
 
   // setters for named parameter idiom
   Type & set__target_aruco_id(
     const int32_t & _arg)
   {
     this->target_aruco_id = _arg;
+    return *this;
+  }
+  Type & set__return_to_zero(
+    const bool & _arg)
+  {
+    this->return_to_zero = _arg;
     return *this;
   }
 
@@ -108,6 +119,9 @@ struct NavigateToAruco_Goal_
   bool operator==(const NavigateToAruco_Goal_ & other) const
   {
     if (this->target_aruco_id != other.target_aruco_id) {
+      return false;
+    }
+    if (this->return_to_zero != other.return_to_zero) {
       return false;
     }
     return true;
@@ -157,6 +171,7 @@ struct NavigateToAruco_Result_
       this->went_forward = false;
       this->navigation_time = 0.0f;
       this->distance_traveled = 0.0f;
+      this->returned_to_zero = false;
     }
   }
 
@@ -171,6 +186,7 @@ struct NavigateToAruco_Result_
       this->went_forward = false;
       this->navigation_time = 0.0f;
       this->distance_traveled = 0.0f;
+      this->returned_to_zero = false;
     }
   }
 
@@ -190,6 +206,9 @@ struct NavigateToAruco_Result_
   using _distance_traveled_type =
     float;
   _distance_traveled_type distance_traveled;
+  using _returned_to_zero_type =
+    bool;
+  _returned_to_zero_type returned_to_zero;
 
   // setters for named parameter idiom
   Type & set__success(
@@ -220,6 +239,12 @@ struct NavigateToAruco_Result_
     const float & _arg)
   {
     this->distance_traveled = _arg;
+    return *this;
+  }
+  Type & set__returned_to_zero(
+    const bool & _arg)
+  {
+    this->returned_to_zero = _arg;
     return *this;
   }
 
@@ -278,6 +303,9 @@ struct NavigateToAruco_Result_
       return false;
     }
     if (this->distance_traveled != other.distance_traveled) {
+      return false;
+    }
+    if (this->returned_to_zero != other.returned_to_zero) {
       return false;
     }
     return true;
