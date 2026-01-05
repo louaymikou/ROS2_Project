@@ -1,8 +1,8 @@
-# Install script for directory: /home/wayay/line_follower_ws/build/custom_interfaces/custom_interfaces__py
+# Install script for directory: /home/wayay/Ros/ROS2_Project/build/custom_interfaces/custom_interfaces__py
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/wayay/line_follower_ws/install/custom_interfaces")
+  set(CMAKE_INSTALL_PREFIX "/home/wayay/Ros/ROS2_Project/install/custom_interfaces")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

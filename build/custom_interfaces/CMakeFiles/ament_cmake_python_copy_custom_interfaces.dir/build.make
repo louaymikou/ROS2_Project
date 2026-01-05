@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/wayay/line_follower_ws/src/custom_interfaces
+CMAKE_SOURCE_DIR = /home/wayay/Ros/ROS2_Project/src/custom_interfaces
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/wayay/line_follower_ws/build/custom_interfaces
+CMAKE_BINARY_DIR = /home/wayay/Ros/ROS2_Project/build/custom_interfaces
 
 # Utility rule file for ament_cmake_python_copy_custom_interfaces.
 
@@ -67,7 +67,7 @@ include CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/compiler_depend
 include CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/progress.make
 
 CMakeFiles/ament_cmake_python_copy_custom_interfaces:
-	/usr/bin/cmake -E copy_directory /home/wayay/line_follower_ws/build/custom_interfaces/rosidl_generator_py/custom_interfaces /home/wayay/line_follower_ws/build/custom_interfaces/ament_cmake_python/custom_interfaces/custom_interfaces
+	/usr/bin/cmake -E copy_directory /home/wayay/Ros/ROS2_Project/build/custom_interfaces/rosidl_generator_py/custom_interfaces /home/wayay/Ros/ROS2_Project/build/custom_interfaces/ament_cmake_python/custom_interfaces/custom_interfaces
 
 ament_cmake_python_copy_custom_interfaces: CMakeFiles/ament_cmake_python_copy_custom_interfaces
 ament_cmake_python_copy_custom_interfaces: CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/clean:
 .PHONY : CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/clean
 
 CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/depend:
-	cd /home/wayay/line_follower_ws/build/custom_interfaces && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wayay/line_follower_ws/src/custom_interfaces /home/wayay/line_follower_ws/src/custom_interfaces /home/wayay/line_follower_ws/build/custom_interfaces /home/wayay/line_follower_ws/build/custom_interfaces /home/wayay/line_follower_ws/build/custom_interfaces/CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wayay/Ros/ROS2_Project/build/custom_interfaces && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wayay/Ros/ROS2_Project/src/custom_interfaces /home/wayay/Ros/ROS2_Project/src/custom_interfaces /home/wayay/Ros/ROS2_Project/build/custom_interfaces /home/wayay/Ros/ROS2_Project/build/custom_interfaces /home/wayay/Ros/ROS2_Project/build/custom_interfaces/CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ament_cmake_python_copy_custom_interfaces.dir/depend
 

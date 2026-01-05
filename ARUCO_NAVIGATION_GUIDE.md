@@ -22,7 +22,7 @@ Ce système permet au robot de naviguer automatiquement vers un marqueur ArUco s
 ### Étape 1 : Lancer la simulation
 
 ```bash
-cd ~/line_follower_ws
+cd ~/Ros/ROS2_Project
 source install/setup.bash
 ros2 launch blue_line_follower simulation.launch.py
 ```
@@ -32,7 +32,8 @@ ros2 launch blue_line_follower simulation.launch.py
 Dans un nouveau terminal :
 
 ```bash
-source ~/line_follower_ws/install/setup.bash
+cd ~/Ros/ROS2_Project
+source install/setup.bash
 ros2 run blue_line_follower line_follower_node
 ```
 
@@ -41,7 +42,8 @@ ros2 run blue_line_follower line_follower_node
 Dans un nouveau terminal :
 
 ```bash
-source ~/line_follower_ws/install/setup.bash
+cd ~/Ros/ROS2_Project
+source install/setup.bash
 ros2 run blue_line_follower aruco_navigation_server
 ```
 
@@ -50,7 +52,8 @@ ros2 run blue_line_follower aruco_navigation_server
 #### Option A : Utiliser le client Python
 
 ```bash
-source ~/line_follower_ws/install/setup.bash
+cd ~/Ros/ROS2_Project
+source install/setup.bash
 # Exemple : naviguer vers ArUco numéro 5
 ros2 run blue_line_follower aruco_navigation_client 5
 ```
@@ -58,7 +61,8 @@ ros2 run blue_line_follower aruco_navigation_client 5
 #### Option B : Utiliser la ligne de commande
 
 ```bash
-source ~/line_follower_ws/install/setup.bash
+cd ~/Ros/ROS2_Project
+source install/setup.bash
 ros2 action send_goal /navigate_to_aruco custom_interfaces/action/NavigateToAruco "{target_aruco_id: 5}" --feedback
 ```
 

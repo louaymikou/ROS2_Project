@@ -1,0 +1,55 @@
+[0.584s] Invoking command in '/home/wayay/Ros/ROS2_Project/src/blue_line_follower': AMENT_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces LD_LIBRARY_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/wayay/Ros/ROS2_Project/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages:/home/wayay/Ros/ROS2_Project/install/custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build install --record /home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log --single-version-externally-managed install_data
+[0.756s] running egg_info
+[0.756s] creating ../../build/blue_line_follower/blue_line_follower.egg-info
+[0.756s] writing ../../build/blue_line_follower/blue_line_follower.egg-info/PKG-INFO
+[0.757s] writing dependency_links to ../../build/blue_line_follower/blue_line_follower.egg-info/dependency_links.txt
+[0.757s] writing entry points to ../../build/blue_line_follower/blue_line_follower.egg-info/entry_points.txt
+[0.757s] writing requirements to ../../build/blue_line_follower/blue_line_follower.egg-info/requires.txt
+[0.757s] writing top-level names to ../../build/blue_line_follower/blue_line_follower.egg-info/top_level.txt
+[0.757s] writing manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.758s] reading manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.758s] writing manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.759s] running build
+[0.759s] running build_py
+[0.759s] creating /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build
+[0.759s] creating /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib
+[0.759s] creating /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower
+[0.759s] copying blue_line_follower/aruco_diagnostic.py -> /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower
+[0.759s] copying blue_line_follower/line_follower_node.py -> /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower
+[0.759s] copying blue_line_follower/__init__.py -> /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower
+[0.759s] copying blue_line_follower/aruco_navigation_server.py -> /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower
+[0.759s] copying blue_line_follower/aruco_navigation_client.py -> /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower
+[0.760s] running install
+[0.760s] running install_lib
+[0.760s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.760s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/aruco_diagnostic.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.760s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/line_follower_node.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.760s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/__init__.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.760s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/aruco_navigation_server.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.760s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/aruco_navigation_client.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.760s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_diagnostic.py to aruco_diagnostic.cpython-310.pyc
+[0.761s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/line_follower_node.py to line_follower_node.cpython-310.pyc
+[0.762s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__init__.py to __init__.cpython-310.pyc
+[0.762s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_server.py to aruco_navigation_server.cpython-310.pyc
+[0.763s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_client.py to aruco_navigation_client.cpython-310.pyc
+[0.764s] running install_data
+[0.764s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index
+[0.764s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index/resource_index
+[0.765s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index/resource_index/packages
+[0.765s] copying resource/blue_line_follower -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index/resource_index/packages
+[0.765s] copying package.xml -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower
+[0.765s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/launch
+[0.765s] copying launch/simulation.launch.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/launch
+[0.765s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/worlds
+[0.765s] copying worlds/blue_line_track.world -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/worlds
+[0.765s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/urdf
+[0.765s] copying urdf/line_follower_robot.urdf.xacro -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/urdf
+[0.765s] running install_egg_info
+[0.766s] Copying ../../build/blue_line_follower/blue_line_follower.egg-info to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info
+[0.766s] running install_scripts
+[0.780s] Installing aruco_diagnostic script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.780s] Installing aruco_navigation_client script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.780s] Installing aruco_navigation_server script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.780s] Installing line_follower_node script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.780s] writing list of installed files to '/home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log'
+[0.795s] Invoked command in '/home/wayay/Ros/ROS2_Project/src/blue_line_follower' returned '0': AMENT_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces LD_LIBRARY_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/wayay/Ros/ROS2_Project/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages:/home/wayay/Ros/ROS2_Project/install/custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build install --record /home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log --single-version-externally-managed install_data

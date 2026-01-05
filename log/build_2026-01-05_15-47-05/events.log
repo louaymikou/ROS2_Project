@@ -1,0 +1,6 @@
+[0.000000] (-) TimerEvent: {}
+[0.000172] (-) JobUnselected: {'identifier': 'custom_interfaces'}
+[0.000321] (blue_line_follower) JobQueued: {'identifier': 'blue_line_follower', 'dependencies': OrderedDict([('custom_interfaces', '/home/wayay/Ros/ROS2_Project/install/custom_interfaces')])}
+[0.000342] (blue_line_follower) JobStarted: {'identifier': 'blue_line_follower'}
+[0.010144] (blue_line_follower) JobEnded: {'identifier': 'blue_line_follower', 'rc': 1}
+[0.020481] (-) EventReactorShutdown: {}

@@ -1,0 +1,119 @@
+[0.452s] Invoking command in '/home/wayay/Ros/ROS2_Project/src/blue_line_follower': AMENT_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces LD_LIBRARY_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/wayay/Ros/ROS2_Project/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages:/home/wayay/Ros/ROS2_Project/install/custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build install --record /home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log --single-version-externally-managed install_data
+[0.629s] running egg_info
+[0.630s] writing ../../build/blue_line_follower/blue_line_follower.egg-info/PKG-INFO
+[0.630s] writing dependency_links to ../../build/blue_line_follower/blue_line_follower.egg-info/dependency_links.txt
+[0.630s] writing entry points to ../../build/blue_line_follower/blue_line_follower.egg-info/entry_points.txt
+[0.630s] writing requirements to ../../build/blue_line_follower/blue_line_follower.egg-info/requires.txt
+[0.630s] writing top-level names to ../../build/blue_line_follower/blue_line_follower.egg-info/top_level.txt
+[0.631s] reading manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.632s] writing manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.632s] running build
+[0.633s] running build_py
+[0.633s] running install
+[0.633s] running install_lib
+[0.633s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.633s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/aruco_diagnostic.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.634s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/line_follower_node.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.634s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/__init__.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.634s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/aruco_navigation_server.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.634s] copying /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build/lib/blue_line_follower/aruco_navigation_client.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower
+[0.634s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_diagnostic.py to aruco_diagnostic.cpython-310.pyc
+[0.634s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/line_follower_node.py to line_follower_node.cpython-310.pyc
+[0.636s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__init__.py to __init__.cpython-310.pyc
+[0.636s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_server.py to aruco_navigation_server.cpython-310.pyc
+[0.637s] byte-compiling /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_client.py to aruco_navigation_client.cpython-310.pyc
+[0.638s] running install_data
+[0.638s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index
+[0.638s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index/resource_index
+[0.638s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index/resource_index/packages
+[0.638s] copying resource/blue_line_follower -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/ament_index/resource_index/packages
+[0.638s] copying package.xml -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower
+[0.638s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/launch
+[0.638s] copying launch/simulation.launch.py -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/launch
+[0.638s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/worlds
+[0.638s] copying worlds/blue_line_track.world -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/worlds
+[0.639s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/urdf
+[0.639s] copying urdf/line_follower_robot.urdf.xacro -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/urdf
+[0.639s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models
+[0.639s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5
+[0.639s] copying models/aruco_5/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5
+[0.639s] copying models/aruco_5/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5
+[0.639s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials
+[0.639s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/scripts
+[0.639s] copying models/aruco_5/materials/scripts/aruco_5.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/scripts
+[0.639s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/textures
+[0.639s] copying models/aruco_5/materials/textures/5.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/textures
+[0.640s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6
+[0.640s] copying models/aruco_6/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6
+[0.640s] copying models/aruco_6/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6
+[0.640s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials
+[0.640s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/scripts
+[0.640s] copying models/aruco_6/materials/scripts/aruco_6.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/scripts
+[0.640s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/textures
+[0.640s] copying models/aruco_6/materials/textures/6.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/textures
+[0.640s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0
+[0.640s] copying models/aruco_0/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0
+[0.641s] copying models/aruco_0/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0
+[0.641s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials
+[0.641s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/scripts
+[0.641s] copying models/aruco_0/materials/scripts/aruco_0.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/scripts
+[0.641s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/textures
+[0.641s] copying models/aruco_0/materials/textures/0.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/textures
+[0.641s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4
+[0.641s] copying models/aruco_4/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4
+[0.641s] copying models/aruco_4/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4
+[0.641s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials
+[0.642s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/scripts
+[0.642s] copying models/aruco_4/materials/scripts/aruco_4.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/scripts
+[0.642s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/textures
+[0.642s] copying models/aruco_4/materials/textures/4.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/textures
+[0.642s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1
+[0.642s] copying models/aruco_1/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1
+[0.642s] copying models/aruco_1/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1
+[0.642s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials
+[0.642s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/scripts
+[0.643s] copying models/aruco_1/materials/scripts/aruco_1.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/scripts
+[0.643s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/textures
+[0.643s] copying models/aruco_1/materials/textures/1.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/textures
+[0.643s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2
+[0.643s] copying models/aruco_2/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2
+[0.643s] copying models/aruco_2/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2
+[0.643s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials
+[0.643s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/scripts
+[0.643s] copying models/aruco_2/materials/scripts/aruco_2.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/scripts
+[0.643s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/textures
+[0.644s] copying models/aruco_2/materials/textures/2.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/textures
+[0.644s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7
+[0.644s] copying models/aruco_7/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7
+[0.644s] copying models/aruco_7/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7
+[0.644s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials
+[0.644s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/scripts
+[0.644s] copying models/aruco_7/materials/scripts/aruco_7.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/scripts
+[0.644s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/textures
+[0.644s] copying models/aruco_7/materials/textures/7.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/textures
+[0.644s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3
+[0.644s] copying models/aruco_3/model.sdf -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3
+[0.644s] copying models/aruco_3/model.config -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3
+[0.645s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials
+[0.645s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/scripts
+[0.645s] copying models/aruco_3/materials/scripts/aruco_3.material -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/scripts
+[0.645s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/textures
+[0.645s] copying models/aruco_3/materials/textures/3.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/textures
+[0.645s] creating /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco
+[0.645s] copying aruco/5.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.645s] copying aruco/7.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.645s] copying aruco/0.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.645s] copying aruco/4.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.645s] copying aruco/2.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.645s] copying aruco/1.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.645s] copying aruco/6.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.646s] copying aruco/3.png -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.646s] running install_egg_info
+[0.646s] Copying ../../build/blue_line_follower/blue_line_follower.egg-info to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info
+[0.646s] running install_scripts
+[0.657s] Installing aruco_diagnostic script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.657s] Installing aruco_navigation_client script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.657s] Installing aruco_navigation_server script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.657s] Installing line_follower_node script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.657s] writing list of installed files to '/home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log'
+[0.672s] Invoked command in '/home/wayay/Ros/ROS2_Project/src/blue_line_follower' returned '0': AMENT_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces LD_LIBRARY_PATH=/home/wayay/Ros/ROS2_Project/install/custom_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/wayay/Ros/ROS2_Project/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages:/home/wayay/Ros/ROS2_Project/install/custom_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build install --record /home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log --single-version-externally-managed install_data

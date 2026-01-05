@@ -5,7 +5,7 @@ Launch file for the blue line follower robot in Gazebo
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.substitutions import LaunchConfiguration, Command
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
@@ -22,6 +22,19 @@ def generate_launch_description():
     # Paths
     world_file = os.path.join(pkg_share, 'worlds', 'blue_line_track.world')
     urdf_file = os.path.join(pkg_share, 'urdf', 'line_follower_robot.urdf.xacro')
+    models_path = os.path.join(pkg_share, 'models')
+    
+    # Set GAZEBO_MODEL_PATH to include our models
+    gazebo_model_path = os.environ.get('GAZEBO_MODEL_PATH', '')
+    if gazebo_model_path:
+        gazebo_model_path = models_path + ':' + gazebo_model_path
+    else:
+        gazebo_model_path = models_path
+    
+    set_gazebo_model_path = SetEnvironmentVariable(
+        name='GAZEBO_MODEL_PATH',
+        value=gazebo_model_path
+    )
     
     # Gazebo server launch
     gzserver = IncludeLaunchDescription(
@@ -75,6 +88,7 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
+        set_gazebo_model_path,
         gzserver,
         gzclient,
         robot_state_publisher,
