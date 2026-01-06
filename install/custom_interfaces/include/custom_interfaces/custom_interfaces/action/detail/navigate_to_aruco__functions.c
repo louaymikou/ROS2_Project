@@ -11,6 +11,10 @@
 #include "rcutils/allocator.h"
 
 
+// Include directives for member types
+// Member `color_choice`
+#include "rosidl_runtime_c/string_functions.h"
+
 bool
 custom_interfaces__action__NavigateToAruco_Goal__init(custom_interfaces__action__NavigateToAruco_Goal * msg)
 {
@@ -19,6 +23,11 @@ custom_interfaces__action__NavigateToAruco_Goal__init(custom_interfaces__action_
   }
   // target_aruco_id
   // return_to_zero
+  // color_choice
+  if (!rosidl_runtime_c__String__init(&msg->color_choice)) {
+    custom_interfaces__action__NavigateToAruco_Goal__fini(msg);
+    return false;
+  }
   return true;
 }
 
@@ -30,6 +39,8 @@ custom_interfaces__action__NavigateToAruco_Goal__fini(custom_interfaces__action_
   }
   // target_aruco_id
   // return_to_zero
+  // color_choice
+  rosidl_runtime_c__String__fini(&msg->color_choice);
 }
 
 bool
@@ -44,6 +55,12 @@ custom_interfaces__action__NavigateToAruco_Goal__are_equal(const custom_interfac
   }
   // return_to_zero
   if (lhs->return_to_zero != rhs->return_to_zero) {
+    return false;
+  }
+  // color_choice
+  if (!rosidl_runtime_c__String__are_equal(
+      &(lhs->color_choice), &(rhs->color_choice)))
+  {
     return false;
   }
   return true;
@@ -61,6 +78,12 @@ custom_interfaces__action__NavigateToAruco_Goal__copy(
   output->target_aruco_id = input->target_aruco_id;
   // return_to_zero
   output->return_to_zero = input->return_to_zero;
+  // color_choice
+  if (!rosidl_runtime_c__String__copy(
+      &(input->color_choice), &(output->color_choice)))
+  {
+    return false;
+  }
   return true;
 }
 
@@ -512,7 +535,8 @@ custom_interfaces__action__NavigateToAruco_Result__Sequence__copy(
 // Include directives for member types
 // Member `current_direction`
 // Member `status_message`
-#include "rosidl_runtime_c/string_functions.h"
+// already included above
+// #include "rosidl_runtime_c/string_functions.h"
 
 bool
 custom_interfaces__action__NavigateToAruco_Feedback__init(custom_interfaces__action__NavigateToAruco_Feedback * msg)

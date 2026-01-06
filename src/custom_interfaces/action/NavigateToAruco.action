@@ -7,6 +7,9 @@ int32 target_aruco_id
 # Retourner à ArUco 0 après avoir atteint la cible
 bool return_to_zero
 
+# Couleur à suivre après arrivée à la cible ('l' pour rouge/left, 'r' pour vert/right, 'b' pour bleu/blue par défaut)
+string color_choice
+
 ---
 
 # ========================================

@@ -34,6 +34,8 @@ extern "C"
 {
 #endif
 
+#include "rosidl_runtime_c/string.h"  // color_choice
+#include "rosidl_runtime_c/string_functions.h"  // color_choice
 
 // forward declare type support functions
 
@@ -59,6 +61,20 @@ static bool _NavigateToAruco_Goal__cdr_serialize(
     cdr << (ros_message->return_to_zero ? true : false);
   }
 
+  // Field name: color_choice
+  {
+    const rosidl_runtime_c__String * str = &ros_message->color_choice;
+    if (str->capacity == 0 || str->capacity <= str->size) {
+      fprintf(stderr, "string capacity not greater than size\n");
+      return false;
+    }
+    if (str->data[str->size] != '\0') {
+      fprintf(stderr, "string not null-terminated\n");
+      return false;
+    }
+    cdr << str->data;
+  }
+
   return true;
 }
 
@@ -81,6 +97,22 @@ static bool _NavigateToAruco_Goal__cdr_deserialize(
     uint8_t tmp;
     cdr >> tmp;
     ros_message->return_to_zero = tmp ? true : false;
+  }
+
+  // Field name: color_choice
+  {
+    std::string tmp;
+    cdr >> tmp;
+    if (!ros_message->color_choice.data) {
+      rosidl_runtime_c__String__init(&ros_message->color_choice);
+    }
+    bool succeeded = rosidl_runtime_c__String__assign(
+      &ros_message->color_choice,
+      tmp.c_str());
+    if (!succeeded) {
+      fprintf(stderr, "failed to assign string into field 'color_choice'\n");
+      return false;
+    }
   }
 
   return true;
@@ -112,6 +144,10 @@ size_t get_serialized_size_custom_interfaces__action__NavigateToAruco_Goal(
     current_alignment += item_size +
       eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
   }
+  // field.name color_choice
+  current_alignment += padding +
+    eprosima::fastcdr::Cdr::alignment(current_alignment, padding) +
+    (ros_message->color_choice.size + 1);
 
   return current_alignment - initial_alignment;
 }
@@ -156,6 +192,18 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Goal(
     last_member_size = array_size * sizeof(uint8_t);
     current_alignment += array_size * sizeof(uint8_t);
   }
+  // member: color_choice
+  {
+    size_t array_size = 1;
+
+    full_bounded = false;
+    is_plain = false;
+    for (size_t index = 0; index < array_size; ++index) {
+      current_alignment += padding +
+        eprosima::fastcdr::Cdr::alignment(current_alignment, padding) +
+        1;
+    }
+  }
 
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
@@ -165,7 +213,7 @@ size_t max_serialized_size_custom_interfaces__action__NavigateToAruco_Goal(
     using DataType = custom_interfaces__action__NavigateToAruco_Goal;
     is_plain =
       (
-      offsetof(DataType, return_to_zero) +
+      offsetof(DataType, color_choice) +
       last_member_size
       ) == ret_val;
   }
@@ -570,8 +618,10 @@ extern "C"
 {
 #endif
 
-#include "rosidl_runtime_c/string.h"  // current_direction, status_message
-#include "rosidl_runtime_c/string_functions.h"  // current_direction, status_message
+// already included above
+// #include "rosidl_runtime_c/string.h"  // current_direction, status_message
+// already included above
+// #include "rosidl_runtime_c/string_functions.h"  // current_direction, status_message
 
 // forward declare type support functions
 

@@ -16,8 +16,24 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from custom_interfaces.action import NavigateToAruco
 from sensor_msgs.msg import Image, Range
 from std_srvs.srv import SetBool
+from std_msgs.msg import String
 from cv_bridge import CvBridge
+from geometry_msgs.msg import Twist
 import cv2
+import numpy as np
+from enum import Enum
+
+
+class NavigationState(Enum):
+    """États de la machine à états de navigation"""
+    IDLE = 0
+    NAVIGATE_TO_TARGET = 1          # Suivi ligne bleue jusqu'à la cible
+    ROTATE_AT_TARGET = 2             # Rotation gauche/droite à la cible
+    FOLLOW_COLOR_TO_OBSTACLE = 3     # Suivi ligne rouge/verte jusqu'à obstacle
+    OBSTACLE_DETECTED = 4            # Obstacle détecté, robot arrêté
+    RETURN_ON_COLOR = 5              # Retour sur ligne rouge/verte
+    ROTATE_AT_MARKER = 6             # Rotation pour retrouver ligne bleue
+    RETURN_TO_BASE = 7               # Retour sur ligne bleue jusqu'à ArUco 0
 
 
 class ArucoNavigationServer(Node):
@@ -39,24 +55,24 @@ class ArucoNavigationServer(Node):
         # Track current ArUco ID detected
         self.current_aruco_id = None
         self.aruco_detection_count = 0
-        self.required_detections = 2  # Nombre de détections consécutives requises (réduit pour plus de réactivité)
+        self.required_detections = 1  # Nombre de détections consécutives requises (1 pour plus de réactivité)
+        
+        # ArUco position tracking for centering
+        self.aruco_center_x = None
+        self.aruco_center_y = None
+        self.image_center_x = None
+        self.image_center_y = None
         
         # Obstacle detection
         self.front_obstacle_distance = float('inf')
         self.rear_obstacle_distance = float('inf')
         self.obstacle_threshold = 0.3  # 30cm
         
-        # Subscribe to both cameras
-        self.front_subscription = self.create_subscription(
+        # Subscribe to bottom camera (fixed under chassis for ArUco detection only)
+        self.bottom_subscription = self.create_subscription(
             Image,
-            '/camera/image_raw',
-            self.front_camera_callback,
-            10)
-        
-        self.rear_subscription = self.create_subscription(
-            Image,
-            '/rear_camera/image_raw',
-            self.rear_camera_callback,
+            '/bottom_camera/image_raw',
+            self.bottom_camera_callback,
             10)
         
         # Subscribe to ultrasonic sensors
@@ -72,20 +88,18 @@ class ArucoNavigationServer(Node):
             self.rear_ultrasonic_callback,
             10)
         
-        # Publishers pour afficher les images avec détections ArUco
-        self.front_aruco_pub = self.create_publisher(
+        # Publisher pour afficher les images avec détections ArUco (bottom camera uniquement)
+        self.bottom_aruco_pub = self.create_publisher(
             Image,
-            '/front_camera/aruco_detection',
-            10)
-        
-        self.rear_aruco_pub = self.create_publisher(
-            Image,
-            '/rear_camera/aruco_detection',
+            '/bottom_camera/aruco_detection',
             10)
         
         # Service clients pour contrôler le robot
         self.enable_movement_client = self.create_client(SetBool, 'enable_movement')
         self.set_direction_client = self.create_client(SetBool, 'set_forward_direction')
+        
+        # Publisher pour changer la couleur de ligne suivie
+        self.color_change_publisher = self.create_publisher(String, '/set_line_color', 10)
         
         # Action server
         self.action_server = ActionServer(
@@ -103,14 +117,21 @@ class ArucoNavigationServer(Node):
         self.target_id = None
         self.start_time = None
         self.went_forward = True
+        self.current_state = NavigationState.IDLE
+        self.rotation_direction = None  # 'left' or 'right'
+        
+        # Publisher pour contrôler directement le robot si nécessaire
+        self.cmd_vel_publisher = self.create_publisher(Twist, '/cmd_vel', 10)
         
         self.get_logger().info('=================================')
         self.get_logger().info('🎯 ArUco Navigation Server Ready')
         self.get_logger().info('   Action: /navigate_to_aruco')
         self.get_logger().info(f'   Obstacle detection: {self.obstacle_threshold}m')
-        self.get_logger().info('   ArUco topics:')
-        self.get_logger().info('     - /front_camera/aruco_detection')
-        self.get_logger().info('     - /rear_camera/aruco_detection')
+        self.get_logger().info('   ArUco detection:')
+        self.get_logger().info('     - /bottom_camera/aruco_detection (bottom camera only)')
+        self.get_logger().info('   Line following cameras:')
+        self.get_logger().info('     - /camera/image_raw (front)')
+        self.get_logger().info('     - /rear_camera/image_raw (rear)')
         self.get_logger().info('=================================')
 
     def front_ultrasonic_callback(self, msg):
@@ -135,71 +156,77 @@ class ArucoNavigationServer(Node):
         else:
             return self.rear_obstacle_distance
 
-    def front_camera_callback(self, data):
-        """Callback pour la caméra avant"""
-        if self.is_navigating:
-            # Pendant la recherche initiale (current_aruco_id is None), on check les deux caméras
-            # Sinon on ne check que la caméra dans la direction de navigation
-            if self.current_aruco_id is None or self.went_forward:
-                self._detect_aruco(data, self.front_aruco_pub, "FRONT")
-
-    def rear_camera_callback(self, data):
-        """Callback pour la caméra arrière"""
-        if self.is_navigating:
-            # Pendant la recherche initiale (current_aruco_id is None), on check les deux caméras
-            # Sinon on ne check que la caméra dans la direction de navigation
-            if self.current_aruco_id is None or not self.went_forward:
-                self._detect_aruco(data, self.rear_aruco_pub, "REAR")
+    def bottom_camera_callback(self, data):
+        """Callback pour la caméra bottom (fixe sous le châssis) - SEULE caméra pour ArUcos"""
+        # TOUJOURS traiter les images de la caméra bottom, même si pas en navigation
+        # Log pour confirmer réception d'images
+        self.get_logger().info(f'Bottom camera callback - is_navigating: {self.is_navigating}', throttle_duration_sec=5.0)
+        
+        # Détecter les ArUcos même en dehors de la navigation pour debug
+        self._detect_aruco(data, self.bottom_aruco_pub, "BOTTOM")
 
     def _detect_aruco(self, image_msg, publisher, camera_name):
-        """Détecte les marqueurs ArUco dans l'image et publie l'image avec les détections"""
+        """Détecte les marqueurs ArUco dans l'image de la caméra BOTTOM uniquement"""
         try:
+            self.get_logger().info(f'{camera_name}: Processing image for ArUco detection', throttle_duration_sec=5.0)
+            
             cv_image = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
             display_image = cv_image.copy()
             
-            # Crop to center region (e.g., middle 60% of image)
+            # Utiliser toute l'image pour la caméra bottom (pas de crop)
             height, width = cv_image.shape[:2]
-            crop_width = int(width * 0.6)
-            crop_height = int(height * 0.6)
-            x_start = (width - crop_width) // 2
-            y_start = (height - crop_height) // 2
+            self.get_logger().info(f'{camera_name}: Image size: {width}x{height}', throttle_duration_sec=10.0)
             
-            # Dessiner le rectangle de la zone de détection
-            cv2.rectangle(display_image, (x_start, y_start), 
-                         (x_start + crop_width, y_start + crop_height), 
-                         (0, 255, 0), 2)
-            
-            cropped_image = cv_image[y_start:y_start + crop_height, x_start:x_start + crop_width]
-            gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+            gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
             
             corners, ids, rejected = self.aruco_detector.detectMarkers(gray)
+            
+            self.get_logger().info(f'{camera_name}: ArUco detection - Found: {len(ids) if ids is not None else 0}, Rejected: {len(rejected)}', throttle_duration_sec=2.0)
             
             if ids is not None and len(ids) > 0:
                 detected_id = int(ids[0][0])
                 
-                # Ajuster les coins pour l'image complète
-                adjusted_corners = []
-                for corner in corners:
-                    adjusted_corner = corner.copy()
-                    adjusted_corner[:, :, 0] += x_start
-                    adjusted_corner[:, :, 1] += y_start
-                    adjusted_corners.append(adjusted_corner)
+                # Calculer le centre du marqueur
+                marker_corners = corners[0][0]
+                marker_center_x = int(np.mean(marker_corners[:, 0]))
+                marker_center_y = int(np.mean(marker_corners[:, 1]))
                 
-                # Dessiner les marqueurs détectés sur l'image complète
-                cv2.aruco.drawDetectedMarkers(display_image, adjusted_corners, ids)
+                # Sauvegarder la position pour le centrage
+                self.aruco_center_x = marker_center_x
+                self.aruco_center_y = marker_center_y
+                self.image_center_x = width // 2
+                self.image_center_y = height // 2
+                
+                # Calculer l'offset par rapport au centre
+                offset_x = marker_center_x - self.image_center_x
+                offset_y = marker_center_y - self.image_center_y
+                
+                # Dessiner les marqueurs détectés
+                cv2.aruco.drawDetectedMarkers(display_image, corners, ids)
+                
+                # Dessiner le centre de l'image et du marqueur
+                cv2.circle(display_image, (self.image_center_x, self.image_center_y), 10, (255, 0, 0), 2)  # Centre image (bleu)
+                cv2.circle(display_image, (marker_center_x, marker_center_y), 10, (0, 255, 0), 2)  # Centre marqueur (vert)
+                cv2.line(display_image, (self.image_center_x, self.image_center_y), (marker_center_x, marker_center_y), (0, 0, 255), 2)
                 
                 # Afficher l'ID et le nombre de détections
-                cv2.putText(display_image, f'{camera_name} Camera', 
+                cv2.putText(display_image, f'{camera_name} Camera - ArUco Detection', 
                            (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
                            1, (0, 255, 0), 2)
                 cv2.putText(display_image, f'ArUco ID: {detected_id}', 
                            (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 
                            1, (0, 255, 0), 2)
-                cv2.putText(display_image, f'Detections: {self.aruco_detection_count}/{self.required_detections}', 
+                cv2.putText(display_image, f'Center: ({marker_center_x}, {marker_center_y})', 
                            (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 
                            1, (0, 255, 0), 2)
+                cv2.putText(display_image, f'Offset: ({offset_x}, {offset_y})', 
+                           (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 
+                           1, (0, 255, 255), 2)
+                cv2.putText(display_image, f'Detections: {self.aruco_detection_count}/{self.required_detections}', 
+                           (10, 190), cv2.FONT_HERSHEY_SIMPLEX, 
+                           1, (0, 255, 0), 2)
                 
-                # Détection avec filtrage
+                # Détection avec filtrage - détecte dès que le marqueur est visible
                 if detected_id == self.current_aruco_id:
                     self.aruco_detection_count += 1
                 else:
@@ -208,8 +235,8 @@ class ArucoNavigationServer(Node):
                 
                 if self.aruco_detection_count >= self.required_detections:
                     self.get_logger().info(
-                        f'📍 ArUco {self.current_aruco_id} détecté de manière stable',
-                        throttle_duration_sec=2.0
+                        f'📍 ArUco {self.current_aruco_id} détecté par {camera_name}',
+                        throttle_duration_sec=1.0
                     )
             else:
                 # Pas de marqueur détecté
@@ -225,7 +252,7 @@ class ArucoNavigationServer(Node):
             publisher.publish(detection_msg)
                     
         except Exception as e:
-            self.get_logger().error(f'Erreur détection ArUco: {str(e)}')
+            self.get_logger().error(f'Erreur détection ArUco ({camera_name}): {str(e)}')
 
     def goal_callback(self, goal_request):
         """Accepte ou rejette les demandes de navigation"""
@@ -252,169 +279,321 @@ class ArucoNavigationServer(Node):
         return CancelResponse.ACCEPT
 
     def execute_callback(self, goal_handle):
-        """Exécute la navigation vers le marqueur ArUco"""
+        """Exécute la navigation vers le marqueur ArUco avec machine à états"""
         self.target_id = goal_handle.request.target_aruco_id
         self.is_navigating = True
         self.start_time = time.time()
+        self.current_state = NavigationState.NAVIGATE_TO_TARGET
         
         feedback_msg = NavigateToAruco.Feedback()
+        color_choice = goal_handle.request.color_choice
+        
+        # Déterminer la direction de rotation et couleur
+        if color_choice == 'l':
+            self.rotation_direction = 'left'
+            target_color = 'red'
+        elif color_choice == 'r':
+            self.rotation_direction = 'right'
+            target_color = 'green'
+        else:
+            target_color = 'blue'
         
         self.get_logger().info(f'⚡ Navigation vers ArUco {self.target_id}')
+        self.get_logger().info(f'📋 États: NAVIGATE→ROTATE→FOLLOW_COLOR→OBSTACLE→RETURN→ROTATE→RETURN_BASE')
         
-        # Étape 1: Attendre d'avoir une position de départ (ArUco actuel)
-        self.get_logger().info('🔍 Recherche de la position actuelle...')
-        
-        # Activer le mouvement pour commencer à chercher
+        # ÉTAT 1: NAVIGATE_TO_TARGET - Recherche position de départ
+        self.get_logger().info('🔵 ÉTAT 1: NAVIGATE_TO_TARGET - Suivi ligne bleue')
+        self.current_state = NavigationState.NAVIGATE_TO_TARGET
+        self._set_line_color('blue')
         self._enable_movement(True)
-        self._set_direction(True)  # Commencer en marche avant pour détecter
+        self._set_direction(True)
         
         initial_wait_time = 0
-        max_initial_wait = 10.0  # 10 secondes max pour détecter position initiale
+        max_initial_wait = 30.0
         
         while self.current_aruco_id is None and initial_wait_time < max_initial_wait:
             if goal_handle.is_cancel_requested:
                 return self._handle_cancellation(goal_handle)
-            
             time.sleep(0.5)
             initial_wait_time += 0.5
-            
             feedback_msg.current_aruco_id = 0
-            feedback_msg.current_direction = 'Recherche position initiale...'
+            feedback_msg.current_direction = 'Recherche position...'
             feedback_msg.elapsed_time = time.time() - self.start_time
-            feedback_msg.status_message = 'Détection de la position de départ'
+            feedback_msg.status_message = 'ÉTAT 1: Détection position départ'
             feedback_msg.obstacle_detected = False
             feedback_msg.obstacle_distance = 0.0
             goal_handle.publish_feedback(feedback_msg)
         
         if self.current_aruco_id is None:
-            self.get_logger().warn('⚠️ Aucun ArUco détecté au départ, navigation impossible')
+            self.get_logger().warn('⚠️ Aucun ArUco détecté')
             return self._return_failure(goal_handle)
         
         starting_aruco = self.current_aruco_id
-        self.get_logger().info(f'📍 Position de départ: ArUco {starting_aruco}')
+        self.get_logger().info(f'📍 Position départ: ArUco {starting_aruco}')
         
-        # Étape 2: Déterminer la direction
+        # Déterminer la direction
         if self.target_id < starting_aruco:
-            # Le marqueur cible est avant nous -> marche arrière
             self.went_forward = False
-            direction_text = "ARRIÈRE (rear camera)"
-            self.get_logger().info(f'⬅️ ArUco {self.target_id} est avant, marche arrière')
+            direction_text = "ARRIÈRE"
+            self.get_logger().info(f'⬅️ Marche arrière vers {self.target_id}')
             self._set_direction(False)
         elif self.target_id > starting_aruco:
-            # Le marqueur cible est après nous -> marche avant
             self.went_forward = True
-            direction_text = "AVANT (front camera)"
-            self.get_logger().info(f'➡️ ArUco {self.target_id} est après, marche avant')
+            direction_text = "AVANT"
+            self.get_logger().info(f'➡️ Marche avant vers {self.target_id}')
             self._set_direction(True)
         else:
-            # Nous sommes déjà au bon marqueur!
-            self.get_logger().info('✅ Déjà à la position cible!')
+            self.get_logger().info('✅ Déjà à la cible!')
             return self._return_success(goal_handle, starting_aruco)
         
-        # Étape 3: Naviguer jusqu'au marqueur cible
-        self.get_logger().info(f'🚀 Navigation en cours vers ArUco {self.target_id}...')
+        # Navigation jusqu'à la cible
+        self.get_logger().info(f'🚀 Navigation vers ArUco {self.target_id}...')
         
-        segment_timeout = 60.0  # 60 secondes max sans détecter de nouveau marqueur
-        last_aruco_change_time = time.time()  # Timer réinitialisé à chaque nouveau marqueur
-        last_detected_aruco = starting_aruco  # Dernier ArUco détecté
-        
+        segment_timeout = 60.0
+        last_aruco_change_time = time.time()
+        last_detected_aruco = starting_aruco
         last_feedback_time = time.time()
-        feedback_interval = 1.0  # Envoyer feedback chaque seconde
+        feedback_interval = 1.0
         last_movement_check = time.time()
-        movement_check_interval = 3.0  # Réactiver le mouvement toutes les 3 secondes
-        obstacle_wait_start = None  # Temps où l'obstacle a été détecté
+        movement_check_interval = 3.0
+        obstacle_wait_start = None
         
-        while True:
-            # Vérifier l'annulation
+        # Boucle de navigation jusqu'à la cible
+        while self.current_state == NavigationState.NAVIGATE_TO_TARGET:
             if goal_handle.is_cancel_requested:
                 return self._handle_cancellation(goal_handle)
             
-            # Vérifier la présence d'obstacles
+            # Gérer les obstacles
             obstacle_present = self.is_obstacle_detected()
             obstacle_distance = self.get_obstacle_distance()
             
             if obstacle_present:
                 if obstacle_wait_start is None:
                     obstacle_wait_start = time.time()
-                    direction = "AVANT" if self.went_forward else "ARRIÈRE"
-                    self.get_logger().warn(f'🚨 OBSTACLE DÉTECTÉ {direction}: {obstacle_distance:.2f}m - EN ATTENTE...')
-                
-                # Envoyer feedback d'obstacle
+                    self.get_logger().warn(f'🚨 OBSTACLE: {obstacle_distance:.2f}m')
                 wait_time = time.time() - obstacle_wait_start
                 feedback_msg.obstacle_detected = True
                 feedback_msg.obstacle_distance = obstacle_distance
-                feedback_msg.current_aruco_id = current_id if 'current_id' in locals() else 0
-                feedback_msg.current_direction = direction_text
-                feedback_msg.elapsed_time = time.time() - self.start_time
-                feedback_msg.status_message = f'⚠️ OBSTACLE à {obstacle_distance:.2f}m - Attente: {wait_time:.1f}s'
+                feedback_msg.status_message = f'ÉTAT 1: OBSTACLE à {obstacle_distance:.2f}m - Attente: {wait_time:.1f}s'
                 goal_handle.publish_feedback(feedback_msg)
-                
-                # Le robot attend que l'obstacle soit enlevé
                 time.sleep(0.5)
                 continue
             else:
-                # Plus d'obstacle
                 if obstacle_wait_start is not None:
-                    wait_duration = time.time() - obstacle_wait_start
-                    self.get_logger().info(f'✅ Obstacle enlevé après {wait_duration:.1f}s - Reprise de la navigation')
+                    self.get_logger().info(f'✅ Obstacle enlevé')
                     obstacle_wait_start = None
             
-            # Réinitialiser le timeout si un nouveau marqueur est détecté
+            # Mettre à jour détection
             current_id = self.current_aruco_id if self.current_aruco_id is not None else 0
             if current_id > 0 and current_id != last_detected_aruco:
                 last_aruco_change_time = time.time()
                 last_detected_aruco = current_id
-                self.get_logger().info(f'🔄 Nouveau marqueur détecté: ArUco {current_id} - Timer réinitialisé')
+                self.get_logger().info(f'🔄 ArUco {current_id} détecté')
             
-            # Vérifier le timeout par segment (temps sans nouveau marqueur)
-            time_since_last_change = time.time() - last_aruco_change_time
-            if time_since_last_change > segment_timeout:
-                self.get_logger().warn(f'⏱️ Timeout: Aucun nouveau marqueur depuis {segment_timeout}s')
+            # Timeout
+            if time.time() - last_aruco_change_time > segment_timeout:
+                self.get_logger().warn(f'⏱️ Timeout')
                 return self._return_failure(goal_handle)
             
-            # Réactiver le mouvement périodiquement pour s'assurer qu'il reste actif
+            # Réactiver mouvement
             if time.time() - last_movement_check >= movement_check_interval:
                 self._enable_movement(True)
-                self._set_direction(self.went_forward)  # Réappliquer la direction aussi
+                self._set_direction(self.went_forward)
                 last_movement_check = time.time()
-                self.get_logger().debug('🔄 Réactivation du mouvement et direction')
             
-            # Vérifier si on a atteint la cible
+            # Vérifier si cible atteinte
             if (self.current_aruco_id == self.target_id and 
                 self.aruco_detection_count >= self.required_detections):
-                self.get_logger().info(f'🎯 Marqueur cible {self.target_id} atteint!')
-                # Attendre un peu pour stabiliser
+                self.get_logger().info(f'🎯 Cible {self.target_id} atteinte!')
                 time.sleep(0.5)
                 
-                # Vérifier si on doit retourner à ArUco 0
-                if goal_handle.request.return_to_zero and self.target_id != 0:
-                    self.get_logger().info('🔄 Retour à ArUco 0...')
-                    return_result = self._navigate_to_zero(goal_handle, feedback_msg)
-                    if return_result:
-                        return return_result
-                
-                return self._return_success(goal_handle, self.target_id, goal_handle.request.return_to_zero)
+                # Passer à l'état suivant si color_choice spécifié
+                if color_choice and color_choice in ['l', 'r']:
+                    self.current_state = NavigationState.ROTATE_AT_TARGET
+                    break
+                else:
+                    # Pas de color_choice, retourner directement ou terminer
+                    if goal_handle.request.return_to_zero and self.target_id != 0:
+                        return_result = self._navigate_to_zero(goal_handle, feedback_msg)
+                        if return_result:
+                            return return_result
+                    return self._return_success(goal_handle, self.target_id, goal_handle.request.return_to_zero)
             
-            # Envoyer feedback périodiquement
+            # Feedback
             if time.time() - last_feedback_time >= feedback_interval:
                 feedback_msg.obstacle_detected = False
                 feedback_msg.obstacle_distance = obstacle_distance
                 feedback_msg.current_aruco_id = current_id
                 feedback_msg.current_direction = direction_text
                 feedback_msg.elapsed_time = time.time() - self.start_time
-                
                 if current_id > 0:
                     distance = abs(self.target_id - current_id)
-                    time_left = segment_timeout - time_since_last_change
-                    feedback_msg.status_message = f'ArUco {current_id} → {self.target_id} (distance: {distance}) [timeout: {time_left:.1f}s] [détections: {self.aruco_detection_count}/{self.required_detections}]'
+                    feedback_msg.status_message = f'ÉTAT 1: ArUco {current_id}→{self.target_id} (dist:{distance})'
                 else:
-                    feedback_msg.status_message = 'Suivi de la ligne...'
-                
+                    feedback_msg.status_message = 'ÉTAT 1: Suivi ligne bleue...'
                 goal_handle.publish_feedback(feedback_msg)
-                self.get_logger().info(f'📊 {feedback_msg.status_message}')
                 last_feedback_time = time.time()
             
             time.sleep(0.1)
+        
+        # ÉTAT 2: ROTATE_AT_TARGET - Rotation à la cible
+        if self.current_state == NavigationState.ROTATE_AT_TARGET:
+            self.get_logger().info(f'🔄 ÉTAT 2: ROTATE_AT_TARGET - Centrage visuel puis rotation {self.rotation_direction}')
+            
+            # Désactiver le line follower
+            self._enable_movement(False)
+            time.sleep(0.5)
+            
+            # Centrage basé sur la vision avec contrôle proportionnel
+            self.get_logger().info('⬅️ Centrage visuel sur ArUco...')
+            
+            centering_timeout = 8.0
+            centering_start = time.time()
+            cmd = Twist()
+            
+            # Tolérance en pixels pour considérer que c'est centré
+            center_tolerance_y = 20  # Tolérance stricte sur l'axe Y
+            
+            # Gain proportionnel pour contrôle plus doux
+            kp = 0.0004  # Ajusté pour une vitesse max de ~0.13 m/s à 320px d'offset
+            
+            iterations = 0
+            max_iterations = 100
+            
+            while time.time() - centering_start < centering_timeout and iterations < max_iterations:
+                iterations += 1
+                
+                # Attendre un peu pour que la caméra se mette à jour
+                time.sleep(0.05)
+                
+                # Vérifier si on a des données de position de l'ArUco
+                if self.aruco_center_y is not None and self.image_center_y is not None:
+                    offset_y = self.aruco_center_y - self.image_center_y
+                    
+                    if iterations % 10 == 0:  # Log tous les 10 iterations
+                        self.get_logger().info(f'Centrage: Offset Y = {offset_y}px (cible: ±{center_tolerance_y}px)')
+                    
+                    # Si l'ArUco est proche du centre, on arrête
+                    if abs(offset_y) < center_tolerance_y:
+                        self.get_logger().info(f'✅ ArUco centré! Offset final: {offset_y}px')
+                        break
+                    
+                    # Contrôle proportionnel: plus on est loin du centre, plus on va vite
+                    # offset_y > 0 : ArUco trop bas (robot doit reculer)
+                    # offset_y < 0 : ArUco trop haut (robot doit avancer)
+                    cmd.linear.x = -offset_y * kp
+                    
+                    # Limiter la vitesse pour éviter les mouvements brusques
+                    max_speed = 0.10
+                    cmd.linear.x = max(-max_speed, min(max_speed, cmd.linear.x))
+                    
+                    if iterations % 10 == 0:
+                        direction = "⬅️ recul" if cmd.linear.x < 0 else "➡️ avance"
+                        self.get_logger().info(f'{direction} - Vitesse: {cmd.linear.x:.3f} m/s')
+                    
+                    self.cmd_vel_publisher.publish(cmd)
+                else:
+                    self.get_logger().warn('⚠️ Pas de position ArUco - En attente...', throttle_duration_sec=1.0)
+                    cmd.linear.x = 0.0
+                    self.cmd_vel_publisher.publish(cmd)
+            
+            # Arrêter le mouvement
+            cmd.linear.x = 0.0
+            self.cmd_vel_publisher.publish(cmd)
+            time.sleep(0.5)
+            
+            if iterations >= max_iterations:
+                self.get_logger().warn(f'⚠️ Centrage terminé (max iterations) - Offset final: {self.aruco_center_y - self.image_center_y if self.aruco_center_y else "N/A"}px')
+            else:
+                self.get_logger().info('✅ Centrage réussi - Début de rotation')
+            
+            # Rotation
+            self._rotate_robot(self.rotation_direction, duration=1.5)
+            self.current_state = NavigationState.FOLLOW_COLOR_TO_OBSTACLE
+        
+        # ÉTAT 3: FOLLOW_COLOR_TO_OBSTACLE - Suivi couleur jusqu'à obstacle
+        if self.current_state == NavigationState.FOLLOW_COLOR_TO_OBSTACLE:
+            self.get_logger().info(f'🎨 ÉTAT 3: FOLLOW_COLOR_TO_OBSTACLE - Suivi ligne {target_color.upper()}')
+            self._set_line_color(target_color)
+            self._set_direction(True)
+            self.went_forward = True
+            
+            obstacle_timeout = 60.0
+            obstacle_wait = time.time()
+            
+            while not self.is_obstacle_detected():
+                if goal_handle.is_cancel_requested:
+                    return self._handle_cancellation(goal_handle)
+                if time.time() - obstacle_wait > obstacle_timeout:
+                    self.get_logger().warn('⏱️ Timeout attente obstacle')
+                    break
+                feedback_msg.status_message = f'ÉTAT 3: Suivi {target_color} vers obstacle...'
+                feedback_msg.elapsed_time = time.time() - self.start_time
+                goal_handle.publish_feedback(feedback_msg)
+                time.sleep(0.1)
+            
+            self.current_state = NavigationState.OBSTACLE_DETECTED
+        
+        # ÉTAT 4: OBSTACLE_DETECTED - Obstacle détecté
+        if self.current_state == NavigationState.OBSTACLE_DETECTED:
+            self.get_logger().info('🚧 ÉTAT 4: OBSTACLE_DETECTED - Arrêt au bout')
+            self._enable_movement(False)
+            time.sleep(2.0)
+            self.current_state = NavigationState.RETURN_ON_COLOR
+        
+        # ÉTAT 5: RETURN_ON_COLOR - Retour sur couleur
+        if self.current_state == NavigationState.RETURN_ON_COLOR:
+            self.get_logger().info(f'⬅️ ÉTAT 5: RETURN_ON_COLOR - Retour sur {target_color}')
+            self._set_direction(False)
+            self.went_forward = False
+            self._enable_movement(True)
+            
+            # Réinitialiser détection
+            self.current_aruco_id = None
+            self.aruco_detection_count = 0
+            
+            redetect_timeout = 60.0
+            redetect_start = time.time()
+            
+            while True:
+                if goal_handle.is_cancel_requested:
+                    return self._handle_cancellation(goal_handle)
+                if time.time() - redetect_start > redetect_timeout:
+                    self.get_logger().warn('⏱️ Timeout redétection')
+                    break
+                
+                if (self.current_aruco_id == self.target_id and 
+                    self.aruco_detection_count >= self.required_detections):
+                    self.get_logger().info(f'✅ ArUco {self.target_id} redétecté!')
+                    break
+                
+                feedback_msg.status_message = f'ÉTAT 5: Retour vers marqueur...'
+                feedback_msg.elapsed_time = time.time() - self.start_time
+                goal_handle.publish_feedback(feedback_msg)
+                time.sleep(0.1)
+            
+            self.current_state = NavigationState.ROTATE_AT_MARKER
+        
+        # ÉTAT 6: ROTATE_AT_MARKER - Rotation au marqueur
+        if self.current_state == NavigationState.ROTATE_AT_MARKER:
+            self.get_logger().info(f'🔄 ÉTAT 6: ROTATE_AT_MARKER - Rotation inverse')
+            # Rotation inverse pour retrouver la ligne bleue
+            opposite_direction = 'right' if self.rotation_direction == 'left' else 'left'
+            self._rotate_robot(opposite_direction, duration=1.5)
+            self._set_line_color('blue')
+            self.current_state = NavigationState.RETURN_TO_BASE
+        
+        # ÉTAT 7: RETURN_TO_BASE - Retour sur ligne bleue
+        if self.current_state == NavigationState.RETURN_TO_BASE:
+            if goal_handle.request.return_to_zero and self.target_id != 0:
+                self.get_logger().info('🏠 ÉTAT 7: RETURN_TO_BASE - Retour à ArUco 0')
+                return_result = self._navigate_to_zero(goal_handle, feedback_msg)
+                if return_result:
+                    return return_result
+            else:
+                self.get_logger().info('✅ Mission terminée sans retour base')
+        
+        return self._return_success(goal_handle, self.target_id, goal_handle.request.return_to_zero)
 
     def _enable_movement(self, enable):
         """Active ou désactive le mouvement du robot"""
@@ -437,6 +616,42 @@ class ArucoNavigationServer(Node):
         request.data = forward
         future = self.set_direction_client.call_async(request)
         return True
+    
+    def _set_line_color(self, color):
+        """Change la couleur de ligne à suivre (blue, red, green)"""
+        msg = String()
+        msg.data = color
+        self.color_change_publisher.publish(msg)
+        time.sleep(0.5)  # Give time for the color change to take effect
+        self.get_logger().info(f'🎨 Changement de couleur vers: {color.upper()}')
+    
+    def _rotate_robot(self, direction, duration=2.0):
+        """Fait tourner le robot à gauche ou à droite
+        Args:
+            direction: 'left' ou 'right'
+            duration: durée de la rotation en secondes
+        """
+        # Arrêter le line follower temporairement
+        self._enable_movement(False)
+        time.sleep(0.5)
+        
+        # Publier commande de rotation
+        cmd = Twist()
+        cmd.angular.z = 0.5 if direction == 'left' else -0.5
+        
+        rotation_start = time.time()
+        while time.time() - rotation_start < duration:
+            self.cmd_vel_publisher.publish(cmd)
+            time.sleep(0.1)
+        
+        # Arrêter la rotation
+        cmd.angular.z = 0.0
+        self.cmd_vel_publisher.publish(cmd)
+        time.sleep(0.5)
+        
+        # Réactiver le line follower
+        self._enable_movement(True)
+        self.get_logger().info(f'🔄 Rotation {direction} terminée')
 
     def _navigate_to_zero(self, goal_handle, feedback_msg):
         """Navigue vers ArUco 0 après avoir atteint la cible"""

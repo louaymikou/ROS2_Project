@@ -36,6 +36,13 @@ inline void to_flow_style_yaml(
   {
     out << "return_to_zero: ";
     rosidl_generator_traits::value_to_yaml(msg.return_to_zero, out);
+    out << ", ";
+  }
+
+  // member: color_choice
+  {
+    out << "color_choice: ";
+    rosidl_generator_traits::value_to_yaml(msg.color_choice, out);
   }
   out << "}";
 }  // NOLINT(readability/fn_size)
@@ -61,6 +68,16 @@ inline void to_block_style_yaml(
     }
     out << "return_to_zero: ";
     rosidl_generator_traits::value_to_yaml(msg.return_to_zero, out);
+    out << "\n";
+  }
+
+  // member: color_choice
+  {
+    if (indentation > 0) {
+      out << std::string(indentation, ' ');
+    }
+    out << "color_choice: ";
+    rosidl_generator_traits::value_to_yaml(msg.color_choice, out);
     out << "\n";
   }
 }  // NOLINT(readability/fn_size)
@@ -111,11 +128,11 @@ inline const char * name<custom_interfaces::action::NavigateToAruco_Goal>()
 
 template<>
 struct has_fixed_size<custom_interfaces::action::NavigateToAruco_Goal>
-  : std::integral_constant<bool, true> {};
+  : std::integral_constant<bool, false> {};
 
 template<>
 struct has_bounded_size<custom_interfaces::action::NavigateToAruco_Goal>
-  : std::integral_constant<bool, true> {};
+  : std::integral_constant<bool, false> {};
 
 template<>
 struct is_message<custom_interfaces::action::NavigateToAruco_Goal>

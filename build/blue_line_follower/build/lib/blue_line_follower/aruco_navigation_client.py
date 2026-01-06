@@ -28,13 +28,16 @@ class ArucoNavigationClient(Node):
             'navigate_to_aruco'
         )
 
-    def send_goal(self, target_id, return_to_zero=False):
+    def send_goal(self, target_id, return_to_zero=False, color_choice=''):
         """
         Demande de naviguer vers un marqueur ArUco spécifique.
         """
         self.get_logger().info(f'🎯 Demande de navigation vers ArUco {target_id}...')
         if return_to_zero:
             self.get_logger().info('🔄 Avec retour à ArUco 0')
+        if color_choice:
+            color_name = 'ROUGE (left)' if color_choice == 'l' else 'VERT (right)'
+            self.get_logger().info(f'🎨 Avec changement de couleur: {color_name}')
         
         # Attendre le serveur
         self.get_logger().info('⏳ Attente du serveur d\'action...')
@@ -46,6 +49,7 @@ class ArucoNavigationClient(Node):
         goal_msg = NavigateToAruco.Goal()
         goal_msg.target_aruco_id = target_id
         goal_msg.return_to_zero = return_to_zero
+        goal_msg.color_choice = color_choice
         
         # Envoyer l'objectif de manière asynchrone
         self.send_goal_future = self.action_client.send_goal_async(
@@ -140,10 +144,13 @@ def main(args=None):
     rclpy.init(args=args)
     
     # Vérifier les arguments de ligne de commande
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print('Usage: ros2 run blue_line_follower aruco_navigation_client <aruco_id> [--return]')
+    if len(sys.argv) < 2 or len(sys.argv) > 4:
+        print('Usage: ros2 run blue_line_follower aruco_navigation_client <aruco_id> [--return] [l|r]')
         print('Exemple: ros2 run blue_line_follower aruco_navigation_client 5')
         print('Exemple avec retour: ros2 run blue_line_follower aruco_navigation_client 5 --return')
+        print('Exemple avec couleur: ros2 run blue_line_follower aruco_navigation_client 3 l  (rouge/left)')
+        print('Exemple avec couleur: ros2 run blue_line_follower aruco_navigation_client 3 r  (vert/right)')
+        print('Exemple complet: ros2 run blue_line_follower aruco_navigation_client 3 --return l')
         return
     
     try:
@@ -156,13 +163,20 @@ def main(args=None):
         return
     
     # Vérifier si l'option --return est présente
-    return_to_zero = len(sys.argv) == 3 and sys.argv[2] == '--return'
+    return_to_zero = '--return' in sys.argv
+    
+    # Vérifier si un choix de couleur est présent (l ou r)
+    color_choice = ''
+    for arg in sys.argv[2:]:
+        if arg in ['l', 'r']:
+            color_choice = arg
+            break
     
     # Créer le client
     client = ArucoNavigationClient()
     
     # Envoyer la demande de navigation
-    if not client.send_goal(target_id, return_to_zero):
+    if not client.send_goal(target_id, return_to_zero, color_choice):
         return
     
     # Continuer jusqu'à la fin

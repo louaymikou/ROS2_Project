@@ -57,16 +57,19 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
     __slots__ = [
         '_target_aruco_id',
         '_return_to_zero',
+        '_color_choice',
     ]
 
     _fields_and_field_types = {
         'target_aruco_id': 'int32',
         'return_to_zero': 'boolean',
+        'color_choice': 'string',
     }
 
     SLOT_TYPES = (
         rosidl_parser.definition.BasicType('int32'),  # noqa: E501
         rosidl_parser.definition.BasicType('boolean'),  # noqa: E501
+        rosidl_parser.definition.UnboundedString(),  # noqa: E501
     )
 
     def __init__(self, **kwargs):
@@ -75,6 +78,7 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
             ', '.join(sorted(k for k in kwargs.keys() if '_' + k not in self.__slots__))
         self.target_aruco_id = kwargs.get('target_aruco_id', int())
         self.return_to_zero = kwargs.get('return_to_zero', bool())
+        self.color_choice = kwargs.get('color_choice', str())
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -108,6 +112,8 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
         if self.target_aruco_id != other.target_aruco_id:
             return False
         if self.return_to_zero != other.return_to_zero:
+            return False
+        if self.color_choice != other.color_choice:
             return False
         return True
 
@@ -143,6 +149,19 @@ class NavigateToAruco_Goal(metaclass=Metaclass_NavigateToAruco_Goal):
                 isinstance(value, bool), \
                 "The 'return_to_zero' field must be of type 'bool'"
         self._return_to_zero = value
+
+    @builtins.property
+    def color_choice(self):
+        """Message field 'color_choice'."""
+        return self._color_choice
+
+    @color_choice.setter
+    def color_choice(self, value):
+        if __debug__:
+            assert \
+                isinstance(value, str), \
+                "The 'color_choice' field must be of type 'str'"
+        self._color_choice = value
 
 
 # Import statements for member types

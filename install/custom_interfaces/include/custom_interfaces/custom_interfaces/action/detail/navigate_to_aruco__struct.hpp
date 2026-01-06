@@ -40,17 +40,19 @@ struct NavigateToAruco_Goal_
     {
       this->target_aruco_id = 0l;
       this->return_to_zero = false;
+      this->color_choice = "";
     }
   }
 
   explicit NavigateToAruco_Goal_(const ContainerAllocator & _alloc, rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
+  : color_choice(_alloc)
   {
-    (void)_alloc;
     if (rosidl_runtime_cpp::MessageInitialization::ALL == _init ||
       rosidl_runtime_cpp::MessageInitialization::ZERO == _init)
     {
       this->target_aruco_id = 0l;
       this->return_to_zero = false;
+      this->color_choice = "";
     }
   }
 
@@ -61,6 +63,9 @@ struct NavigateToAruco_Goal_
   using _return_to_zero_type =
     bool;
   _return_to_zero_type return_to_zero;
+  using _color_choice_type =
+    std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>;
+  _color_choice_type color_choice;
 
   // setters for named parameter idiom
   Type & set__target_aruco_id(
@@ -73,6 +78,12 @@ struct NavigateToAruco_Goal_
     const bool & _arg)
   {
     this->return_to_zero = _arg;
+    return *this;
+  }
+  Type & set__color_choice(
+    const std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>> & _arg)
+  {
+    this->color_choice = _arg;
     return *this;
   }
 
@@ -122,6 +133,9 @@ struct NavigateToAruco_Goal_
       return false;
     }
     if (this->return_to_zero != other.return_to_zero) {
+      return false;
+    }
+    if (this->color_choice != other.color_choice) {
       return false;
     }
     return true;

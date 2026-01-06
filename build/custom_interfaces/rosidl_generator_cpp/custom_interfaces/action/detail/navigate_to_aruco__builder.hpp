@@ -21,16 +21,32 @@ namespace action
 namespace builder
 {
 
+class Init_NavigateToAruco_Goal_color_choice
+{
+public:
+  explicit Init_NavigateToAruco_Goal_color_choice(::custom_interfaces::action::NavigateToAruco_Goal & msg)
+  : msg_(msg)
+  {}
+  ::custom_interfaces::action::NavigateToAruco_Goal color_choice(::custom_interfaces::action::NavigateToAruco_Goal::_color_choice_type arg)
+  {
+    msg_.color_choice = std::move(arg);
+    return std::move(msg_);
+  }
+
+private:
+  ::custom_interfaces::action::NavigateToAruco_Goal msg_;
+};
+
 class Init_NavigateToAruco_Goal_return_to_zero
 {
 public:
   explicit Init_NavigateToAruco_Goal_return_to_zero(::custom_interfaces::action::NavigateToAruco_Goal & msg)
   : msg_(msg)
   {}
-  ::custom_interfaces::action::NavigateToAruco_Goal return_to_zero(::custom_interfaces::action::NavigateToAruco_Goal::_return_to_zero_type arg)
+  Init_NavigateToAruco_Goal_color_choice return_to_zero(::custom_interfaces::action::NavigateToAruco_Goal::_return_to_zero_type arg)
   {
     msg_.return_to_zero = std::move(arg);
-    return std::move(msg_);
+    return Init_NavigateToAruco_Goal_color_choice(msg_);
   }
 
 private:

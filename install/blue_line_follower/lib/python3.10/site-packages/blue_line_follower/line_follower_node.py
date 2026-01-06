@@ -9,6 +9,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image, Range
 from geometry_msgs.msg import Twist
 from std_srvs.srv import SetBool
+from std_msgs.msg import String
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
@@ -50,6 +51,9 @@ class LineFollowerNode(Node):
         
         # Movement control: robot only moves when enabled
         self.movement_enabled = False
+        
+        # Color to follow: 'blue', 'red', or 'green'
+        self.current_color = 'blue'
         
         # Obstacle detection variables
         self.front_obstacle_distance = float('inf')  # Distance to front obstacle (m)
@@ -99,6 +103,13 @@ class LineFollowerNode(Node):
             SetBool,
             'enable_movement',
             self.enable_movement_callback)
+        
+        # Subscription to change line color
+        self.color_change_subscription = self.create_subscription(
+            String,
+            '/set_line_color',
+            self.color_change_callback,
+            10)
         
         # PID control variables
         self.last_error = 0.0
@@ -189,6 +200,20 @@ class LineFollowerNode(Node):
         response.message = f'Direction set to {direction_str}'
         return response
     
+    def color_change_callback(self, msg):
+        """
+        Callback to change the color being followed
+        """
+        color = msg.data.lower()
+        if color in ['blue', 'red', 'green']:
+            self.current_color = color
+            self.get_logger().info(f'🎨 Line color changed to: {color.upper()}')
+            # Reset PID when changing color
+            self.last_error = 0.0
+            self.integral = 0.0
+        else:
+            self.get_logger().warn(f'Invalid color: {color}. Use blue, red, or green')
+    
     def front_camera_callback(self, data):
         """
         Callback for front camera
@@ -274,30 +299,69 @@ class LineFollowerNode(Node):
                 # Draw detected markers on the aruco detection region
                 cv2.aruco.drawDetectedMarkers(aruco_roi, corners, ids)
                 
-                # Check if this is a new detection (avoid spam)
+                # Check if marker is at the bottom (on top of the robot)
                 current_time = time.time()
-                for marker_id in ids.flatten():
+                aruco_roi_height, aruco_roi_width = aruco_roi.shape[:2]
+                
+                for i, marker_id in enumerate(ids.flatten()):
                     if marker_id <= 7:  # IDs 0-7
-                        if self.last_detected_aruco != marker_id or (current_time - self.last_aruco_time) > 3.0:
-                            self.get_logger().info(f'======> Detected ArUco Marker: {marker_id} <=======')
-                            self.last_detected_aruco = marker_id
-                            self.last_aruco_time = current_time
+                        # Calculate marker center from corners
+                        marker_corners = corners[i][0]
+                        marker_center_x = int(np.mean(marker_corners[:, 0]))
+                        marker_center_y = int(np.mean(marker_corners[:, 1]))
+                        
+                        # Calculate distance from marker center to bottom of image
+                        distance_to_bottom = aruco_roi_height - marker_center_y
+                        
+                        # Marker is considered "on top" when very close to bottom (within 10 pixels)
+                        is_on_top = distance_to_bottom < 10  # Tolerance in pixels
+                        
+                        # Only log detection if marker is at bottom (on top of robot)
+                        if is_on_top:
+                            if self.last_detected_aruco != marker_id or (current_time - self.last_aruco_time) > 3.0:
+                                self.get_logger().info(f'======> Detected ArUco Marker: {marker_id} (on top, {distance_to_bottom}px from bottom) <=======')
+                                self.last_detected_aruco = marker_id
+                                self.last_aruco_time = current_time
+                        else:
+                            # Marker detected but not at bottom yet - visualize progress
+                            cv2.putText(aruco_roi, f"ArUco {marker_id}: {distance_to_bottom}px to bottom", 
+                                       (10, aruco_roi_height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+                        
+                        # Draw a line showing the target position (bottom of ROI)
+                        cv2.line(aruco_roi, (0, aruco_roi_height - 30), (aruco_roi_width, aruco_roi_height - 30), (0, 255, 0), 1)
             
             # Convert BGR to HSV
             hsv_image = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2HSV)
 
-            # Define range of blue color in HSV
-            lower_blue = np.array([100, 50, 50])   # Lower bound of blue color
-            upper_blue = np.array([130, 255, 255])  # Upper bound of blue color
+            # Define color ranges based on current_color
+            if self.current_color == 'blue':
+                lower_color = np.array([100, 50, 50])   # Lower bound of blue color
+                upper_color = np.array([130, 255, 255])  # Upper bound of blue color
+            elif self.current_color == 'red':
+                # Red wraps around in HSV, so we need two ranges
+                lower_red1 = np.array([0, 50, 50])
+                upper_red1 = np.array([10, 255, 255])
+                lower_red2 = np.array([170, 50, 50])
+                upper_red2 = np.array([180, 255, 255])
+                mask1 = cv2.inRange(hsv_image, lower_red1, upper_red1)
+                mask2 = cv2.inRange(hsv_image, lower_red2, upper_red2)
+                color_mask = cv2.bitwise_or(mask1, mask2)
+            elif self.current_color == 'green':
+                lower_color = np.array([40, 50, 50])    # Lower bound of green color
+                upper_color = np.array([80, 255, 255])   # Upper bound of green color
+            else:
+                lower_color = np.array([100, 50, 50])   # Default to blue
+                upper_color = np.array([130, 255, 255])
 
             # Create a binary mask
-            blue_mask = cv2.inRange(hsv_image, lower_blue, upper_blue)
+            if self.current_color != 'red':
+                color_mask = cv2.inRange(hsv_image, lower_color, upper_color)
 
             # Apply the mask to the ROI image
-            blue_segmented_image = cv2.bitwise_and(roi_frame, roi_frame, mask=blue_mask)
+            blue_segmented_image = cv2.bitwise_and(roi_frame, roi_frame, mask=color_mask)
 
             # Detect line and get its centroid
-            line = self.get_contour_data(blue_mask)
+            line = self.get_contour_data(color_mask)
 
             # Move depending on detection 
             cmd = Twist()
@@ -358,8 +422,8 @@ class LineFollowerNode(Node):
                 # Draw center line reference
                 cv2.line(blue_segmented_image, (roi_width//2, 0), (roi_width//2, roi_height), (0, 255, 0), 2)
                 
-                # Display camera name and direction
-                direction_text = f"{camera_name} - {'FORWARD' if self.forward_direction else 'BACKWARD'}"
+                # Display camera name, direction, and color
+                direction_text = f"{camera_name} - {'FORWARD' if self.forward_direction else 'BACKWARD'} - {self.current_color.upper()}"
                 cv2.putText(blue_segmented_image, direction_text, 
                            (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
                 
@@ -378,7 +442,7 @@ class LineFollowerNode(Node):
                 cmd.linear.x = 0.0
                 cmd.angular.z = 0.0
                 self.integral = 0.0  # Reset integral when line is lost
-                self.get_logger().warn('No blue line detected!', throttle_duration_sec=1.0)
+                self.get_logger().warn(f'No {self.current_color} line detected!', throttle_duration_sec=1.0)
             
             # Log the error and angular velocity (throttled to avoid spam)
             if line:
@@ -400,7 +464,8 @@ class LineFollowerNode(Node):
                 self.publisher.publish(stop_cmd)
             
             # Display the processed image with line detection
-            cv2.imshow("Blue Segmented Image", blue_segmented_image)
+            window_name = f"{self.current_color.capitalize()} Segmented Image"
+            cv2.imshow(window_name, blue_segmented_image)
             cv2.waitKey(1)
             
         except Exception as e:

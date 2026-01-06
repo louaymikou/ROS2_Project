@@ -1,0 +1,24 @@
+[0.458s] Invoking command in '/home/wayay/Ros/ROS2_Project/src/blue_line_follower': PYTHONPATH=/home/wayay/Ros/ROS2_Project/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build install --record /home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log --single-version-externally-managed install_data
+[0.641s] running egg_info
+[0.642s] writing ../../build/blue_line_follower/blue_line_follower.egg-info/PKG-INFO
+[0.642s] writing dependency_links to ../../build/blue_line_follower/blue_line_follower.egg-info/dependency_links.txt
+[0.642s] writing entry points to ../../build/blue_line_follower/blue_line_follower.egg-info/entry_points.txt
+[0.642s] writing requirements to ../../build/blue_line_follower/blue_line_follower.egg-info/requires.txt
+[0.642s] writing top-level names to ../../build/blue_line_follower/blue_line_follower.egg-info/top_level.txt
+[0.643s] reading manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.644s] writing manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+[0.644s] running build
+[0.644s] running build_py
+[0.645s] running install
+[0.645s] running install_lib
+[0.645s] running install_data
+[0.646s] running install_egg_info
+[0.648s] removing '/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info' (and everything under it)
+[0.648s] Copying ../../build/blue_line_follower/blue_line_follower.egg-info to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info
+[0.648s] running install_scripts
+[0.662s] Installing aruco_diagnostic script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.662s] Installing aruco_navigation_client script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.662s] Installing aruco_navigation_server script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.663s] Installing line_follower_node script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+[0.663s] writing list of installed files to '/home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log'
+[0.677s] Invoked command in '/home/wayay/Ros/ROS2_Project/src/blue_line_follower' returned '0': PYTHONPATH=/home/wayay/Ros/ROS2_Project/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/blue_line_follower build --build-base /home/wayay/Ros/ROS2_Project/build/blue_line_follower/build install --record /home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log --single-version-externally-managed install_data

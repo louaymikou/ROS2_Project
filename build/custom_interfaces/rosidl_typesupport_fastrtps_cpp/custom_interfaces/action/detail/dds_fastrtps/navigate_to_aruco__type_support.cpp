@@ -36,6 +36,8 @@ cdr_serialize(
   cdr << ros_message.target_aruco_id;
   // Member: return_to_zero
   cdr << (ros_message.return_to_zero ? true : false);
+  // Member: color_choice
+  cdr << ros_message.color_choice;
   return true;
 }
 
@@ -54,6 +56,9 @@ cdr_deserialize(
     cdr >> tmp;
     ros_message.return_to_zero = tmp ? true : false;
   }
+
+  // Member: color_choice
+  cdr >> ros_message.color_choice;
 
   return true;
 }  // NOLINT(readability/fn_size)
@@ -83,6 +88,10 @@ get_serialized_size(
     current_alignment += item_size +
       eprosima::fastcdr::Cdr::alignment(current_alignment, item_size);
   }
+  // Member: color_choice
+  current_alignment += padding +
+    eprosima::fastcdr::Cdr::alignment(current_alignment, padding) +
+    (ros_message.color_choice.size() + 1);
 
   return current_alignment - initial_alignment;
 }
@@ -124,6 +133,19 @@ max_serialized_size_NavigateToAruco_Goal(
     current_alignment += array_size * sizeof(uint8_t);
   }
 
+  // Member: color_choice
+  {
+    size_t array_size = 1;
+
+    full_bounded = false;
+    is_plain = false;
+    for (size_t index = 0; index < array_size; ++index) {
+      current_alignment += padding +
+        eprosima::fastcdr::Cdr::alignment(current_alignment, padding) +
+        1;
+    }
+  }
+
   size_t ret_val = current_alignment - initial_alignment;
   if (is_plain) {
     // All members are plain, and type is not empty.
@@ -132,7 +154,7 @@ max_serialized_size_NavigateToAruco_Goal(
     using DataType = custom_interfaces::action::NavigateToAruco_Goal;
     is_plain =
       (
-      offsetof(DataType, return_to_zero) +
+      offsetof(DataType, color_choice) +
       last_member_size
       ) == ret_val;
   }

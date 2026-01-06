@@ -16,6 +16,10 @@ module custom_interfaces {
       @verbatim (language="comment", text=
         "Retourner à ArUco 0 après avoir atteint la cible")
       boolean return_to_zero;
+
+      @verbatim (language="comment", text=
+        "Couleur à suivre après arrivée à la cible ('l' pour rouge/left, 'r' pour vert/right, 'b' pour bleu/blue par défaut)")
+      string color_choice;
     };
     struct NavigateToAruco_Result {
       @verbatim (language="comment", text=

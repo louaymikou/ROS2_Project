@@ -18,12 +18,18 @@ extern "C"
 
 // Constants defined in the message
 
+// Include directives for member types
+// Member 'color_choice'
+#include "rosidl_runtime_c/string.h"
+
 /// Struct defined in action/NavigateToAruco in the package custom_interfaces.
 typedef struct custom_interfaces__action__NavigateToAruco_Goal
 {
   int32_t target_aruco_id;
   /// Retourner à ArUco 0 après avoir atteint la cible
   bool return_to_zero;
+  /// Couleur à suivre après arrivée à la cible ('l' pour rouge/left, 'r' pour vert/right, 'b' pour bleu/blue par défaut)
+  rosidl_runtime_c__String color_choice;
 } custom_interfaces__action__NavigateToAruco_Goal;
 
 // Struct for a sequence of custom_interfaces__action__NavigateToAruco_Goal.
@@ -75,7 +81,8 @@ typedef struct custom_interfaces__action__NavigateToAruco_Result__Sequence
 // Include directives for member types
 // Member 'current_direction'
 // Member 'status_message'
-#include "rosidl_runtime_c/string.h"
+// already included above
+// #include "rosidl_runtime_c/string.h"
 
 /// Struct defined in action/NavigateToAruco in the package custom_interfaces.
 typedef struct custom_interfaces__action__NavigateToAruco_Feedback

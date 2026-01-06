@@ -37,7 +37,7 @@ void NavigateToAruco_Goal_fini_function(void * message_memory)
   typed_message->~NavigateToAruco_Goal();
 }
 
-static const ::rosidl_typesupport_introspection_cpp::MessageMember NavigateToAruco_Goal_message_member_array[2] = {
+static const ::rosidl_typesupport_introspection_cpp::MessageMember NavigateToAruco_Goal_message_member_array[3] = {
   {
     "target_aruco_id",  // name
     ::rosidl_typesupport_introspection_cpp::ROS_TYPE_INT32,  // type
@@ -71,13 +71,30 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMember NavigateToAru
     nullptr,  // fetch(index, &value) function pointer
     nullptr,  // assign(index, value) function pointer
     nullptr  // resize(index) function pointer
+  },
+  {
+    "color_choice",  // name
+    ::rosidl_typesupport_introspection_cpp::ROS_TYPE_STRING,  // type
+    0,  // upper bound of string
+    nullptr,  // members of sub message
+    false,  // is array
+    0,  // array size
+    false,  // is upper bound
+    offsetof(custom_interfaces::action::NavigateToAruco_Goal, color_choice),  // bytes offset in struct
+    nullptr,  // default value
+    nullptr,  // size() function pointer
+    nullptr,  // get_const(index) function pointer
+    nullptr,  // get(index) function pointer
+    nullptr,  // fetch(index, &value) function pointer
+    nullptr,  // assign(index, value) function pointer
+    nullptr  // resize(index) function pointer
   }
 };
 
 static const ::rosidl_typesupport_introspection_cpp::MessageMembers NavigateToAruco_Goal_message_members = {
   "custom_interfaces::action",  // message namespace
   "NavigateToAruco_Goal",  // message name
-  2,  // number of fields
+  3,  // number of fields
   sizeof(custom_interfaces::action::NavigateToAruco_Goal),
   NavigateToAruco_Goal_message_member_array,  // message members
   NavigateToAruco_Goal_init_function,  // function to initialize message memory (memory has to be allocated)

@@ -16,6 +16,9 @@
 #include "custom_interfaces/action/detail/navigate_to_aruco__struct.h"
 #include "custom_interfaces/action/detail/navigate_to_aruco__functions.h"
 
+#include "rosidl_runtime_c/string.h"
+#include "rosidl_runtime_c/string_functions.h"
+
 
 ROSIDL_GENERATOR_C_EXPORT
 bool custom_interfaces__action__navigate_to_aruco__goal__convert_from_py(PyObject * _pymsg, void * _ros_message)
@@ -68,6 +71,21 @@ bool custom_interfaces__action__navigate_to_aruco__goal__convert_from_py(PyObjec
     ros_message->return_to_zero = (Py_True == field);
     Py_DECREF(field);
   }
+  {  // color_choice
+    PyObject * field = PyObject_GetAttrString(_pymsg, "color_choice");
+    if (!field) {
+      return false;
+    }
+    assert(PyUnicode_Check(field));
+    PyObject * encoded_field = PyUnicode_AsUTF8String(field);
+    if (!encoded_field) {
+      Py_DECREF(field);
+      return false;
+    }
+    rosidl_runtime_c__String__assign(&ros_message->color_choice, PyBytes_AS_STRING(encoded_field));
+    Py_DECREF(encoded_field);
+    Py_DECREF(field);
+  }
 
   return true;
 }
@@ -106,6 +124,23 @@ PyObject * custom_interfaces__action__navigate_to_aruco__goal__convert_to_py(voi
     field = PyBool_FromLong(ros_message->return_to_zero ? 1 : 0);
     {
       int rc = PyObject_SetAttrString(_pymessage, "return_to_zero", field);
+      Py_DECREF(field);
+      if (rc) {
+        return NULL;
+      }
+    }
+  }
+  {  // color_choice
+    PyObject * field = NULL;
+    field = PyUnicode_DecodeUTF8(
+      ros_message->color_choice.data,
+      strlen(ros_message->color_choice.data),
+      "replace");
+    if (!field) {
+      return NULL;
+    }
+    {
+      int rc = PyObject_SetAttrString(_pymessage, "color_choice", field);
       Py_DECREF(field);
       if (rc) {
         return NULL;
@@ -326,8 +361,10 @@ PyObject * custom_interfaces__action__navigate_to_aruco__result__convert_to_py(v
 // already included above
 // #include "custom_interfaces/action/detail/navigate_to_aruco__functions.h"
 
-#include "rosidl_runtime_c/string.h"
-#include "rosidl_runtime_c/string_functions.h"
+// already included above
+// #include "rosidl_runtime_c/string.h"
+// already included above
+// #include "rosidl_runtime_c/string_functions.h"
 
 
 ROSIDL_GENERATOR_C_EXPORT
