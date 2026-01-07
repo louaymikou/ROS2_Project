@@ -20,7 +20,7 @@
           <geometry>
             <mesh>
               <!-- Use absolute path from source -->
-              <uri>file:///home/ros/ros2_G1_ws/ROS2_Project/src/my_robot_controller/models/my_map.stl</uri>
+              <uri>package://my_robot_controller/models/my_map.stl</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>
@@ -28,7 +28,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>file:///home/ros/ros2_G1_ws/ROS2_Project/src/my_robot_controller/models/my_map.stl</uri>
+              <uri>package://my_robot_controller/models/my_map.stl</uri>
               <scale>1 1 1</scale>
             </mesh>
           </geometry>

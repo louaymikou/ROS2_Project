@@ -17,19 +17,19 @@ msg = """
 ╔══════════════════════════════════════════════════════════╗
 ║     ENHANCED ROBOT KEYBOARD CONTROLLER                   ║
 ╠══════════════════════════════════════════════════════════╣
-║ MOVEMENT (W/A/S/D):              SPEED MODES:            ║
-║   W : Forward                      F1/1 : Slow (0.2 m/s) ║
-║   S : Backward                     F2/2 : Medium (0.5)   ║
-║   A : Turn Left                    F3/3 : Fast (1.0)     ║
-║   D : Turn Right                                         ║
+║ MOVEMENT:                        SPEED MODES:            ║
+║   I : Forward                      1 : Slow (0.2 m/s)    ║
+║   K : Backward                     2 : Medium (0.5)      ║
+║   J : Turn Left                    3 : Fast (1.0)        ║
+║   L : Turn Right                                         ║
 ║   SPACE : Stop                                           ║
 ╠══════════════════════════════════════════════════════════╣
 ║ ARM CONTROL (Incremental):       GRIPPER:                ║
-║   I/K : Shoulder Up/Down           O : Open Gripper      ║
-║   J/L : Elbow Out/In               P : Close Gripper     ║
-║   U/M : Rotate Left/Right          0 : Home Position     ║
+║   A/Q : Shoulder Up/Down           O : Open Gripper      ║
+║   Z/S : Elbow Out/In               P : Close Gripper     ║
+║   R/F : Rotate Left/Right          0 : Home Position     ║
 ╠══════════════════════════════════════════════════════════╣
-║ QUIT: Ctrl+C                                             ║
+║ QUIT: W or Ctrl+C                                        ║
 ╚══════════════════════════════════════════════════════════╝
 """
 
@@ -38,7 +38,7 @@ class EnhancedKeyboardController(Node):
         super().__init__('enhanced_keyboard_controller')
         
         # Publishers
-        self.cmd_vel_pub = self.create_publisher(Twist, '/diff_cont/cmd_vel_unstamped', 10)
+        self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         self.arm_pub = self.create_publisher(JointTrajectory, '/arm_controller/joint_trajectory', 10)
         self.gripper_pub = self.create_publisher(JointTrajectory, '/gripper_controller/joint_trajectory', 10)
         
@@ -139,16 +139,16 @@ def main():
             key = get_key().lower()
             
             # Movement
-            if key == 'w':
+            if key == 'i':
                 node.send_velocity(linear=1.0)
                 print("▲ Forward")
-            elif key == 's':
+            elif key == 'k':
                 node.send_velocity(linear=-1.0)
                 print("▼ Backward")
-            elif key == 'a':
+            elif key == 'j':
                 node.send_velocity(angular=1.0)
                 print("◄ Turn Left")
-            elif key == 'd':
+            elif key == 'l':
                 node.send_velocity(angular=-1.0)
                 print("► Turn Right")
             elif key == ' ':
@@ -164,22 +164,22 @@ def main():
                 node.set_speed_mode('fast')
             
             # Arm control (incremental)
-            elif key == 'i':
+            elif key == 'a':
                 node.shoulder_pos += node.arm_step
                 node.send_arm_command()
-            elif key == 'k':
+            elif key == 'q':
                 node.shoulder_pos -= node.arm_step
                 node.send_arm_command()
-            elif key == 'j':
+            elif key == 'z':
                 node.elbow_pos -= node.arm_step
                 node.send_arm_command()
-            elif key == 'l':
+            elif key == 's':
                 node.elbow_pos += node.arm_step
                 node.send_arm_command()
-            elif key == 'u':
+            elif key == 'r':
                 node.gripper_rotate_pos += node.arm_step
                 node.send_arm_command()
-            elif key == 'm':
+            elif key == 'f':
                 node.gripper_rotate_pos -= node.arm_step
                 node.send_arm_command()
             
@@ -194,6 +194,11 @@ def main():
             # Home position
             elif key == '0':
                 node.home_arm()
+            
+            # Quit
+            elif key == 'w':
+                print("\n👋 Quitting...")
+                break
             
             rclpy.spin_once(node, timeout_sec=0.01)
             

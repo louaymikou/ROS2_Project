@@ -1,4 +1,5 @@
 import os
+import tempfile
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, TimerAction, ExecuteProcess
@@ -20,8 +21,21 @@ def generate_launch_description():
     robot_description_config = xacro.process_file(xacro_file)
     robot_description = {'robot_description': robot_description_config.toxml()}
     
-    # World file
-    world_file_path = os.path.join(pkg_share, 'worlds', 'my_world.world')
+    # World file - with mesh path substitution
+    world_file_template = os.path.join(pkg_share, 'worlds', 'my_world.world')
+    mesh_path = os.path.join(pkg_share, 'models', 'my_map.stl')
+    
+    # Read world file and substitute mesh path
+    with open(world_file_template, 'r') as f:
+        world_content = f.read()
+    world_content = world_content.replace('package://my_robot_controller/models/my_map.stl', f'file://{mesh_path}')
+    
+    # Create temporary world file with absolute paths
+    import tempfile
+    temp_dir = tempfile.gettempdir()
+    world_file_path = os.path.join(temp_dir, 'my_world_resolved.world')
+    with open(world_file_path, 'w') as f:
+        f.write(world_content)
     
     # SLAM params
     slam_params_file = os.path.join(pkg_share, 'config', 'slam_params.yaml')
