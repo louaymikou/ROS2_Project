@@ -68,6 +68,10 @@ class ArucoNavigationServer(Node):
         self.rear_obstacle_distance = float('inf')
         self.obstacle_threshold = 0.3  # 30cm
         
+        # Line detection tracking
+        self.line_detected = True
+        self.last_line_detection_time = time.time()
+        
         # Subscribe to bottom camera (fixed under chassis for ArUco detection only)
         self.bottom_subscription = self.create_subscription(
             Image,
@@ -86,6 +90,14 @@ class ArucoNavigationServer(Node):
             Range,
             '/rear_ultrasonic/range',
             self.rear_ultrasonic_callback,
+            10)
+        
+        # Subscribe to line detection status
+        from std_msgs.msg import Bool
+        self.line_detection_subscription = self.create_subscription(
+            Bool,
+            '/line_detected',
+            self.line_detection_callback,
             10)
         
         # Publisher pour afficher les images avec détections ArUco (bottom camera uniquement)
@@ -145,6 +157,12 @@ class ArucoNavigationServer(Node):
     def rear_ultrasonic_callback(self, msg):
         """Callback pour le capteur ultrason arrière"""
         self.rear_obstacle_distance = msg.range
+    
+    def line_detection_callback(self, msg):
+        """Callback pour le statut de détection de ligne"""
+        self.line_detected = msg.data
+        if self.line_detected:
+            self.last_line_detection_time = time.time()
     
     def is_obstacle_detected(self):
         """Vérifie s'il y a un obstacle dans la direction de navigation"""
@@ -462,77 +480,113 @@ class ArucoNavigationServer(Node):
                 
                 self.current_state = NavigationState.FOLLOW_COLOR_TO_OBSTACLE
         
-        # ÉTAT 3: FOLLOW_COLOR_TO_OBSTACLE - Suivi couleur jusqu'à obstacle
+        # ÉTAT 3: FOLLOW_COLOR_TO_OBSTACLE - Suivi couleur jusqu'à perte de ligne
         if self.current_state == NavigationState.FOLLOW_COLOR_TO_OBSTACLE:
             self.get_logger().info(f'🎨 ÉTAT 3: FOLLOW_COLOR_TO_OBSTACLE - Suivi ligne {target_color.upper()}')
             self._set_line_color(target_color)
             self._set_direction(True)
             self.went_forward = True
+            self._enable_movement(True)
             
-            obstacle_timeout = 60.0
-            obstacle_wait = time.time()
+            line_loss_timeout = 5.0  # 5 secondes sans ligne
+            overall_timeout = 60.0
+            start_wait = time.time()
             
-            while not self.is_obstacle_detected():
+            while True:
                 if goal_handle.is_cancel_requested:
                     return self._handle_cancellation(goal_handle)
-                if time.time() - obstacle_wait > obstacle_timeout:
-                    self.get_logger().warn('⏱️ Timeout attente obstacle')
+                if time.time() - start_wait > overall_timeout:
+                    self.get_logger().warn('⏱️ Timeout général')
                     break
-                feedback_msg.status_message = f'ÉTAT 3: Suivi {target_color} vers obstacle...'
+                
+                # Vérifier si la ligne n'est plus détectée depuis 5 secondes
+                time_since_line = time.time() - self.last_line_detection_time
+                if time_since_line > line_loss_timeout:
+                    self.get_logger().info(f'🛑 Ligne {target_color} perdue depuis {time_since_line:.1f}s')
+                    break
+                
+                feedback_msg.status_message = f'ÉTAT 3: Suivi {target_color} (ligne: {"OK" if self.line_detected else "PERDUE"})'
                 feedback_msg.elapsed_time = time.time() - self.start_time
                 goal_handle.publish_feedback(feedback_msg)
                 time.sleep(0.1)
             
             self.current_state = NavigationState.OBSTACLE_DETECTED
         
-        # ÉTAT 4: OBSTACLE_DETECTED - Obstacle détecté
+        # ÉTAT 4: OBSTACLE_DETECTED - Arrêt au bout de la ligne
         if self.current_state == NavigationState.OBSTACLE_DETECTED:
-            self.get_logger().info('🚧 ÉTAT 4: OBSTACLE_DETECTED - Arrêt au bout')
+            self.get_logger().info('🛑 ÉTAT 4: OBSTACLE_DETECTED - Fin de ligne colorée')
             self._enable_movement(False)
-            time.sleep(2.0)
+            time.sleep(1.0)
+            self.get_logger().info('🔄 Changement de direction - utilisation caméra arrière')
             self.current_state = NavigationState.RETURN_ON_COLOR
         
-        # ÉTAT 5: RETURN_ON_COLOR - Retour sur couleur
+        # ÉTAT 5: RETURN_ON_COLOR - Retour arrière sur couleur jusqu'à perte de ligne
         if self.current_state == NavigationState.RETURN_ON_COLOR:
-            self.get_logger().info(f'⬅️ ÉTAT 5: RETURN_ON_COLOR - Retour sur {target_color}')
-            self._set_direction(False)
+            self.get_logger().info(f'⬅️ ÉTAT 5: RETURN_ON_COLOR - Retour arrière sur {target_color} (caméra arrière)')
+            self._set_direction(False)  # Marche arrière - active caméra arrière
             self.went_forward = False
+            time.sleep(0.5)  # Attendre que la direction soit changée
             self._enable_movement(True)
             
-            # Réinitialiser détection
-            self.current_aruco_id = None
-            self.aruco_detection_count = 0
+            # Reset line detection timer - attendre un peu que la ligne soit détectée
+            time.sleep(1.0)
+            self.last_line_detection_time = time.time()
             
-            redetect_timeout = 60.0
-            redetect_start = time.time()
+            # Attendre que la ligne soit détectée (on devrait être sur la ligne)
+            wait_for_line_start = time.time()
+            while not self.line_detected and (time.time() - wait_for_line_start) < 3.0:
+                time.sleep(0.1)
+            
+            if self.line_detected:
+                self.get_logger().info(f'✅ Ligne {target_color} détectée - début du retour arrière')
+            else:
+                self.get_logger().warn(f'⚠️ Ligne {target_color} non détectée - retour quand même')
+            
+            return_timeout = 60.0
+            return_start = time.time()
+            line_was_detected = False
             
             while True:
                 if goal_handle.is_cancel_requested:
                     return self._handle_cancellation(goal_handle)
-                if time.time() - redetect_start > redetect_timeout:
-                    self.get_logger().warn('⏱️ Timeout redétection')
+                if time.time() - return_start > return_timeout:
+                    self.get_logger().warn('⏱️ Timeout retour')
                     break
                 
-                if (self.current_aruco_id == self.target_id and 
-                    self.aruco_detection_count >= self.required_detections):
-                    self.get_logger().info(f'✅ ArUco {self.target_id} redétecté!')
+                # Marquer si on a détecté la ligne au moins une fois
+                if self.line_detected:
+                    line_was_detected = True
+                
+                # Attendre que la ligne soit perdue (si elle a été détectée)
+                if line_was_detected and not self.line_detected:
+                    self.get_logger().info(f'✅ Ligne {target_color} n\'est plus détectée - fin du retour arrière')
+                    time.sleep(0.5)  # Attendre un peu pour être sûr
                     break
                 
-                feedback_msg.status_message = f'ÉTAT 5: Retour vers marqueur...'
+                feedback_msg.status_message = f'ÉTAT 5: Retour arrière sur {target_color} (ligne: {"OK" if self.line_detected else "NON"})'
                 feedback_msg.elapsed_time = time.time() - self.start_time
                 goal_handle.publish_feedback(feedback_msg)
                 time.sleep(0.1)
             
+            self._enable_movement(False)
+            time.sleep(0.5)
             self.current_state = NavigationState.ROTATE_AT_MARKER
         
-        # ÉTAT 6: ROTATE_AT_MARKER - Retour direct à la ligne bleue
+        # ÉTAT 6: ROTATE_AT_MARKER - Rotation pour retrouver ligne bleue
         if self.current_state == NavigationState.ROTATE_AT_MARKER:
-            # Si on a fait une rotation (l ou r), faire une rotation de 90° inverse pour revenir à la ligne bleue
+            # Rotation basée sur la couleur suivie: left pour rouge, right pour vert
             if self.rotation_direction is not None:
-                self.get_logger().info(f'🔄 ÉTAT 6: ROTATE_AT_MARKER - Rotation 90° inverse vers ligne bleue')
-                # Rotation inverse de 90 degrés pour retrouver la ligne bleue
-                opposite_direction = 'left' if self.rotation_direction == 'right' else 'right'
-                self._rotate_robot(opposite_direction, duration=5.0)
+                if target_color == 'red':
+                    rotation = 'left'
+                    self.get_logger().info(f'🔄 ÉTAT 6: Rotation GAUCHE (rouge) vers ligne bleue')
+                elif target_color == 'green':
+                    rotation = 'right'
+                    self.get_logger().info(f'🔄 ÉTAT 6: Rotation DROITE (vert) vers ligne bleue')
+                else:
+                    rotation = 'left'
+                    self.get_logger().info(f'🔄 ÉTAT 6: Rotation par défaut')
+                
+                self._rotate_robot(rotation, duration=5.0)
             else:
                 self.get_logger().info('✅ ÉTAT 6: Pas de rotation nécessaire')
             

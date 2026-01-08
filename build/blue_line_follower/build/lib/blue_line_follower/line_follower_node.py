@@ -92,6 +92,10 @@ class LineFollowerNode(Node):
         # Publisher for velocity commands
         self.publisher = self.create_publisher(Twist, '/diff_drive_controller/cmd_vel_unstamped', 10)
         
+        # Publisher for line detection status
+        from std_msgs.msg import Bool
+        self.line_detected_pub = self.create_publisher(Bool, '/line_detected', 10)
+        
         # Service to change direction
         self.direction_service = self.create_service(
             SetBool,
@@ -362,6 +366,12 @@ class LineFollowerNode(Node):
 
             # Detect line and get its centroid
             line = self.get_contour_data(color_mask)
+            
+            # Publish line detection status
+            from std_msgs.msg import Bool
+            line_status = Bool()
+            line_status.data = line is not None and len(line) > 0
+            self.line_detected_pub.publish(line_status)
 
             # Move depending on detection 
             cmd = Twist()
