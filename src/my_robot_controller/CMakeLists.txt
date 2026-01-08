@@ -23,6 +23,7 @@ install(
     nodes/navigation/navigate_to_package.py
     nodes/navigation/set_initial_pose.py
     nodes/navigation/backward_to_wall.py
+    nodes/navigation/auto_navigator.py
     nodes/compare_odometry.py
   DESTINATION lib/${PROJECT_NAME}
 )
