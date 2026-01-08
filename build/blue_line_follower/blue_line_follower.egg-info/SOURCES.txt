@@ -21,7 +21,10 @@ blue_line_follower/__init__.py
 blue_line_follower/aruco_diagnostic.py
 blue_line_follower/aruco_navigation_client.py
 blue_line_follower/aruco_navigation_server.py
+blue_line_follower/keyboard_controller.py
 blue_line_follower/line_follower_node.py
+config/controller_config.yaml
+config/robot_view.rviz
 launch/simulation.launch.py
 models/aruco_0/model.config
 models/aruco_0/model.sdf

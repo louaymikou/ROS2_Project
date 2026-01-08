@@ -25,6 +25,8 @@ setup(
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'worlds'), glob('worlds/*.world')),
         (os.path.join('share', package_name, 'urdf'), glob('urdf/*.xacro')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.rviz')),
     ] + get_data_files('models', os.path.join('share', package_name, 'models')) + get_data_files('aruco', os.path.join('share', package_name, 'aruco')),
     install_requires=['setuptools'],
     zip_safe=True,
@@ -39,6 +41,7 @@ setup(
             'aruco_navigation_server = blue_line_follower.aruco_navigation_server:main',
             'aruco_navigation_client = blue_line_follower.aruco_navigation_client:main',
             'aruco_diagnostic = blue_line_follower.aruco_diagnostic:main',
+            'keyboard_controller = blue_line_follower.keyboard_controller:main',
         ],
     },
 )

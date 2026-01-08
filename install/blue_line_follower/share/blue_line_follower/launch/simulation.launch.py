@@ -23,6 +23,7 @@ def generate_launch_description():
     world_file = os.path.join(pkg_share, 'worlds', 'blue_line_track.world')
     urdf_file = os.path.join(pkg_share, 'urdf', 'line_follower_robot.urdf.xacro')
     models_path = os.path.join(pkg_share, 'models')
+    controller_config = os.path.join(pkg_share, 'config', 'controller_config.yaml')
     
     # Set GAZEBO_MODEL_PATH to include our models
     gazebo_model_path = os.environ.get('GAZEBO_MODEL_PATH', '')
@@ -87,11 +88,40 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}]
     )
     
+    # Controller Manager spawner for joint state broadcaster
+    joint_state_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+        output='screen'
+    )
+    
+    # Controller Manager spawner for diff drive controller
+    diff_drive_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_drive_controller', '--controller-manager', '/controller_manager'],
+        output='screen'
+    )
+    
+    # RViz pour visualiser le robot et les joints
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+        arguments=['-d', os.path.join(pkg_share, 'config', 'robot_view.rviz')],
+        parameters=[{'use_sim_time': True}]
+    )
+    
     return LaunchDescription([
         set_gazebo_model_path,
         gzserver,
         gzclient,
         robot_state_publisher,
         spawn_entity,
+        joint_state_broadcaster_spawner,
+        diff_drive_controller_spawner,
+        rviz_node,
         line_follower_node
     ])

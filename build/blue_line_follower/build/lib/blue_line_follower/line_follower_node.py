@@ -90,7 +90,7 @@ class LineFollowerNode(Node):
             10)
         
         # Publisher for velocity commands
-        self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.publisher = self.create_publisher(Twist, '/diff_drive_controller/cmd_vel_unstamped', 10)
         
         # Service to change direction
         self.direction_service = self.create_service(
@@ -458,10 +458,7 @@ class LineFollowerNode(Node):
                 else:
                     # Safe to move
                     self.publisher.publish(cmd)
-            else:
-                # Ensure robot is stopped when movement is disabled
-                stop_cmd = Twist()
-                self.publisher.publish(stop_cmd)
+            # Ne rien publier quand movement_enabled=False pour permettre le contrôle externe
             
             # Display the processed image with line detection
             window_name = f"{self.current_color.capitalize()} Segmented Image"

@@ -121,7 +121,11 @@ class ArucoNavigationServer(Node):
         self.rotation_direction = None  # 'left' or 'right'
         
         # Publisher pour contrôler directement le robot si nécessaire
-        self.cmd_vel_publisher = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.cmd_vel_publisher = self.create_publisher(Twist, '/diff_drive_controller/cmd_vel_unstamped', 10)
+        
+        # Vitesses pour les rotations
+        self.linear_speed = 1.0
+        self.angular_speed = 1.0
         
         self.get_logger().info('=================================')
         self.get_logger().info('🎯 ArUco Navigation Server Ready')
@@ -289,13 +293,16 @@ class ArucoNavigationServer(Node):
         color_choice = goal_handle.request.color_choice
         
         # Déterminer la direction de rotation et couleur
+        # 'l' = rotation à DROITE pour suivre ligne ROUGE
+        # 'r' = rotation à GAUCHE pour suivre ligne VERTE
         if color_choice == 'l':
-            self.rotation_direction = 'left'
+            self.rotation_direction = 'right'  # Rotation à droite
             target_color = 'red'
         elif color_choice == 'r':
-            self.rotation_direction = 'right'
+            self.rotation_direction = 'left'   # Rotation à gauche
             target_color = 'green'
         else:
+            self.rotation_direction = None
             target_color = 'blue'
         
         self.get_logger().info(f'⚡ Navigation vers ArUco {self.target_id}')
@@ -438,78 +445,22 @@ class ArucoNavigationServer(Node):
         
         # ÉTAT 2: ROTATE_AT_TARGET - Rotation à la cible
         if self.current_state == NavigationState.ROTATE_AT_TARGET:
-            self.get_logger().info(f'🔄 ÉTAT 2: ROTATE_AT_TARGET - Centrage visuel puis rotation {self.rotation_direction}')
-            
-            # Désactiver le line follower
-            self._enable_movement(False)
-            time.sleep(0.5)
-            
-            # Centrage basé sur la vision avec contrôle proportionnel
-            self.get_logger().info('⬅️ Centrage visuel sur ArUco...')
-            
-            centering_timeout = 8.0
-            centering_start = time.time()
-            cmd = Twist()
-            
-            # Tolérance en pixels pour considérer que c'est centré
-            center_tolerance_y = 20  # Tolérance stricte sur l'axe Y
-            
-            # Gain proportionnel pour contrôle plus doux
-            kp = 0.0004  # Ajusté pour une vitesse max de ~0.13 m/s à 320px d'offset
-            
-            iterations = 0
-            max_iterations = 100
-            
-            while time.time() - centering_start < centering_timeout and iterations < max_iterations:
-                iterations += 1
-                
-                # Attendre un peu pour que la caméra se mette à jour
-                time.sleep(0.05)
-                
-                # Vérifier si on a des données de position de l'ArUco
-                if self.aruco_center_y is not None and self.image_center_y is not None:
-                    offset_y = self.aruco_center_y - self.image_center_y
-                    
-                    if iterations % 10 == 0:  # Log tous les 10 iterations
-                        self.get_logger().info(f'Centrage: Offset Y = {offset_y}px (cible: ±{center_tolerance_y}px)')
-                    
-                    # Si l'ArUco est proche du centre, on arrête
-                    if abs(offset_y) < center_tolerance_y:
-                        self.get_logger().info(f'✅ ArUco centré! Offset final: {offset_y}px')
-                        break
-                    
-                    # Contrôle proportionnel: plus on est loin du centre, plus on va vite
-                    # offset_y > 0 : ArUco trop bas (robot doit reculer)
-                    # offset_y < 0 : ArUco trop haut (robot doit avancer)
-                    cmd.linear.x = -offset_y * kp
-                    
-                    # Limiter la vitesse pour éviter les mouvements brusques
-                    max_speed = 0.10
-                    cmd.linear.x = max(-max_speed, min(max_speed, cmd.linear.x))
-                    
-                    if iterations % 10 == 0:
-                        direction = "⬅️ recul" if cmd.linear.x < 0 else "➡️ avance"
-                        self.get_logger().info(f'{direction} - Vitesse: {cmd.linear.x:.3f} m/s')
-                    
-                    self.cmd_vel_publisher.publish(cmd)
-                else:
-                    self.get_logger().warn('⚠️ Pas de position ArUco - En attente...', throttle_duration_sec=1.0)
-                    cmd.linear.x = 0.0
-                    self.cmd_vel_publisher.publish(cmd)
-            
-            # Arrêter le mouvement
-            cmd.linear.x = 0.0
-            self.cmd_vel_publisher.publish(cmd)
-            time.sleep(0.5)
-            
-            if iterations >= max_iterations:
-                self.get_logger().warn(f'⚠️ Centrage terminé (max iterations) - Offset final: {self.aruco_center_y - self.image_center_y if self.aruco_center_y else "N/A"}px')
+            # Si pas de choix de couleur ('l' ou 'r'), passer directement à la fin
+            if color_choice not in ['l', 'r']:
+                self.get_logger().info('✅ ArUco cible atteint, pas de rotation demandée')
+                self.current_state = NavigationState.RETURN_TO_BASE
             else:
-                self.get_logger().info('✅ Centrage réussi - Début de rotation')
-            
-            # Rotation
-            self._rotate_robot(self.rotation_direction, duration=1.5)
-            self.current_state = NavigationState.FOLLOW_COLOR_TO_OBSTACLE
+                self.get_logger().info(f'🔄 ÉTAT 2: ROTATE_AT_TARGET - Rotation 90° {self.rotation_direction}')
+                
+                # Désactiver le line follower
+                self._enable_movement(False)
+                time.sleep(0.5)
+                
+                # Rotation de 90 degrés (environ 2.5 secondes à vitesse angulaire de 0.6 rad/s)
+                # Pour rotation droite (l) ou gauche (r)
+                self._rotate_robot(self.rotation_direction, duration=5.0)
+                
+                self.current_state = NavigationState.FOLLOW_COLOR_TO_OBSTACLE
         
         # ÉTAT 3: FOLLOW_COLOR_TO_OBSTACLE - Suivi couleur jusqu'à obstacle
         if self.current_state == NavigationState.FOLLOW_COLOR_TO_OBSTACLE:
@@ -574,12 +525,17 @@ class ArucoNavigationServer(Node):
             
             self.current_state = NavigationState.ROTATE_AT_MARKER
         
-        # ÉTAT 6: ROTATE_AT_MARKER - Rotation au marqueur
+        # ÉTAT 6: ROTATE_AT_MARKER - Retour direct à la ligne bleue
         if self.current_state == NavigationState.ROTATE_AT_MARKER:
-            self.get_logger().info(f'🔄 ÉTAT 6: ROTATE_AT_MARKER - Rotation inverse')
-            # Rotation inverse pour retrouver la ligne bleue
-            opposite_direction = 'right' if self.rotation_direction == 'left' else 'left'
-            self._rotate_robot(opposite_direction, duration=1.5)
+            # Si on a fait une rotation (l ou r), faire une rotation de 90° inverse pour revenir à la ligne bleue
+            if self.rotation_direction is not None:
+                self.get_logger().info(f'🔄 ÉTAT 6: ROTATE_AT_MARKER - Rotation 90° inverse vers ligne bleue')
+                # Rotation inverse de 90 degrés pour retrouver la ligne bleue
+                opposite_direction = 'left' if self.rotation_direction == 'right' else 'right'
+                self._rotate_robot(opposite_direction, duration=5.0)
+            else:
+                self.get_logger().info('✅ ÉTAT 6: Pas de rotation nécessaire')
+            
             self._set_line_color('blue')
             self.current_state = NavigationState.RETURN_TO_BASE
         
@@ -625,33 +581,49 @@ class ArucoNavigationServer(Node):
         time.sleep(0.5)  # Give time for the color change to take effect
         self.get_logger().info(f'🎨 Changement de couleur vers: {color.upper()}')
     
-    def _rotate_robot(self, direction, duration=2.0):
-        """Fait tourner le robot à gauche ou à droite
+    def send_velocity(self, linear=0.0, angular=0.0):
+        """Envoie une commande de vitesse au robot
+        Args:
+            linear: vitesse linéaire normalisée (-1.0 à 1.0)
+            angular: vitesse angulaire normalisée (-1.0 à 1.0)
+        """
+        twist = Twist()
+        twist.linear.x = linear * self.linear_speed
+        twist.angular.z = angular * self.angular_speed
+        # Publier plusieurs fois pour garantir la réception
+        for _ in range(5):
+            self.cmd_vel_publisher.publish(twist)
+            time.sleep(0.01)
+    
+    def _rotate_robot(self, direction, duration=3.5):
+        """Fait tourner le robot à gauche ou à droite de 90 degrés
         Args:
             direction: 'left' ou 'right'
-            duration: durée de la rotation en secondes
+            duration: durée de la rotation en secondes (3.5s pour 90° complet)
         """
         # Arrêter le line follower temporairement
         self._enable_movement(False)
         time.sleep(0.5)
         
-        # Publier commande de rotation
-        cmd = Twist()
-        cmd.angular.z = 0.5 if direction == 'left' else -0.5
+        # Publier commande de rotation pour 90 degrés
+        # Vitesse angulaire normalisée: 0.5 pour gauche, -0.5 pour droite
+        angular_value = 0.5 if direction == 'left' else -0.5
         
         rotation_start = time.time()
         while time.time() - rotation_start < duration:
-            self.cmd_vel_publisher.publish(cmd)
-            time.sleep(0.1)
+            # Publier continuellement pendant la rotation
+            self.send_velocity(linear=0.0, angular=angular_value)
+            time.sleep(0.05)  # Publier à 20Hz
         
-        # Arrêter la rotation
-        cmd.angular.z = 0.0
-        self.cmd_vel_publisher.publish(cmd)
-        time.sleep(0.5)
+        # Arrêter la rotation en publiant plusieurs fois
+        for _ in range(10):
+            self.send_velocity(linear=0.0, angular=0.0)
+            time.sleep(0.05)
         
         # Réactiver le line follower
         self._enable_movement(True)
-        self.get_logger().info(f'🔄 Rotation {direction} terminée')
+        time.sleep(0.3)
+        self.get_logger().info(f'🔄 Rotation 90° {direction} terminée')
 
     def _navigate_to_zero(self, goal_handle, feedback_msg):
         """Navigue vers ArUco 0 après avoir atteint la cible"""
