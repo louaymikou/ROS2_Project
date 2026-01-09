@@ -23,7 +23,6 @@ def generate_launch_description():
     # Fichiers
     nav2_params_file = os.path.join(pkg_share, 'config', 'nav2_params.yaml')
     map_file = '/home/ikram/ROS2_Project/my_robot_map.yaml'
-    rviz_config = os.path.join(nav2_bringup_share, 'rviz', 'nav2_default_view.rviz')
 
     # 1️⃣ Gazebo + robot
     launch_sim = IncludeLaunchDescription(
@@ -32,7 +31,7 @@ def generate_launch_description():
         )
     )
 
-    # 2️⃣ Nav2 (localization mode)
+    # 2️⃣ Nav2 (localization + navigation)
     launch_nav2 = TimerAction(
         period=15.0,
         actions=[
@@ -58,7 +57,7 @@ def generate_launch_description():
         ]
     )
 
-    # 3️⃣ cmd_vel relay
+    # 3️⃣ cmd_vel relay (CORRIGÉ: cmd_vel_nav au lieu de cmd_vel)
     cmd_vel_relay = TimerAction(
         period=25.0,
         actions=[
@@ -67,7 +66,7 @@ def generate_launch_description():
                 executable='relay',
                 name='cmd_vel_relay',
                 output='screen',
-                arguments=['/cmd_vel', '/diff_cont/cmd_vel_unstamped'],
+                arguments=['/cmd_vel_nav', '/diff_cont/cmd_vel_unstamped'],
                 parameters=[{'use_sim_time': True}]
             )
         ]
