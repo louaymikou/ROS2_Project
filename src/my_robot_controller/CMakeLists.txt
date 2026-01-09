@@ -15,16 +15,8 @@ install(
 # Install Python nodes from organized structure
 install(
   PROGRAMS
-    nodes/controllers/ps4_controller.py
     nodes/controllers/keyboard_controller.py
-    nodes/mappers/auto_mapper.py
-    nodes/mappers/auto_mapper_detailed.py
-    nodes/mappers/wall_follower_mapper.py
-    nodes/navigation/navigate_to_package.py
-    nodes/navigation/set_initial_pose.py
-    nodes/navigation/backward_to_wall.py
     nodes/navigation/auto_navigator.py
-    nodes/compare_odometry.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
