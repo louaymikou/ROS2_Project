@@ -104,6 +104,14 @@ def generate_launch_description():
         output='screen'
     )
     
+    # Controller Manager spawner for pusher controller
+    pusher_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['pusher_controller', '--controller-manager', '/controller_manager'],
+        output='screen'
+    )
+    
     # RViz pour visualiser le robot et les joints
     rviz_node = Node(
         package='rviz2',
@@ -122,6 +130,7 @@ def generate_launch_description():
         spawn_entity,
         joint_state_broadcaster_spawner,
         diff_drive_controller_spawner,
+        pusher_controller_spawner,
         rviz_node,
         line_follower_node
     ])

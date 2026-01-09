@@ -690,6 +690,29 @@
       </link>
     </model>
     
+    <!-- Test Cube - Positioned above robot for pusher testing -->
+    <model name="test_cube_1">
+      <pose>0 0 0.45 0 0 0</pose>
+      <include>
+        <uri>model://test_cube</uri>
+      </include>
+    </model>
+    
+    <!-- Additional cubes for multiple tests -->
+    <model name="test_cube_2">
+      <pose>5 0 0.3 0 0 0</pose>
+      <include>
+        <uri>model://test_cube</uri>
+      </include>
+    </model>
+    
+    <model name="test_cube_3">
+      <pose>10 0 0.3 0 0 0</pose>
+      <include>
+        <uri>model://test_cube</uri>
+      </include>
+    </model>
+    
     <!-- Scene -->
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>

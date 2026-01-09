@@ -1,0 +1,4 @@
+Invoking command in '/home/wayay/Ros/ROS2_Project/build/custom_interfaces': /usr/bin/cmake --build /home/wayay/Ros/ROS2_Project/build/custom_interfaces -- -j6 -l6
+Invoked command in '/home/wayay/Ros/ROS2_Project/build/custom_interfaces' returned '0': /usr/bin/cmake --build /home/wayay/Ros/ROS2_Project/build/custom_interfaces -- -j6 -l6
+Invoking command in '/home/wayay/Ros/ROS2_Project/build/custom_interfaces': /usr/bin/cmake --install /home/wayay/Ros/ROS2_Project/build/custom_interfaces
+Invoked command in '/home/wayay/Ros/ROS2_Project/build/custom_interfaces' returned '0': /usr/bin/cmake --install /home/wayay/Ros/ROS2_Project/build/custom_interfaces

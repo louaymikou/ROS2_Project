@@ -42,6 +42,8 @@ setup(
             'aruco_navigation_client = blue_line_follower.aruco_navigation_client:main',
             'aruco_diagnostic = blue_line_follower.aruco_diagnostic:main',
             'keyboard_controller = blue_line_follower.keyboard_controller:main',
+            'pusher_controller = blue_line_follower.pusher_controller:main',
+            'pusher_tester = blue_line_follower.pusher_tester:main',
         ],
     },
 )

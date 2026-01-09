@@ -23,6 +23,8 @@ blue_line_follower/aruco_navigation_client.py
 blue_line_follower/aruco_navigation_server.py
 blue_line_follower/keyboard_controller.py
 blue_line_follower/line_follower_node.py
+blue_line_follower/pusher_controller.py
+blue_line_follower/pusher_tester.py
 config/controller_config.yaml
 config/robot_view.rviz
 launch/simulation.launch.py
@@ -58,6 +60,8 @@ models/aruco_7/model.config
 models/aruco_7/model.sdf
 models/aruco_7/materials/scripts/aruco_7.material
 models/aruco_7/materials/textures/7.png
+models/test_cube/model.config
+models/test_cube/model.sdf
 resource/blue_line_follower
 urdf/line_follower_robot.urdf.xacro
 worlds/blue_line_track.world
