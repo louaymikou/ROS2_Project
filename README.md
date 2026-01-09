@@ -1,74 +1,223 @@
-# ROS2 Mobile Robot Project
+# 🤖 ROS2 Mobile Manipulator Project
 
-🤖 Mobile robot with teleoperation, SLAM mapping, navigation capabilities, and **IMU sensor fusion** for improved odometry.
+Mobile robot with manipulator arm, SLAM mapping, autonomous navigation, and **IMU sensor fusion** for improved odometry.
 
-## 🆕 Nouveautés - Intégration IMU
+## ✨ Fonctionnalités Principales
+
+- 🗺️ **Mapping SLAM** - Création de cartes avec SLAM Toolbox
+- 🧭 **Navigation Autonome** - Navigation avec Nav2
+- 🎮 **Contrôle Téléopéré** - Clavier et manette PS4
+- 🦾 **Bras Manipulateur** - Bras 3-DOF avec pince
+- 📡 **Fusion de Capteurs** - IMU + Wheel Encoders avec EKF
+- 🎯 **Simulation Gazebo** - Environnement réaliste
+
+## 🚀 Démarrage Rapide
+
+### 📖 Documentation Disponible
+
+| Guide | Description |
+|-------|-------------|
+| **[QUICK_START.md](QUICK_START.md)** | ⚡ Commandes rapides pour démarrer |
+| **[PROJECT_GUIDE.md](PROJECT_GUIDE.md)** | 📚 Guide complet et détaillé |
+| **[check_system.sh](check_system.sh)** | 🔍 Script de vérification du système |
+
+### ⚙️ Installation Rapide
+
+```bash
+# Installer les dépendances ROS2
+sudo apt install ros-humble-slam-toolbox \
+                 ros-humble-navigation2 \
+                 ros-humble-nav2-bringup \
+                 ros-humble-robot-localization \
+                 ros-humble-gazebo-ros-pkgs
+
+# Builder le projet
+cd ~/ROS2_Project
+colcon build
+source install/setup.bash
+
+# Vérifier le système
+./check_system.sh
+```
+
+## 🗺️ Mapping (Créer une Carte)
+
+```bash
+# Terminal 1: Lancer Gazebo + SLAM
+ros2 launch my_robot_controller slam_mapping.launch.py
+
+# Terminal 2: Visualisation
+rviz2
+
+# Terminal 3: Contrôle clavier
+python3 src/my_robot_controller/nodes/controllers/keyboard_controller.py
+
+# Terminal 4: Sauvegarder la carte
+ros2 run nav2_map_server map_saver_cli -f src/my_robot_controller/maps/my_robot_map
+```
+
+## 🧭 Navigation Autonome
+
+```bash
+# Terminal 1: Lancer Gazebo + Nav2
+ros2 launch my_robot_controller navigation.launch.py
+
+# Terminal 2: Navigation autonome
+ros2 run my_robot_controller auto_navigator.py demo
+
+# Terminal 3: RViz Nav2
+rviz2 -d $(ros2 pkg prefix nav2_bringup)/share/nav2_bringup/rviz/nav2_default_view.rviz
+```
+
+## 🔧 Intégration IMU
 
 ✨ **Fusion de capteurs avec robot_localization**
-- L'IMU est maintenant intégré pour améliorer la précision de l'odométrie
-- Fusion Extended Kalman Filter (EKF) : Wheel Encoders + IMU
-- Meilleure orientation et détection de glissement
-- Topic d'odométrie fusionnée : `/odometry/local`
+- EKF fusion: Wheel Encoders + IMU
+- Amélioration de la précision d'orientation
+- Détection de glissement
+- Topic fusionné: `/odometry/local`
 
 📖 Voir [docs/IMU_INTEGRATION_GUIDE.md](docs/IMU_INTEGRATION_GUIDE.md) pour les détails
 
-## 📁 Project Structure
+## 📁 Structure du Projet
 
 ```
-ROS_PROJECT/
-├── docs/                    # Documentation
-│   ├── README.md           # Main project documentation
-│   ├── INSTALLATION_GUIDE.md
-│   └── IMU_INTEGRATION_GUIDE.md  # 🆕 Guide d'intégration IMU
-├── maps/                    # Generated maps
-│   ├── my_robot_map.pgm
-│   ├── my_robot_map.png
-│   └── my_robot_map.yaml
-├── config/                  # Configuration files
-│   ├── slam_params.yaml
-│   ├── ekf_params.yaml     # 🆕 Configuration EKF pour fusion IMU
-│   └── nav2_params/
-├── src/                     # Source code
-│   └── my_robot_controller/
-│       ├── description/
-│       │   └── imu.xacro   # 🆕 Description du capteur IMU
-│       ├── launch/
-│       │   └── robot_localization.launch.py  # 🆕 Launch EKF
-│       └── ...
-├── test_imu_integration.sh  # 🆕 Script de test IMU
-└── .gitignore
-
+ROS2_Project/
+├── 📄 PROJECT_GUIDE.md          # Guide complet du projet
+├── 📄 QUICK_START.md            # Guide de démarrage rapide
+├── 🔍 check_system.sh           # Script de vérification
+├── docs/                        # Documentation détaillée
+│   ├── IMU_INTEGRATION_GUIDE.md
+│   ├── EKF_TUNING_GUIDE.md
+│   └── INSTALLATION_GUIDE.md
+├── src/my_robot_controller/
+│   ├── config/                  # Configuration
+│   │   ├── slam_params.yaml
+│   │   ├── nav2_params.yaml
+│   │   └── ekf_params.yaml
+│   ├── description/             # URDF/Xacro
+│   │   ├── robot.urdf.xacro
+│   │   └── imu.xacro
+│   ├── launch/                  # Fichiers de lancement
+│   │   ├── slam_mapping.launch.py
+│   │   ├── navigation.launch.py
+│   │   └── robot_localization.launch.py
+│   ├── nodes/                   # Scripts Python
+│   │   ├── controllers/
+│   │   │   └── keyboard_controller.py
+│   │   └── navigation/
+│   │       └── auto_navigator.py
+│   ├── maps/                    # Cartes sauvegardées
+│   │   ├── my_robot_map.yaml
+│   │   └── my_robot_map.pgm
+│   ├── models/                  # Modèles 3D
+│   └── worlds/                  # Mondes Gazebo
+├── build/                       # Fichiers de build
+├── install/                     # Installation
+└── log/                         # Logs
 ```
 
-## 🚀 Quick Start
+## 🎯 Workflows Principaux
 
-See [docs/README.md](docs/README.md) for complete documentation.
-
-### Installation
-
+### 1️⃣ Première utilisation: Mapping
 ```bash
-# Install dependencies (including robot_localization)
-sudo apt install ros-humble-robot-localization
-
-# Build workspace
-cd ~/ROS_PROJECT
-source /opt/ros/humble/setup.bash
-colcon build --symlink-install
-source install/setup.bash
+./check_system.sh               # Vérifier le système
+# Puis suivre QUICK_START.md section "MAPPING"
 ```
 
-### Test IMU Integration
-
+### 2️⃣ Utilisations suivantes: Navigation
 ```bash
-# Test que l'IMU fonctionne correctement
-./test_imu_integration.sh
+./check_system.sh               # Vérifier (carte doit exister)
+# Puis suivre QUICK_START.md section "NAVIGATION"
 ```
+
+## 📊 Topics ROS2 Importants
+
+| Topic | Description | Utilisé pour |
+|-------|-------------|--------------|
+| `/scan` | LIDAR data | Mapping, Navigation |
+| `/cmd_vel` | Commandes de vitesse | Contrôle du robot |
+| `/map` | Carte | SLAM, Navigation |
+| `/odom` | Odométrie brute | Encodeurs |
+| `/odometry/local` | Odométrie fusionnée | EKF (Encodeurs + IMU) |
+| `/imu` | Données IMU | Orientation, accélération |
+| `/amcl_pose` | Position estimée | Localisation |
+
+## 🛠️ Outils et Commandes Utiles
+
+### Vérification du système
+```bash
+./check_system.sh                    # Vérification complète
+ros2 topic list                      # Voir tous les topics
+ros2 node list                       # Voir tous les nodes
+ros2 node list | grep nav2           # Vérifier Nav2
+```
+
+### Monitoring
+```bash
+ros2 topic echo /scan                # Voir données LIDAR
+ros2 topic echo /map                 # Voir la carte
+ros2 topic echo /amcl_pose          # Voir position estimée
+ros2 topic echo /odometry/local     # Voir odométrie fusionnée
+```
+
+### Dépannage
+```bash
+killall -9 gzserver gzclient        # Tuer Gazebo si freeze
+colcon build && source install/setup.bash  # Rebuild
+```
+
+## 🎓 Ressources et Documentation
+
+### Guides du Projet
+- **[PROJECT_GUIDE.md](PROJECT_GUIDE.md)** - Guide complet avec tous les détails
+- **[QUICK_START.md](QUICK_START.md)** - Commandes rapides
+- **[check_system.sh](check_system.sh)** - Script de vérification
+
+### Documentation Technique
+- **[docs/IMU_INTEGRATION_GUIDE.md](docs/IMU_INTEGRATION_GUIDE.md)** - Intégration IMU
+- **[docs/EKF_TUNING_GUIDE.md](docs/EKF_TUNING_GUIDE.md)** - Tuning EKF
+- **[docs/INSTALLATION_GUIDE.md](docs/INSTALLATION_GUIDE.md)** - Installation complète
+
+### Documentation Externe
+- [Nav2 Documentation](https://navigation.ros.org/)
+- [SLAM Toolbox](https://github.com/SteveMacenski/slam_toolbox)
+- [ROS2 Humble](https://docs.ros.org/en/humble/)
+
+## ✅ Checklist de Démarrage
+
+- [ ] ROS2 Humble installé
+- [ ] Dépendances installées (slam_toolbox, nav2, etc.)
+- [ ] Projet buildé (`colcon build`)
+- [ ] Système vérifié (`./check_system.sh`)
+- [ ] Carte créée (mapping) OU carte existante dans `maps/`
+- [ ] Prêt pour la navigation! 🚀
+
+## 📝 Notes Importantes
+
+⚠️ **Toujours sourcer l'installation**: `source install/setup.bash` dans chaque terminal  
+⚠️ **Attendre le démarrage**: Nav2 prend 15-20 secondes pour démarrer complètement  
+⚠️ **Mapping lent**: Déplacements lents = meilleure carte  
+⚠️ **Pose initiale AMCL**: Essentielle pour la localisation (2D Pose Estimate dans RViz)
+
+## 🤝 Contribution
+
+Pour toute amélioration ou bug report, consulter les logs dans `log/` et la documentation.
+
+## 📄 License
+
+Apache-2.0
 
 ---
 
-## 📍 Complete Workflow: SLAM Mapping + Nav2 Navigation
+**Version**: 1.0.0  
+**Maintainer**: Louay Mikou  
+**Email**: louaymikou17@gmail.com  
+**Date**: Janvier 2026
 
-### ÉTAPE 1: Créer une Carte avec SLAM
+---
+
+**🎉 Prêt à démarrer? Lancez `./check_system.sh` puis consultez [QUICK_START.md](QUICK_START.md)!**
 
 **Terminal 1 - Lancer SLAM Mapping (avec IMU):**
 
