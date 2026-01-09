@@ -1,0 +1,113 @@
+[0.470s] Invoking command in '/home/wayay/mixed/build/blue_line_follower': CMAKE_PREFIX_PATH=/home/wayay/mixed/install/custom_interfaces:/home/wayay/mixed/install/my_robot_controller PYTHONPATH=/home/wayay/mixed/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/mixed/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/wayay/mixed/build/blue_line_follower/build --no-deps symlink_data
+[0.665s] running develop
+[0.790s] running egg_info
+[0.790s] creating blue_line_follower.egg-info
+[0.790s] writing blue_line_follower.egg-info/PKG-INFO
+[0.790s] writing dependency_links to blue_line_follower.egg-info/dependency_links.txt
+[0.790s] writing entry points to blue_line_follower.egg-info/entry_points.txt
+[0.790s] writing requirements to blue_line_follower.egg-info/requires.txt
+[0.791s] writing top-level names to blue_line_follower.egg-info/top_level.txt
+[0.791s] writing manifest file 'blue_line_follower.egg-info/SOURCES.txt'
+[0.792s] reading manifest file 'blue_line_follower.egg-info/SOURCES.txt'
+[0.792s] writing manifest file 'blue_line_follower.egg-info/SOURCES.txt'
+[0.793s] running build_ext
+[0.793s] Creating /home/wayay/mixed/install/blue_line_follower/lib/python3.10/site-packages/blue-line-follower.egg-link (link to .)
+[0.794s] Installing aruco_diagnostic script to /home/wayay/mixed/install/blue_line_follower/lib/blue_line_follower
+[0.794s] Installing aruco_navigation_client script to /home/wayay/mixed/install/blue_line_follower/lib/blue_line_follower
+[0.794s] Installing aruco_navigation_server script to /home/wayay/mixed/install/blue_line_follower/lib/blue_line_follower
+[0.794s] Installing keyboard_controller script to /home/wayay/mixed/install/blue_line_follower/lib/blue_line_follower
+[0.794s] Installing line_follower_node script to /home/wayay/mixed/install/blue_line_follower/lib/blue_line_follower
+[0.795s] 
+[0.795s] Installed /home/wayay/mixed/build/blue_line_follower
+[0.795s] running symlink_data
+[0.795s] creating /home/wayay/mixed/install/blue_line_follower/share/ament_index
+[0.796s] creating /home/wayay/mixed/install/blue_line_follower/share/ament_index/resource_index
+[0.796s] creating /home/wayay/mixed/install/blue_line_follower/share/ament_index/resource_index/packages
+[0.796s] symbolically linking /home/wayay/mixed/build/blue_line_follower/resource/blue_line_follower -> /home/wayay/mixed/install/blue_line_follower/share/ament_index/resource_index/packages
+[0.796s] symbolically linking /home/wayay/mixed/build/blue_line_follower/package.xml -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower
+[0.796s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/launch
+[0.796s] symbolically linking /home/wayay/mixed/build/blue_line_follower/launch/simulation.launch.py -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/launch
+[0.796s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/worlds
+[0.796s] symbolically linking /home/wayay/mixed/build/blue_line_follower/worlds/blue_line_track.world -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/worlds
+[0.796s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/urdf
+[0.796s] symbolically linking /home/wayay/mixed/build/blue_line_follower/urdf/line_follower_robot.urdf.xacro -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/urdf
+[0.796s] symbolically linking /home/wayay/mixed/build/blue_line_follower/urdf/line_follower_robot_combined.urdf.xacro -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/urdf
+[0.796s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/config
+[0.796s] symbolically linking /home/wayay/mixed/build/blue_line_follower/config/controller_config_namespaced.yaml -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/config
+[0.797s] symbolically linking /home/wayay/mixed/build/blue_line_follower/config/controller_config.yaml -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/config
+[0.797s] symbolically linking /home/wayay/mixed/build/blue_line_follower/config/robot_view.rviz -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/config
+[0.797s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models
+[0.797s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5
+[0.797s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_5/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5
+[0.797s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_5/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5
+[0.797s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials
+[0.797s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/scripts
+[0.797s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_5/materials/scripts/aruco_5.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/scripts
+[0.797s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/textures
+[0.797s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_5/materials/textures/5.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_5/materials/textures
+[0.797s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6
+[0.797s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_6/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6
+[0.798s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_6/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6
+[0.798s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials
+[0.798s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/scripts
+[0.798s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_6/materials/scripts/aruco_6.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/scripts
+[0.798s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/textures
+[0.798s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_6/materials/textures/6.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_6/materials/textures
+[0.798s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0
+[0.798s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_0/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0
+[0.798s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_0/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/scripts
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_0/materials/scripts/aruco_0.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/scripts
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/textures
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_0/materials/textures/0.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_0/materials/textures
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_4/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_4/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/scripts
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_4/materials/scripts/aruco_4.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/scripts
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/textures
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_4/materials/textures/4.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_4/materials/textures
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_1/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_1/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/scripts
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_1/materials/scripts/aruco_1.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/scripts
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/textures
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_1/materials/textures/1.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_1/materials/textures
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_2/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2
+[0.799s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_2/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials
+[0.799s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/scripts
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_2/materials/scripts/aruco_2.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/scripts
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/textures
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_2/materials/textures/2.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_2/materials/textures
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_7/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_7/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/scripts
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_7/materials/scripts/aruco_7.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/scripts
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/textures
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_7/materials/textures/7.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_7/materials/textures
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_3/model.sdf -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_3/model.config -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/scripts
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_3/materials/scripts/aruco_3.material -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/scripts
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/textures
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/models/aruco_3/materials/textures/3.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/models/aruco_3/materials/textures
+[0.800s] creating /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/5.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/7.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/0.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/4.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/2.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.800s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/1.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.801s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/6.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.801s] symbolically linking /home/wayay/mixed/build/blue_line_follower/aruco/3.png -> /home/wayay/mixed/install/blue_line_follower/share/blue_line_follower/aruco/.
+[0.814s] Invoked command in '/home/wayay/mixed/build/blue_line_follower' returned '0': CMAKE_PREFIX_PATH=/home/wayay/mixed/install/custom_interfaces:/home/wayay/mixed/install/my_robot_controller PYTHONPATH=/home/wayay/mixed/build/blue_line_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/wayay/mixed/install/blue_line_follower/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/wayay/mixed/build/blue_line_follower/build --no-deps symlink_data

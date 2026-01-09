@@ -1,0 +1,498 @@
+#!/usr/bin/env python3
+"""
+Blue Line Follower Node with ArUco Detection and Bidirectional Control
+Based on the algorithm from the Jupyter notebook training material.
+"""
+
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Image, Range
+from geometry_msgs.msg import Twist
+from std_srvs.srv import SetBool
+from std_msgs.msg import String
+from cv_bridge import CvBridge
+import cv2
+import numpy as np
+import time
+
+# Linear forward speed
+LINEAR_SPEED = 0.2
+
+# PID constants for position error
+KP = 0.008  # Proportional gain for position
+KI = 0.0001  # Integral gain
+KD = 0.005  # Derivative gain
+
+# Orientation correction gain
+KP_ANGLE = 0.002  # Proportional gain for angle correction
+
+# Maximum angular velocity (rad/s)
+MAX_ANGULAR_VEL = 1.5
+
+
+class LineFollowerNode(Node):
+    def __init__(self):
+        super().__init__('line_follower_node')
+        
+        # Initialize cv_bridge
+        self.bridge = CvBridge()
+        
+        # Initialize ArUco detector
+        self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        self.aruco_params = cv2.aruco.DetectorParameters()
+        self.aruco_detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
+        
+        # Track last detected ArUco to avoid spam
+        self.last_detected_aruco = None
+        self.last_aruco_time = 0
+        
+        # Direction control: True = forward (front camera), False = backward (rear camera)
+        self.forward_direction = True
+        
+        # Movement control: robot only moves when enabled
+        self.movement_enabled = False
+        
+        # Color to follow: 'blue', 'red', or 'green'
+        self.current_color = 'blue'
+        
+        # Obstacle detection variables
+        self.front_obstacle_distance = float('inf')  # Distance to front obstacle (m)
+        self.rear_obstacle_distance = float('inf')   # Distance to rear obstacle (m)
+        self.obstacle_threshold = 0.3  # Stop if obstacle closer than 30cm
+        self.obstacle_detected = False
+        
+        # Subscribe to front camera topic
+        self.front_subscription = self.create_subscription(
+            Image,
+            '/camera/image_raw',
+            self.front_camera_callback,
+            10)
+        
+        # Subscribe to rear camera topic
+        self.rear_subscription = self.create_subscription(
+            Image,
+            '/rear_camera/image_raw',
+            self.rear_camera_callback,
+            10)
+        
+        # Subscribe to front ultrasonic sensor
+        self.front_ultrasonic_subscription = self.create_subscription(
+            Range,
+            '/front_ultrasonic/range',
+            self.front_ultrasonic_callback,
+            10)
+        
+        # Subscribe to rear ultrasonic sensor
+        self.rear_ultrasonic_subscription = self.create_subscription(
+            Range,
+            '/rear_ultrasonic/range',
+            self.rear_ultrasonic_callback,
+            10)
+        
+        # Publisher for velocity commands
+        self.publisher = self.create_publisher(Twist, '/diff_drive_controller/cmd_vel_unstamped', 10)
+        
+        # Publisher for line detection status
+        from std_msgs.msg import Bool
+        self.line_detected_pub = self.create_publisher(Bool, '/line_detected', 10)
+        
+        # Service to change direction
+        self.direction_service = self.create_service(
+            SetBool,
+            'set_forward_direction',
+            self.change_direction_callback)
+        
+        # Service to enable/disable movement
+        self.movement_service = self.create_service(
+            SetBool,
+            'enable_movement',
+            self.enable_movement_callback)
+        
+        # Subscription to change line color
+        self.color_change_subscription = self.create_subscription(
+            String,
+            '/set_line_color',
+            self.color_change_callback,
+            10)
+        
+        # PID control variables
+        self.last_error = 0.0
+        self.integral = 0.0
+        self.last_time = time.time()
+        
+        self.get_logger().info('Line Follower Node with Bidirectional Control has been started')
+        self.get_logger().info('MOVEMENT IS DISABLED - Use: ros2 service call /enable_movement std_srvs/srv/SetBool "{data: true}" to start')
+        self.get_logger().info('Forward: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: true}"')
+        self.get_logger().info('Backward: ros2 service call /set_forward_direction std_srvs/srv/SetBool "{data: false}"')
+        self.get_logger().info(f'Obstacle detection enabled: Stop if closer than {self.obstacle_threshold}m')
+    
+    def front_ultrasonic_callback(self, msg):
+        """
+        Callback for front ultrasonic sensor
+        """
+        self.front_obstacle_distance = msg.range
+        self.check_obstacle_status()
+    
+    def rear_ultrasonic_callback(self, msg):
+        """
+        Callback for rear ultrasonic sensor
+        """
+        self.rear_obstacle_distance = msg.range
+        self.check_obstacle_status()
+    
+    def check_obstacle_status(self):
+        """
+        Check if there's an obstacle in the current direction of travel
+        """
+        was_blocked = self.obstacle_detected
+        
+        if self.forward_direction:
+            # Going forward, check front sensor
+            self.obstacle_detected = self.front_obstacle_distance < self.obstacle_threshold
+        else:
+            # Going backward, check rear sensor
+            self.obstacle_detected = self.rear_obstacle_distance < self.obstacle_threshold
+        
+        # Log when obstacle status changes
+        if self.obstacle_detected and not was_blocked:
+            direction = "FRONT" if self.forward_direction else "REAR"
+            distance = self.front_obstacle_distance if self.forward_direction else self.rear_obstacle_distance
+            self.get_logger().warn(f'🚨 OBSTACLE DETECTED {direction}: {distance:.2f}m - Robot STOPPED!')
+        elif not self.obstacle_detected and was_blocked:
+            self.get_logger().info('✅ Obstacle cleared - Robot can continue')
+    
+    def get_obstacle_info(self):
+        """
+        Get current obstacle information for the active direction
+        """
+        if self.forward_direction:
+            return self.obstacle_detected, self.front_obstacle_distance
+        else:
+            return self.obstacle_detected, self.rear_obstacle_distance
+    
+    def enable_movement_callback(self, request, response):
+        """
+        Service callback to enable/disable robot movement
+        """
+        self.movement_enabled = request.data
+        status = "ENABLED" if self.movement_enabled else "DISABLED"
+        self.get_logger().info(f'Robot movement: {status}')
+        
+        # Stop robot if disabling movement
+        if not self.movement_enabled:
+            cmd = Twist()
+            self.publisher.publish(cmd)
+        
+        response.success = True
+        response.message = f'Movement {status}'
+        return response
+    
+    def change_direction_callback(self, request, response):
+        """
+        Service callback to change direction
+        """
+        self.forward_direction = request.data
+        direction_str = "FORWARD (front camera)" if self.forward_direction else "BACKWARD (rear camera)"
+        self.get_logger().info(f'Direction changed to: {direction_str}')
+        
+        # Reset PID when changing direction
+        self.last_error = 0.0
+        self.integral = 0.0
+        self.last_detected_aruco = None
+        
+        response.success = True
+        response.message = f'Direction set to {direction_str}'
+        return response
+    
+    def color_change_callback(self, msg):
+        """
+        Callback to change the color being followed
+        """
+        color = msg.data.lower()
+        if color in ['blue', 'red', 'green']:
+            self.current_color = color
+            self.get_logger().info(f'🎨 Line color changed to: {color.upper()}')
+            # Reset PID when changing color
+            self.last_error = 0.0
+            self.integral = 0.0
+        else:
+            self.get_logger().warn(f'Invalid color: {color}. Use blue, red, or green')
+    
+    def front_camera_callback(self, data):
+        """
+        Callback for front camera
+        """
+        if self.forward_direction:
+            self.process_image(data, "FRONT")
+    
+    def rear_camera_callback(self, data):
+        """
+        Callback for rear camera
+        """
+        if not self.forward_direction:
+            self.process_image(data, "REAR")
+
+    def get_contour_data(self, mask):
+        """
+        Return the centroid and orientation of the largest contour in the binary image 'mask' (the line) 
+        """
+        # Constants
+        MIN_AREA_TRACK = 50  # Minimum area for track marks
+
+        # Get a list of contours
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+        line = {}
+        max_area = 0
+
+        for contour in contours:
+            M = cv2.moments(contour)
+
+            if M['m00'] > MIN_AREA_TRACK:
+                area = M['m00']
+                if area > max_area:
+                    max_area = area
+                    # Centroid of the line
+                    line['x'] = int(M["m10"]/M["m00"])
+                    line['y'] = int(M["m01"]/M["m00"])
+                    
+                    # Calculate orientation using image moments
+                    # This helps understand if the line is tilted
+                    if len(contour) >= 5:  # Need at least 5 points for fitEllipse
+                        try:
+                            ellipse = cv2.fitEllipse(contour)
+                            line['angle'] = ellipse[2]  # Angle in degrees
+                        except:
+                            line['angle'] = 90.0  # Default: vertical line
+                    else:
+                        line['angle'] = 90.0
+
+        return line
+
+    def process_image(self, data, camera_name):
+        """
+        Main image processing function for both cameras
+        """
+        try:
+            # Convert ROS Image message to OpenCV image
+            current_frame = self.bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
+            
+            # Get image dimensions
+            height, width, _ = current_frame.shape
+            
+            # Define Region of Interest (ROI) - bottom portion of image only
+            # Focus on the area closer to the robot
+            roi_start_row = int(height * 0.4)  # Start at 40% down from top (bottom 60%)
+            roi_frame = current_frame[roi_start_row:height, 0:width]
+            
+            # Detect ArUco markers in the bottom portion of the ROI (bottom 20% of ROI)
+            # This ensures markers are detected only when very close to the robot
+            roi_height, roi_width, _ = roi_frame.shape
+            aruco_detect_start = int(roi_height * 0.8)  # Bottom 20% of ROI
+            aruco_roi = roi_frame[aruco_detect_start:roi_height, 0:roi_width]
+            
+            # Only detect if ROI is valid
+            if aruco_roi.shape[0] > 20:  # At least 20 pixels tall
+                gray_aruco = cv2.cvtColor(aruco_roi, cv2.COLOR_BGR2GRAY)
+                corners, ids, rejected = self.aruco_detector.detectMarkers(gray_aruco)
+            else:
+                corners, ids, rejected = None, None, None
+            
+            # Display detected ArUco markers
+            if ids is not None and len(ids) > 0:
+                # Draw detected markers on the aruco detection region
+                cv2.aruco.drawDetectedMarkers(aruco_roi, corners, ids)
+                
+                # Check if marker is at the bottom (on top of the robot)
+                current_time = time.time()
+                aruco_roi_height, aruco_roi_width = aruco_roi.shape[:2]
+                
+                for i, marker_id in enumerate(ids.flatten()):
+                    if marker_id <= 7:  # IDs 0-7
+                        # Calculate marker center from corners
+                        marker_corners = corners[i][0]
+                        marker_center_x = int(np.mean(marker_corners[:, 0]))
+                        marker_center_y = int(np.mean(marker_corners[:, 1]))
+                        
+                        # Calculate distance from marker center to bottom of image
+                        distance_to_bottom = aruco_roi_height - marker_center_y
+                        
+                        # Marker is considered "on top" when very close to bottom (within 10 pixels)
+                        is_on_top = distance_to_bottom < 10  # Tolerance in pixels
+                        
+                        # Only log detection if marker is at bottom (on top of robot)
+                        if is_on_top:
+                            if self.last_detected_aruco != marker_id or (current_time - self.last_aruco_time) > 3.0:
+                                self.get_logger().info(f'======> Detected ArUco Marker: {marker_id} (on top, {distance_to_bottom}px from bottom) <=======')
+                                self.last_detected_aruco = marker_id
+                                self.last_aruco_time = current_time
+                        else:
+                            # Marker detected but not at bottom yet - visualize progress
+                            cv2.putText(aruco_roi, f"ArUco {marker_id}: {distance_to_bottom}px to bottom", 
+                                       (10, aruco_roi_height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+                        
+                        # Draw a line showing the target position (bottom of ROI)
+                        cv2.line(aruco_roi, (0, aruco_roi_height - 30), (aruco_roi_width, aruco_roi_height - 30), (0, 255, 0), 1)
+            
+            # Convert BGR to HSV
+            hsv_image = cv2.cvtColor(roi_frame, cv2.COLOR_BGR2HSV)
+
+            # Define color ranges based on current_color
+            if self.current_color == 'blue':
+                lower_color = np.array([100, 50, 50])   # Lower bound of blue color
+                upper_color = np.array([130, 255, 255])  # Upper bound of blue color
+            elif self.current_color == 'red':
+                # Red wraps around in HSV, so we need two ranges
+                lower_red1 = np.array([0, 50, 50])
+                upper_red1 = np.array([10, 255, 255])
+                lower_red2 = np.array([170, 50, 50])
+                upper_red2 = np.array([180, 255, 255])
+                mask1 = cv2.inRange(hsv_image, lower_red1, upper_red1)
+                mask2 = cv2.inRange(hsv_image, lower_red2, upper_red2)
+                color_mask = cv2.bitwise_or(mask1, mask2)
+            elif self.current_color == 'green':
+                lower_color = np.array([40, 50, 50])    # Lower bound of green color
+                upper_color = np.array([80, 255, 255])   # Upper bound of green color
+            else:
+                lower_color = np.array([100, 50, 50])   # Default to blue
+                upper_color = np.array([130, 255, 255])
+
+            # Create a binary mask
+            if self.current_color != 'red':
+                color_mask = cv2.inRange(hsv_image, lower_color, upper_color)
+
+            # Apply the mask to the ROI image
+            blue_segmented_image = cv2.bitwise_and(roi_frame, roi_frame, mask=color_mask)
+
+            # Detect line and get its centroid
+            line = self.get_contour_data(color_mask)
+            
+            # Publish line detection status
+            from std_msgs.msg import Bool
+            line_status = Bool()
+            line_status.data = line is not None and len(line) > 0
+            self.line_detected_pub.publish(line_status)
+
+            # Move depending on detection 
+            cmd = Twist()
+            roi_height, roi_width, _ = blue_segmented_image.shape
+            
+            # Calculate time delta for PID
+            current_time = time.time()
+            dt = current_time - self.last_time
+            self.last_time = current_time
+            
+            if line:
+                x = line['x']
+                error = x - roi_width//2
+                
+                # Calculate angle error (line should be vertical, around 90 degrees)
+                # If angle is less than 90, line is tilted left; if more than 90, tilted right
+                angle = line.get('angle', 90.0)
+                angle_error = angle - 90.0  # Positive if tilted right, negative if tilted left
+                
+                # PID calculation for position error
+                # Proportional term
+                P = KP * error
+                
+                # Integral term (accumulate error over time)
+                self.integral += error * dt
+                # Prevent integral windup
+                self.integral = max(-100, min(100, self.integral))
+                I = KI * self.integral
+                
+                # Derivative term (rate of change of error)
+                derivative = (error - self.last_error) / dt if dt > 0 else 0
+                D = KD * derivative
+                
+                # Update last error
+                self.last_error = error
+                
+                # Calculate angular velocity with PID + angle correction
+                # Position correction + Orientation correction
+                angular_z = -(P + I + D) - (KP_ANGLE * angle_error)
+                
+                # Limit angular velocity to maximum
+                angular_z = max(-MAX_ANGULAR_VEL, min(MAX_ANGULAR_VEL, angular_z))
+                
+                # Slow down in sharp turns (when error is large)
+                if abs(error) > roi_width * 0.3:  # If line is more than 30% off-center
+                    cmd.linear.x = LINEAR_SPEED * 0.6  # Reduce speed to 60%
+                else:
+                    cmd.linear.x = LINEAR_SPEED
+                
+                # Invert linear velocity if going backward
+                if not self.forward_direction:
+                    cmd.linear.x = -cmd.linear.x
+                
+                cmd.angular.z = angular_z
+                
+                # Draw circle on detected line for visualization
+                cv2.circle(blue_segmented_image, (line['x'], line['y']), 5, (0, 0, 255), 7)
+                # Draw center line reference
+                cv2.line(blue_segmented_image, (roi_width//2, 0), (roi_width//2, roi_height), (0, 255, 0), 2)
+                
+                # Display camera name, direction, and color
+                direction_text = f"{camera_name} - {'FORWARD' if self.forward_direction else 'BACKWARD'} - {self.current_color.upper()}"
+                cv2.putText(blue_segmented_image, direction_text, 
+                           (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+                
+                # Display PID values and angle
+                cv2.putText(blue_segmented_image, f"P:{P:.2f} I:{I:.2f} D:{D:.2f}", 
+                           (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                cv2.putText(blue_segmented_image, f"Angle:{angle:.1f}° Error:{error:.0f}px", 
+                           (10, 85), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
+                
+                # Display last detected ArUco if any
+                if self.last_detected_aruco is not None:
+                    cv2.putText(blue_segmented_image, f"ArUco: {self.last_detected_aruco}", 
+                               (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+            else:
+                # No line detected, stop
+                cmd.linear.x = 0.0
+                cmd.angular.z = 0.0
+                self.integral = 0.0  # Reset integral when line is lost
+                self.get_logger().warn(f'No {self.current_color} line detected!', throttle_duration_sec=1.0)
+            
+            # Log the error and angular velocity (throttled to avoid spam)
+            if line:
+                self.get_logger().debug(f"Error: {error} | Angular Z: {cmd.angular.z}")
+
+            # Send the command to execute ONLY if movement is enabled AND no obstacle
+            if self.movement_enabled:
+                # Check for obstacles in the direction of travel
+                if self.obstacle_detected:
+                    # STOP! Obstacle detected
+                    stop_cmd = Twist()
+                    self.publisher.publish(stop_cmd)
+                else:
+                    # Safe to move
+                    self.publisher.publish(cmd)
+            # Ne rien publier quand movement_enabled=False pour permettre le contrôle externe
+            
+            # Display the processed image with line detection
+            window_name = f"{self.current_color.capitalize()} Segmented Image"
+            cv2.imshow(window_name, blue_segmented_image)
+            cv2.waitKey(1)
+            
+        except Exception as e:
+            self.get_logger().error(f'Error processing image: {str(e)}')
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    line_follower = LineFollowerNode()
+    
+    try:
+        rclpy.spin(line_follower)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Cleanup
+        line_follower.destroy_node()
+        rclpy.shutdown()
+        cv2.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    main()

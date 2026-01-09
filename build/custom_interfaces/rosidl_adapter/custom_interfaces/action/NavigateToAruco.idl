@@ -1,0 +1,81 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from custom_interfaces/action/NavigateToAruco.action
+// generated code does not contain a copyright notice
+
+
+module custom_interfaces {
+  module action {
+    @verbatim (language="comment", text=
+      "========================================" "\n"
+      "GOAL - Numéro du marqueur ArUco cible" "\n"
+      "========================================" "\n"
+      "Numéro du marqueur ArUco à atteindre")
+    struct NavigateToAruco_Goal {
+      int32 target_aruco_id;
+
+      @verbatim (language="comment", text=
+        "Retourner à ArUco 0 après avoir atteint la cible")
+      boolean return_to_zero;
+
+      @verbatim (language="comment", text=
+        "Couleur à suivre après arrivée à la cible ('l' pour rouge/left, 'r' pour vert/right, 'b' pour bleu/blue par défaut)")
+      string color_choice;
+    };
+    struct NavigateToAruco_Result {
+      @verbatim (language="comment", text=
+        "========================================" "\n"
+        "RESULT - Résultat de la navigation" "\n"
+        "========================================" "\n"
+        "Navigation réussie?")
+      boolean success;
+
+      @verbatim (language="comment", text=
+        "Numéro ArUco final atteint")
+      int32 final_aruco_id;
+
+      @verbatim (language="comment", text=
+        "Direction utilisée (true=avant, false=arrière)")
+      boolean went_forward;
+
+      @verbatim (language="comment", text=
+        "Temps total de navigation (secondes)")
+      float navigation_time;
+
+      @verbatim (language="comment", text=
+        "Distance parcourue (approximative)")
+      float distance_traveled;
+
+      @verbatim (language="comment", text=
+        "A effectué le retour à ArUco 0")
+      boolean returned_to_zero;
+    };
+    struct NavigateToAruco_Feedback {
+      @verbatim (language="comment", text=
+        "========================================" "\n"
+        "FEEDBACK - Progression pendant navigation" "\n"
+        "========================================" "\n"
+        "Numéro ArUco actuellement détecté (0 si aucun)")
+      int32 current_aruco_id;
+
+      @verbatim (language="comment", text=
+        "Direction de navigation actuelle")
+      string current_direction;
+
+      @verbatim (language="comment", text=
+        "Temps écoulé (secondes)")
+      float elapsed_time;
+
+      @verbatim (language="comment", text=
+        "État de la navigation")
+      string status_message;
+
+      @verbatim (language="comment", text=
+        "Obstacle détecté (true si obstacle présent)")
+      boolean obstacle_detected;
+
+      @verbatim (language="comment", text=
+        "Distance de l'obstacle (mètres, 0.0 si pas d'obstacle)")
+      float obstacle_distance;
+    };
+  };
+};

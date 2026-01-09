@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="line_follower_robot">
+  
+  <!-- Import the original robot xacro -->
+  <xacro:include filename="$(find blue_line_follower)/urdf/line_follower_robot.urdf.xacro" />
+  
+  <!-- Override the gazebo_ros2_control plugin with namespace -->
+  <gazebo>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <robot_param>blue_robot_description</robot_param>
+      <robot_param_node>blue_robot_state_publisher</robot_param_node>
+      <parameters>$(find blue_line_follower)/config/controller_config.yaml</parameters>
+      <ros>
+        <namespace>/line_follower</namespace>
+      </ros>
+    </plugin>
+  </gazebo>
+  
+</robot>

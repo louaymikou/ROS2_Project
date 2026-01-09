@@ -1,0 +1,202 @@
+[0.009s] Invoking command in '/home/wayay/mixed/build/custom_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/wayay/mixed/install/blue_line_follower:/opt/ros/humble /usr/bin/cmake /home/wayay/mixed/src/custom_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/wayay/mixed/install/custom_interfaces
+[0.043s] -- The C compiler identification is GNU 11.4.0
+[0.081s] -- The CXX compiler identification is GNU 11.4.0
+[0.086s] -- Detecting C compiler ABI info
+[0.129s] -- Detecting C compiler ABI info - done
+[0.135s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.135s] -- Detecting C compile features
+[0.136s] -- Detecting C compile features - done
+[0.138s] -- Detecting CXX compiler ABI info
+[0.191s] -- Detecting CXX compiler ABI info - done
+[0.197s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.197s] -- Detecting CXX compile features
+[0.197s] -- Detecting CXX compile features - done
+[0.199s] -- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.306s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.353s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.372s] -- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[0.374s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.379s] -- Found rosidl_adapter: 3.1.7 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.411s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.437s] -- Found action_msgs: 1.2.2 (/opt/ros/humble/share/action_msgs/cmake)
+[0.657s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[0.815s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.991s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.012s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.10.12", minimum required is "3.6") 
+[1.014s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[1.043s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") 
+[1.043s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[1.043s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[1.043s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[1.059s] -- Found PythonExtra: .so  
+[1.099s] -- Found ament_lint_auto: 0.12.14 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[1.114s] -- Added test 'lint_cmake' to check CMake code style
+[1.114s] -- Added test 'xmllint' to check XML markup files
+[1.117s] -- Configuring done
+[1.139s] -- Generating done
+[1.148s] -- Build files have been written to: /home/wayay/mixed/build/custom_interfaces
+[1.152s] Invoked command in '/home/wayay/mixed/build/custom_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/wayay/mixed/install/blue_line_follower:/opt/ros/humble /usr/bin/cmake /home/wayay/mixed/src/custom_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/wayay/mixed/install/custom_interfaces
+[1.153s] Invoking command in '/home/wayay/mixed/build/custom_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/wayay/mixed/install/blue_line_follower:/opt/ros/humble /usr/bin/cmake --build /home/wayay/mixed/build/custom_interfaces -- -j6 -l6
+[1.189s] [  3%] Generating C code for ROS interfaces
+[1.195s] [  6%] Generating C++ code for ROS interfaces
+[1.200s] [  6%] Built target ament_cmake_python_symlink_custom_interfaces
+[1.377s] running egg_info
+[1.378s] creating custom_interfaces.egg-info
+[1.378s] writing custom_interfaces.egg-info/PKG-INFO
+[1.378s] writing dependency_links to custom_interfaces.egg-info/dependency_links.txt
+[1.378s] writing top-level names to custom_interfaces.egg-info/top_level.txt
+[1.378s] writing manifest file 'custom_interfaces.egg-info/SOURCES.txt'
+[1.379s] reading manifest file 'custom_interfaces.egg-info/SOURCES.txt'
+[1.380s] writing manifest file 'custom_interfaces.egg-info/SOURCES.txt'
+[1.397s] [  6%] Built target ament_cmake_python_build_custom_interfaces_egg
+[1.648s] [  6%] Built target custom_interfaces__cpp
+[1.651s] [  9%] Building C object CMakeFiles/custom_interfaces__rosidl_generator_c.dir/rosidl_generator_c/custom_interfaces/action/detail/navigate_to_aruco__functions.c.o
+[1.655s] [ 12%] Generating C++ introspection for ROS interfaces
+[1.655s] [ 16%] Generating C++ type support dispatch for ROS interfaces
+[1.655s] [ 19%] Generating C++ type support for eProsima Fast-RTPS
+[1.746s] [ 22%] Linking C shared library libcustom_interfaces__rosidl_generator_c.so
+[1.772s] [ 22%] Built target custom_interfaces__rosidl_generator_c
+[1.781s] [ 25%] Generating C introspection for ROS interfaces
+[1.785s] [ 29%] Generating C type support for eProsima Fast-RTPS
+[1.793s] [ 32%] Generating C type support dispatch for ROS interfaces
+[2.067s] [ 35%] Building CXX object CMakeFiles/custom_interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/custom_interfaces/action/navigate_to_aruco__type_support.cpp.o
+[2.071s] [ 38%] Building CXX object CMakeFiles/custom_interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/custom_interfaces/action/detail/navigate_to_aruco__type_support.cpp.o
+[2.198s] [ 41%] Building CXX object CMakeFiles/custom_interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/custom_interfaces/action/detail/dds_fastrtps/navigate_to_aruco__type_support.cpp.o
+[2.276s] [ 45%] Building CXX object CMakeFiles/custom_interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/custom_interfaces/action/navigate_to_aruco__type_support.cpp.o
+[2.309s] [ 48%] Linking CXX shared library libcustom_interfaces__rosidl_typesupport_c.so
+[2.349s] [ 48%] Built target custom_interfaces__rosidl_typesupport_c
+[2.357s] [ 51%] Building C object CMakeFiles/custom_interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/custom_interfaces/action/detail/navigate_to_aruco__type_support.c.o
+[2.390s] [ 54%] Linking C shared library libcustom_interfaces__rosidl_typesupport_introspection_c.so
+[2.412s] [ 58%] Building CXX object CMakeFiles/custom_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/custom_interfaces/action/detail/navigate_to_aruco__type_support_c.cpp.o
+[2.412s] [ 61%] Linking CXX shared library libcustom_interfaces__rosidl_typesupport_cpp.so
+[2.414s] [ 61%] Built target custom_interfaces__rosidl_typesupport_introspection_c
+[2.442s] [ 61%] Built target custom_interfaces__rosidl_typesupport_cpp
+[2.540s] [ 64%] Linking CXX shared library libcustom_interfaces__rosidl_typesupport_introspection_cpp.so
+[2.590s] [ 64%] Built target custom_interfaces__rosidl_typesupport_introspection_cpp
+[2.619s] [ 67%] Linking CXX shared library libcustom_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[2.665s] [ 67%] Built target custom_interfaces__rosidl_typesupport_fastrtps_cpp
+[2.682s] [ 70%] Linking CXX shared library libcustom_interfaces__rosidl_typesupport_fastrtps_c.so
+[2.730s] [ 70%] Built target custom_interfaces__rosidl_typesupport_fastrtps_c
+[2.742s] [ 70%] Built target custom_interfaces
+[2.754s] [ 74%] Generating Python code for ROS interfaces
+[3.542s] [ 74%] Built target custom_interfaces__py
+[3.556s] [ 77%] Building C object CMakeFiles/custom_interfaces__rosidl_generator_py.dir/rosidl_generator_py/custom_interfaces/action/_navigate_to_aruco_s.c.o
+[3.666s] [ 80%] Linking C shared library rosidl_generator_py/custom_interfaces/libcustom_interfaces__rosidl_generator_py.so
+[3.701s] [ 80%] Built target custom_interfaces__rosidl_generator_py
+[3.714s] [ 87%] Building C object CMakeFiles/custom_interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/custom_interfaces/_custom_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o
+[3.714s] [ 87%] Building C object CMakeFiles/custom_interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/custom_interfaces/_custom_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o
+[3.714s] [ 90%] Building C object CMakeFiles/custom_interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/custom_interfaces/_custom_interfaces_s.ep.rosidl_typesupport_c.c.o
+[3.798s] [ 93%] Linking C shared library rosidl_generator_py/custom_interfaces/custom_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[3.799s] [ 96%] Linking C shared library rosidl_generator_py/custom_interfaces/custom_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[3.800s] [100%] Linking C shared library rosidl_generator_py/custom_interfaces/custom_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[3.826s] [100%] Built target custom_interfaces__rosidl_typesupport_c__pyext
+[3.826s] [100%] Built target custom_interfaces__rosidl_typesupport_fastrtps_c__pyext
+[3.827s] [100%] Built target custom_interfaces__rosidl_typesupport_introspection_c__pyext
+[3.834s] Invoked command in '/home/wayay/mixed/build/custom_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/wayay/mixed/install/blue_line_follower:/opt/ros/humble /usr/bin/cmake --build /home/wayay/mixed/build/custom_interfaces -- -j6 -l6
+[3.835s] Invoking command in '/home/wayay/mixed/build/custom_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/wayay/mixed/install/blue_line_follower:/opt/ros/humble /usr/bin/cmake --install /home/wayay/mixed/build/custom_interfaces
+[3.840s] -- Install configuration: ""
+[3.840s] -- Execute custom install script
+[3.841s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/ament_index/resource_index/rosidl_interfaces/custom_interfaces
+[3.847s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__functions.h
+[3.852s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__struct.h
+[3.860s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__type_support.h
+[3.866s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/navigate_to_aruco.h
+[3.873s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/msg/rosidl_generator_c__visibility_control.h
+[3.880s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/library_path.sh
+[3.886s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/library_path.dsv
+[3.895s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__rosidl_typesupport_fastrtps_c.h
+[3.902s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[3.907s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__rosidl_typesupport_introspection_c.h
+[3.913s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[3.919s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__builder.hpp
+[3.927s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__struct.hpp
+[3.932s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__traits.hpp
+[3.940s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__type_support.hpp
+[3.945s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/navigate_to_aruco.hpp
+[3.950s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/msg/rosidl_generator_cpp__visibility_control.hpp
+[3.959s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__rosidl_typesupport_fastrtps_cpp.hpp
+[3.965s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[3.971s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/include/custom_interfaces/custom_interfaces/action/detail/navigate_to_aruco__rosidl_typesupport_introspection_cpp.hpp
+[3.977s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/pythonpath.sh
+[3.985s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/pythonpath.dsv
+[3.993s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces-0.0.0-py3.10.egg-info/PKG-INFO
+[3.999s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces-0.0.0-py3.10.egg-info/SOURCES.txt
+[4.007s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces-0.0.0-py3.10.egg-info/dependency_links.txt
+[4.015s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces-0.0.0-py3.10.egg-info/top_level.txt
+[4.021s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/__init__.py
+[4.026s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/_custom_interfaces_s.ep.rosidl_typesupport_c.c
+[4.032s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/_custom_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c
+[4.037s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/_custom_interfaces_s.ep.rosidl_typesupport_introspection_c.c
+[4.042s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/action/__init__.py
+[4.048s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/action/_navigate_to_aruco.py
+[4.053s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/action/_navigate_to_aruco_s.c
+[4.061s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/custom_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[4.066s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/custom_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[4.074s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/custom_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[4.079s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/libcustom_interfaces__rosidl_generator_py.so
+[4.087s] -- Up-to-date symlink: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/custom_interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[4.087s] -- Up-to-date symlink: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/custom_interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[4.087s] -- Up-to-date symlink: /home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/custom_interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[4.088s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/action/NavigateToAruco.idl
+[4.096s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/action/NavigateToAruco.action
+[4.103s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/ament_index/resource_index/package_run_dependencies/custom_interfaces
+[4.109s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/ament_index/resource_index/parent_prefix_path/custom_interfaces
+[4.117s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/ament_prefix_path.sh
+[4.125s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/ament_prefix_path.dsv
+[4.130s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/path.sh
+[4.138s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/environment/path.dsv
+[4.144s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/local_setup.bash
+[4.149s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/local_setup.sh
+[4.156s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/local_setup.zsh
+[4.163s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/local_setup.dsv
+[4.168s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/package.dsv
+[4.174s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/ament_index/resource_index/packages/custom_interfaces
+[4.179s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/rosidl_cmake-extras.cmake
+[4.184s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[4.190s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[4.195s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[4.201s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[4.208s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[4.214s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[4.222s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfacesConfig.cmake
+[4.230s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfacesConfig-version.cmake
+[4.237s] -- Symlinking: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/package.xml
+[4.245s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_generator_c.so
+[4.245s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_generator_c.so" to ""
+[4.245s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_fastrtps_c.so
+[4.245s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_fastrtps_c.so" to ""
+[4.245s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_introspection_c.so
+[4.246s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_introspection_c.so" to ""
+[4.246s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_c.so
+[4.246s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_c.so" to ""
+[4.246s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_fastrtps_cpp.so
+[4.247s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_fastrtps_cpp.so" to ""
+[4.247s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_introspection_cpp.so
+[4.247s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_introspection_cpp.so" to ""
+[4.247s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_cpp.so
+[4.247s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_typesupport_cpp.so" to ""
+[4.276s] Listing '/home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces'...
+[4.277s] Compiling '/home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/__init__.py'...
+[4.277s] Listing '/home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/action'...
+[4.277s] Compiling '/home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/action/__init__.py'...
+[4.277s] Compiling '/home/wayay/mixed/install/custom_interfaces/local/lib/python3.10/dist-packages/custom_interfaces/action/_navigate_to_aruco.py'...
+[4.280s] -- Installing: /home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_generator_py.so
+[4.280s] -- Set runtime path of "/home/wayay/mixed/install/custom_interfaces/lib/libcustom_interfaces__rosidl_generator_py.so" to ""
+[4.280s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_generator_cExport.cmake
+[4.280s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_generator_cExport-noconfig.cmake
+[4.280s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_typesupport_fastrtps_cExport.cmake
+[4.280s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_introspection_cExport.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_cExport.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_cExport-noconfig.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_generator_cppExport.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[4.281s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[4.282s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[4.282s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_cppExport.cmake
+[4.282s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/custom_interfaces__rosidl_typesupport_cppExport-noconfig.cmake
+[4.282s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_generator_pyExport.cmake
+[4.282s] -- Installing: /home/wayay/mixed/install/custom_interfaces/share/custom_interfaces/cmake/export_custom_interfaces__rosidl_generator_pyExport-noconfig.cmake
+[4.284s] Invoked command in '/home/wayay/mixed/build/custom_interfaces' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/wayay/mixed/install/blue_line_follower:/opt/ros/humble /usr/bin/cmake --install /home/wayay/mixed/build/custom_interfaces

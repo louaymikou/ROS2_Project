@@ -1,0 +1,738 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="combined_world">
+    
+    <!-- Physics -->
+    <physics name="default_physics" default="0" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    
+    <!-- Lighting -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <!-- Ground Plane -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>200 200</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <cast_shadows>false</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>200 200</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/White</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================================= -->
+    <!-- ELEMENTS FROM MY_ROBOT_CONTROLLER PROJECT -->
+    <!-- Position: Original (around 0,0)          -->
+    <!-- ========================================= -->
+
+    <!-- Warehouse Map -->
+    <model name="warehouse_map">
+      <static>true</static>
+      <pose>0 0 0.002 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>file:///home/wayay/mixed/src/my_robot_controller/models/my_map.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>file:///home/wayay/mixed/src/my_robot_controller/models/my_map.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1.0</ambient>
+            <diffuse>0.8 0.8 0.8 1.0</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Obstacles from my_robot_controller -->
+    <model name="obstacle_box_1">
+      <static>true</static>
+      <pose>3 2 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>1.0 0.5 1.0</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>1.0 0.5 1.0</size></box>
+          </geometry>
+          <material>
+            <ambient>0.8 0.2 0.2 1</ambient>
+            <diffuse>0.9 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="obstacle_cylinder_1">
+      <static>true</static>
+      <pose>-2 3 0.75 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.3</radius>
+              <length>1.5</length>
+            </cylinder>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.3</radius>
+              <length>1.5</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.2 0.6 0.8 1</ambient>
+            <diffuse>0.3 0.7 0.9 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="obstacle_box_2">
+      <static>true</static>
+      <pose>-3 -2 0.3 0 0 0.5</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>0.6 0.6 0.6</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.6 0.6 0.6</size></box>
+          </geometry>
+          <material>
+            <ambient>0.7 0.5 0.2 1</ambient>
+            <diffuse>0.8 0.6 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="obstacle_cylinder_2">
+      <static>true</static>
+      <pose>1 -3 1.0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.25</radius>
+              <length>2.0</length>
+            </cylinder>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.25</radius>
+              <length>2.0</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.3 0.8 0.3 1</ambient>
+            <diffuse>0.4 0.9 0.4 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="obstacle_box_3">
+      <static>true</static>
+      <pose>4 -1 0.4 0 0 0.8</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>0.8 0.8 0.8</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.8 0.8 0.8</size></box>
+          </geometry>
+          <material>
+            <ambient>0.6 0.4 0.2 1</ambient>
+            <diffuse>0.7 0.5 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================================= -->
+    <!-- ELEMENTS FROM BLUE_LINE_FOLLOWER PROJECT -->
+    <!-- Position: Shifted by +50 on X axis       -->
+    <!-- ========================================= -->
+
+    <!-- Blue Line Track - Straight -->
+    <model name="blue_line_straight">
+      <static>true</static>
+      <link name="link">
+        <pose>67.5 0 0.001 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>40 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+            <specular>0.1 0.1 0.3 1</specular>
+            <emissive>0 0 0.5 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Delivery zones -->
+    <model name="delivery_zone_left">
+      <static>true</static>
+      <link name="link">
+        <pose>70 5 0.075 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>33 1 0.75</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.5 0.5 0.5 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="delivery_zone_right">
+      <static>true</static>
+      <link name="link">
+        <pose>70 -5 0.075 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>33 1 0.75</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.5 0.5 0.5 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <!-- Red Lines -->
+    <model name="Red_1">
+      <static>true</static>
+      <link name="link">
+        <pose>55 -2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.3 0.1 0.1 1</specular>
+            <emissive>0.5 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="Red_2">
+      <static>true</static>
+      <link name="link">
+        <pose>60 -2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.3 0.1 0.1 1</specular>
+            <emissive>0.5 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Red_3">
+      <static>true</static>
+      <link name="link">
+        <pose>65 -2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.3 0.1 0.1 1</specular>
+            <emissive>0.5 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="Red_4">
+      <static>true</static>
+      <link name="link">
+        <pose>70 -2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.3 0.1 0.1 1</specular>
+            <emissive>0.5 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Red_5">
+      <static>true</static>
+      <link name="link">
+        <pose>75 -2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.3 0.1 0.1 1</specular>
+            <emissive>0.5 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Red_6">
+      <static>true</static>
+      <link name="link">
+        <pose>80 -2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.3 0.1 0.1 1</specular>
+            <emissive>0.5 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Red_7">
+      <static>true</static>
+      <link name="link">
+        <pose>85 -2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.3 0.1 0.1 1</specular>
+            <emissive>0.5 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Green Lines -->
+    <model name="Green_1">
+      <static>true</static>
+      <link name="link">
+        <pose>55 2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.3 0.1 1</specular>
+            <emissive>0 0.5 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="Green_2">
+      <static>true</static>
+      <link name="link">
+        <pose>60 2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.3 0.1 1</specular>
+            <emissive>0 0.5 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Green_3">
+      <static>true</static>
+      <link name="link">
+        <pose>65 2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.3 0.1 1</specular>
+            <emissive>0 0.5 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="Green_4">
+      <static>true</static>
+      <link name="link">
+        <pose>70 2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.3 0.1 1</specular>
+            <emissive>0 0.5 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Green_5">
+      <static>true</static>
+      <link name="link">
+        <pose>75 2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.3 0.1 1</specular>
+            <emissive>0 0.5 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Green_6">
+      <static>true</static>
+      <link name="link">
+        <pose>80 2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.3 0.1 1</specular>
+            <emissive>0 0.5 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="Green_7">
+      <static>true</static>
+      <link name="link">
+        <pose>85 2.5 0.001 0 0 1.5708</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>5 0.1 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0.1 0.3 0.1 1</specular>
+            <emissive>0 0.5 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ArUco Markers along the track (shifted +50 on X) -->
+    <model name="aruco_0">
+      <static>true</static>
+      <link name="link">
+        <pose>50 0 0.002 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_0/materials/scripts</uri>
+              <uri>model://aruco_0/materials/textures</uri>
+              <name>aruco_0</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="aruco_1">
+      <static>true</static>
+      <link name="link">
+        <pose>55 0 0.002 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_1/materials/scripts</uri>
+              <uri>model://aruco_1/materials/textures</uri>
+              <name>aruco_1</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="aruco_2">
+      <static>true</static>
+      <link name="link">
+        <pose>60 0 0.002 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_2/materials/scripts</uri>
+              <uri>model://aruco_2/materials/textures</uri>
+              <name>aruco_2</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="aruco_3">
+      <static>true</static>
+      <link name="link">
+        <pose>65 0 0.002 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_3/materials/scripts</uri>
+              <uri>model://aruco_3/materials/textures</uri>
+              <name>aruco_3</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="aruco_4">
+      <static>true</static>
+      <link name="link">
+        <pose>70 0 0.002 0 0 3.14159</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_4/materials/scripts</uri>
+              <uri>model://aruco_4/materials/textures</uri>
+              <name>aruco_4</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="aruco_5">
+      <static>true</static>
+      <link name="link">
+        <pose>75 0 0.002 0 0 3.14159</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_5/materials/scripts</uri>
+              <uri>model://aruco_5/materials/textures</uri>
+              <name>aruco_5</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="aruco_6">
+      <static>true</static>
+      <link name="link">
+        <pose>80 0 0.002 0 0 3.14159</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_6/materials/scripts</uri>
+              <uri>model://aruco_6/materials/textures</uri>
+              <name>aruco_6</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <model name="aruco_7">
+      <static>true</static>
+      <link name="link">
+        <pose>85 0 0.002 0 0 3.14159</pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.15 0.15 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://aruco_7/materials/scripts</uri>
+              <uri>model://aruco_7/materials/textures</uri>
+              <name>aruco_7</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+    
+    <!-- Scene -->
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+    
+    <!-- GUI -->
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>40 -30 25 0 0.5 1.2</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+    
+  </world>
+</sdf>

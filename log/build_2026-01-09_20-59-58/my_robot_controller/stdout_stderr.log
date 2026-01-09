@@ -1,0 +1,73 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- Override CMake install command with custom implementation using symlinks instead of copying resources
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/wayay/mixed/build/my_robot_controller
+-- Install configuration: ""
+-- Execute custom install script
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/description/imu.xacro
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/description/lidar.xacro
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/description/robot.urdf.xacro
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/description/robot_combined.urdf.xacro
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/launch/launch_mapping.launch.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/launch/launch_sim.launch.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/launch/launch_sim_with_keyboard.launch.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/launch/launch_sim_with_ps4.launch.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/launch/robot_localization.launch.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/launch/slam_mapping.launch.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/config/ekf_params.yaml
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/config/my_controllers.yaml
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/config/my_controllers_namespaced.yaml
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/config/nav2_params.yaml
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/config/slam_params.yaml
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/config/slam_stable.yaml
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/worlds/my_world.world
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/models/Cube_ROS.stl
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/models/Wharehouse.dae
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/models/my_map.stl
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/compare_odometry.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/controllers/keyboard_controller.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/controllers/ps4_controller.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/mappers/auto_mapper.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/mappers/auto_mapper_detailed.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/mappers/wall_follower_mapper.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/navigation/backward_to_wall.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/navigation/navigate_to_package.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/nodes/navigation/set_initial_pose.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/ps4_controller.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/keyboard_controller.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/auto_mapper.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/auto_mapper_detailed.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/wall_follower_mapper.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/navigate_to_package.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/set_initial_pose.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/backward_to_wall.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/lib/my_robot_controller/compare_odometry.py
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/ament_index/resource_index/package_run_dependencies/my_robot_controller
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/ament_index/resource_index/parent_prefix_path/my_robot_controller
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/environment/ament_prefix_path.sh
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/environment/ament_prefix_path.dsv
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/environment/path.sh
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/environment/path.dsv
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/local_setup.bash
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/local_setup.sh
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/local_setup.zsh
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/local_setup.dsv
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/package.dsv
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/ament_index/resource_index/packages/my_robot_controller
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/cmake/my_robot_controllerConfig.cmake
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/cmake/my_robot_controllerConfig-version.cmake
+-- Symlinking: /home/wayay/mixed/install/my_robot_controller/share/my_robot_controller/package.xml

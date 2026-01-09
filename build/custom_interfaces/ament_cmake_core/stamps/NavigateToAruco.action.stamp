@@ -1,0 +1,57 @@
+# ========================================
+# GOAL - Numéro du marqueur ArUco cible
+# ========================================
+# Numéro du marqueur ArUco à atteindre
+int32 target_aruco_id
+
+# Retourner à ArUco 0 après avoir atteint la cible
+bool return_to_zero
+
+# Couleur à suivre après arrivée à la cible ('l' pour rouge/left, 'r' pour vert/right, 'b' pour bleu/blue par défaut)
+string color_choice
+
+---
+
+# ========================================
+# RESULT - Résultat de la navigation
+# ========================================
+# Navigation réussie?
+bool success
+
+# Numéro ArUco final atteint
+int32 final_aruco_id
+
+# Direction utilisée (true=avant, false=arrière)
+bool went_forward
+
+# Temps total de navigation (secondes)
+float32 navigation_time
+
+# Distance parcourue (approximative)
+float32 distance_traveled
+
+# A effectué le retour à ArUco 0
+bool returned_to_zero
+
+---
+
+# ========================================
+# FEEDBACK - Progression pendant navigation
+# ========================================
+# Numéro ArUco actuellement détecté (0 si aucun)
+int32 current_aruco_id
+
+# Direction de navigation actuelle
+string current_direction
+
+# Temps écoulé (secondes)
+float32 elapsed_time
+
+# État de la navigation
+string status_message
+
+# Obstacle détecté (true si obstacle présent)
+bool obstacle_detected
+
+# Distance de l'obstacle (mètres, 0.0 si pas d'obstacle)
+float32 obstacle_distance

@@ -1,0 +1,1 @@
+/home/wayay/mixed/src/my_robot_controller/nodes/mappers/auto_mapper.py

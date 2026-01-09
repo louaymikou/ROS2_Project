@@ -1,0 +1,9 @@
+source;share/blue_line_follower/hook/pythonpath.ps1
+source;share/blue_line_follower/hook/pythonpath.dsv
+source;share/blue_line_follower/hook/pythonpath.sh
+source;share/blue_line_follower/hook/ament_prefix_path.ps1
+source;share/blue_line_follower/hook/ament_prefix_path.dsv
+source;share/blue_line_follower/hook/ament_prefix_path.sh
+source;../../build/blue_line_follower/share/blue_line_follower/hook/pythonpath_develop.ps1
+source;../../build/blue_line_follower/share/blue_line_follower/hook/pythonpath_develop.dsv
+source;../../build/blue_line_follower/share/blue_line_follower/hook/pythonpath_develop.sh

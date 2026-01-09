@@ -1,0 +1,1 @@
+/home/wayay/mixed/build/custom_interfaces/rosidl_generator_py/custom_interfaces/action/_navigate_to_aruco_s.c

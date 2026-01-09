@@ -1,0 +1,1 @@
+/home/wayay/mixed/build/custom_interfaces/ament_cmake_core/custom_interfacesConfig.cmake

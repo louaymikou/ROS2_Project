@@ -1,0 +1,1 @@
+/home/wayay/mixed/build/custom_interfaces/rosidl_generator_cpp/custom_interfaces/action/detail/navigate_to_aruco__type_support.hpp
