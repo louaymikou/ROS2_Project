@@ -31,7 +31,7 @@ def generate_launch_description():
         )
     )
 
-    # 2️⃣ Nav2 (localization + navigation)
+    # 2️⃣ Nav2 (localization + navigation) avec AUTOSTART
     launch_nav2 = TimerAction(
         period=15.0,
         actions=[
@@ -42,7 +42,8 @@ def generate_launch_description():
                 launch_arguments={
                     'map': map_file,
                     'use_sim_time': 'true',
-                    'params_file': nav2_params_file
+                    'params_file': nav2_params_file,
+                    'autostart': 'true'
                 }.items()
             ),
             IncludeLaunchDescription(
@@ -51,13 +52,14 @@ def generate_launch_description():
                 ),
                 launch_arguments={
                     'use_sim_time': 'true',
-                    'params_file': nav2_params_file
+                    'params_file': nav2_params_file,
+                    'autostart': 'true'
                 }.items()
             )
         ]
     )
 
-    # 3️⃣ cmd_vel relay (CORRIGÉ: cmd_vel_nav au lieu de cmd_vel)
+    # 3️⃣ cmd_vel relay
     cmd_vel_relay = TimerAction(
         period=25.0,
         actions=[
