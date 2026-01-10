@@ -1,4 +1,6 @@
+/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/arm_commander.py
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/keyboard_controller.py
+/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/arm_gripper_test.py
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_diagnostic.py
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/line_follower_node.py
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__init__.py
@@ -6,7 +8,9 @@
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/pusher_tester.py
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_server.py
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/aruco_navigation_client.py
+/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/arm_commander.cpython-310.pyc
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/keyboard_controller.cpython-310.pyc
+/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/arm_gripper_test.cpython-310.pyc
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/aruco_diagnostic.cpython-310.pyc
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/line_follower_node.cpython-310.pyc
 /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower/__pycache__/__init__.cpython-310.pyc

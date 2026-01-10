@@ -111,7 +111,7 @@
   <joint name="camera_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_link"/>
-    <origin xyz="${base_length/2 + 0.025} 0 ${-base_height/2 + 0.12}" rpy="0 0.6 0"/>
+    <origin xyz="${base_length/2 + 0.025} 0 ${-base_height/2 + 0.18}" rpy="0 0.6 0"/>
   </joint>
 
   <!-- Camera Sensor -->
@@ -170,7 +170,7 @@
   <joint name="rear_camera_joint" type="fixed">
     <parent link="base_link"/>
     <child link="rear_camera_link"/>
-    <origin xyz="${-base_length/2 - 0.025} 0 ${-base_height/2 + 0.12}" rpy="0 0.6 3.14159"/>
+    <origin xyz="${-base_length/2 - 0.025} 0 ${-base_height/2 + 0.18}" rpy="0 0.6 3.14159"/>
   </joint>
 
   <!-- Rear Camera Sensor -->
@@ -466,38 +466,11 @@
   </gazebo>
 
   <!-- ===== PUSHER MECHANISM ===== -->
-  <!-- Rail horizontal fixé au-dessus du robot (axe longitudinal) -->
-  <link name="pusher_rail_link">
-    <visual>
-      <geometry>
-        <box size="0.7 0.05 0.03"/>
-      </geometry>
-      <material name="silver">
-        <color rgba="0.7 0.7 0.7 1"/>
-      </material>
-    </visual>
-    <collision>
-      <geometry>
-        <box size="0.7 0.05 0.03"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.012" iyz="0.0" izz="0.012"/>
-    </inertial>
-  </link>
-
-  <joint name="pusher_rail_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="pusher_rail_link"/>
-    <origin xyz="0 0 ${base_height/2 + 0.25}" rpy="0 0 0"/>
-  </joint>
-
-  <!-- Prisme pousseur - Se déplace d'arrière vers l'avant -->
+  <!-- Prisme pousseur - Collé au dessus du châssis, se déplace d'arrière vers l'avant -->
   <link name="pusher_arm_link">
     <visual>
       <geometry>
-        <box size="0.15 0.3 0.12"/>
+        <box size="0.12 0.12 0.03"/>
       </geometry>
       <material name="orange">
         <color rgba="1.0 0.5 0.0 1"/>
@@ -505,20 +478,20 @@
     </visual>
     <collision>
       <geometry>
-        <box size="0.15 0.3 0.12"/>
+        <box size="0.12 0.12 0.12"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.2"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+      <mass value="0.08"/>
+      <inertia ixx="0.0005" ixy="0.0" ixz="0.0" iyy="0.0005" iyz="0.0" izz="0.0005"/>
     </inertial>
   </link>
 
   <!-- Joint prismatique - permet au pousseur de glisser d'arrière vers l'avant -->
   <joint name="pusher_joint" type="prismatic">
-    <parent link="pusher_rail_link"/>
+    <parent link="base_link"/>
     <child link="pusher_arm_link"/>
-    <origin xyz="${-base_length/2 + 0.1} 0 -0.075" rpy="0 0 0"/>
+    <origin xyz="${-base_length/2 + 0.06} 0 ${base_height/2 + 0.015}" rpy="0 0 0"/>
     <axis xyz="1 0 0"/>
     <limit lower="0.0" upper="0.6" effort="50.0" velocity="0.5"/>
   </joint>
@@ -540,10 +513,6 @@
   </ros2_control>
 
   <!-- Gazebo materials for pusher -->
-  <gazebo reference="pusher_rail_link">
-    <material>Gazebo/White</material>
-  </gazebo>
-
   <gazebo reference="pusher_arm_link">
     <material>Gazebo/Orange</material>
   </gazebo>

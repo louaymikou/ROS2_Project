@@ -1,0 +1,26 @@
+running egg_info
+writing ../../build/blue_line_follower/blue_line_follower.egg-info/PKG-INFO
+writing dependency_links to ../../build/blue_line_follower/blue_line_follower.egg-info/dependency_links.txt
+writing entry points to ../../build/blue_line_follower/blue_line_follower.egg-info/entry_points.txt
+writing requirements to ../../build/blue_line_follower/blue_line_follower.egg-info/requires.txt
+writing top-level names to ../../build/blue_line_follower/blue_line_follower.egg-info/top_level.txt
+reading manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+writing manifest file '../../build/blue_line_follower/blue_line_follower.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+running install_data
+copying urdf/line_follower_robot.urdf.xacro -> /home/wayay/Ros/ROS2_Project/install/blue_line_follower/share/blue_line_follower/urdf
+running install_egg_info
+removing '/home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/blue_line_follower/blue_line_follower.egg-info to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/python3.10/site-packages/blue_line_follower-1.0.0-py3.10.egg-info
+running install_scripts
+Installing aruco_diagnostic script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+Installing aruco_navigation_client script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+Installing aruco_navigation_server script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+Installing keyboard_controller script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+Installing line_follower_node script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+Installing pusher_controller script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+Installing pusher_tester script to /home/wayay/Ros/ROS2_Project/install/blue_line_follower/lib/blue_line_follower
+writing list of installed files to '/home/wayay/Ros/ROS2_Project/build/blue_line_follower/install.log'

@@ -476,7 +476,7 @@ class ArucoNavigationServer(Node):
                 
                 # Rotation de 90 degrés (environ 2.5 secondes à vitesse angulaire de 0.6 rad/s)
                 # Pour rotation droite (l) ou gauche (r)
-                self._rotate_robot(self.rotation_direction, duration=5.0)
+                self._rotate_robot(self.rotation_direction, duration=7.0)
                 
                 self.current_state = NavigationState.FOLLOW_COLOR_TO_OBSTACLE
         

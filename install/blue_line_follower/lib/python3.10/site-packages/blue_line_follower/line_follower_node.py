@@ -9,7 +9,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image, Range
 from geometry_msgs.msg import Twist
 from std_srvs.srv import SetBool
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
@@ -93,7 +93,6 @@ class LineFollowerNode(Node):
         self.publisher = self.create_publisher(Twist, '/diff_drive_controller/cmd_vel_unstamped', 10)
         
         # Publisher for line detection status
-        from std_msgs.msg import Bool
         self.line_detected_pub = self.create_publisher(Bool, '/line_detected', 10)
         
         # Service to change direction
@@ -368,7 +367,6 @@ class LineFollowerNode(Node):
             line = self.get_contour_data(color_mask)
             
             # Publish line detection status
-            from std_msgs.msg import Bool
             line_status = Bool()
             line_status.data = line is not None and len(line) > 0
             self.line_detected_pub.publish(line_status)
