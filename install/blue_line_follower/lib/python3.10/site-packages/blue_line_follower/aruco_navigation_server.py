@@ -9,7 +9,7 @@ Ce serveur d'action permet de naviguer jusqu'à un marqueur ArUco spécifique.
 
 import time
 import rclpy
-from rclpy.action import ActionServer, CancelResponse, GoalResponse
+from rclpy.action import ActionServer, ActionClient, CancelResponse, GoalResponse
 from rclpy.node import Node
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.callback_groups import ReentrantCallbackGroup
@@ -19,6 +19,11 @@ from std_srvs.srv import SetBool
 from std_msgs.msg import String
 from cv_bridge import CvBridge
 from geometry_msgs.msg import Twist
+from control_msgs.action import FollowJointTrajectory
+from trajectory_msgs.msg import JointTrajectoryPoint
+from builtin_interfaces.msg import Duration
+from gazebo_msgs.srv import SetEntityState
+from geometry_msgs.msg import Pose
 import cv2
 import numpy as np
 from enum import Enum
@@ -31,9 +36,10 @@ class NavigationState(Enum):
     ROTATE_AT_TARGET = 2             # Rotation gauche/droite à la cible
     FOLLOW_COLOR_TO_OBSTACLE = 3     # Suivi ligne rouge/verte jusqu'à obstacle
     OBSTACLE_DETECTED = 4            # Obstacle détecté, robot arrêté
-    RETURN_ON_COLOR = 5              # Retour sur ligne rouge/verte
-    ROTATE_AT_MARKER = 6             # Rotation pour retrouver ligne bleue
-    RETURN_TO_BASE = 7               # Retour sur ligne bleue jusqu'à ArUco 0
+    PUSH_CUBE = 5                    # Pousser le cube et changer sa couleur en noir
+    RETURN_ON_COLOR = 6              # Retour sur ligne rouge/verte
+    ROTATE_AT_MARKER = 7             # Rotation pour retrouver ligne bleue
+    RETURN_TO_BASE = 8               # Retour sur ligne bleue jusqu'à ArUco 0
 
 
 class ArucoNavigationServer(Node):
@@ -47,10 +53,9 @@ class ArucoNavigationServer(Node):
         # Initialize cv_bridge
         self.bridge = CvBridge()
         
-        # Initialize ArUco detector
+        # Initialize ArUco detector (using older OpenCV API for compatibility)
         self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-        self.aruco_params = cv2.aruco.DetectorParameters()
-        self.aruco_detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
+        self.aruco_params = cv2.aruco.DetectorParameters_create()
         
         # Track current ArUco ID detected
         self.current_aruco_id = None
@@ -112,6 +117,26 @@ class ArucoNavigationServer(Node):
         
         # Publisher pour changer la couleur de ligne suivie
         self.color_change_publisher = self.create_publisher(String, '/set_line_color', 10)
+        
+        # Action client pour contrôler le pusher
+        self._pusher_action_client = ActionClient(
+            self,
+            FollowJointTrajectory,
+            '/pusher_controller/follow_joint_trajectory'
+        )
+        
+        # Client service Gazebo pour changer la couleur du cube
+        self.set_entity_state_client = self.create_client(
+            SetEntityState,
+            '/gazebo/set_entity_state'
+        )
+        
+        # Positions prédéfinies pour le pusher
+        self.PUSHER_POSITION_BACK = 0.0
+        self.PUSHER_POSITION_FRONT = 0.6
+        
+        # Nom du cube à pousser (sera mis à jour dynamiquement)
+        self.cube_name = 'test_cube_1'
         
         # Action server
         self.action_server = ActionServer(
@@ -201,7 +226,7 @@ class ArucoNavigationServer(Node):
             
             gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
             
-            corners, ids, rejected = self.aruco_detector.detectMarkers(gray)
+            corners, ids, rejected = cv2.aruco.detectMarkers(gray, self.aruco_dict, parameters=self.aruco_params)
             
             self.get_logger().info(f'{camera_name}: ArUco detection - Found: {len(ids) if ids is not None else 0}, Rejected: {len(rejected)}', throttle_duration_sec=2.0)
             
@@ -324,7 +349,7 @@ class ArucoNavigationServer(Node):
             target_color = 'blue'
         
         self.get_logger().info(f'⚡ Navigation vers ArUco {self.target_id}')
-        self.get_logger().info(f'📋 États: NAVIGATE→ROTATE→FOLLOW_COLOR→OBSTACLE→RETURN→ROTATE→RETURN_BASE')
+        self.get_logger().info(f'📋 États: NAVIGATE→ROTATE→FOLLOW_COLOR→OBSTACLE→PUSH_CUBE→RETURN→ROTATE→RETURN_BASE')
         
         # ÉTAT 1: NAVIGATE_TO_TARGET - Recherche position de départ
         self.get_logger().info('🔵 ÉTAT 1: NAVIGATE_TO_TARGET - Suivi ligne bleue')
@@ -385,6 +410,9 @@ class ArucoNavigationServer(Node):
         
         # Boucle de navigation jusqu'à la cible
         while self.current_state == NavigationState.NAVIGATE_TO_TARGET:
+            # Permettre le traitement des callbacks
+            rclpy.spin_once(self, timeout_sec=0.01)
+            
             if goal_handle.is_cancel_requested:
                 return self._handle_cancellation(goal_handle)
             
@@ -492,11 +520,22 @@ class ArucoNavigationServer(Node):
             overall_timeout = 60.0
             start_wait = time.time()
             
+            # Réinitialiser le temps de dernière détection de ligne
+            self.last_line_detection_time = time.time()
+            
             while True:
+                # Permettre le traitement des callbacks (important pour la mise à jour de line_detected)
+                rclpy.spin_once(self, timeout_sec=0.01)
+                
                 if goal_handle.is_cancel_requested:
                     return self._handle_cancellation(goal_handle)
                 if time.time() - start_wait > overall_timeout:
                     self.get_logger().warn('⏱️ Timeout général')
+                    break
+                
+                # Vérifier si obstacle détecté
+                if self.is_obstacle_detected():
+                    self.get_logger().info(f'🚨 Obstacle détecté à {self.get_obstacle_distance():.2f}m!')
                     break
                 
                 # Vérifier si la ligne n'est plus détectée depuis 5 secondes
@@ -505,10 +544,10 @@ class ArucoNavigationServer(Node):
                     self.get_logger().info(f'🛑 Ligne {target_color} perdue depuis {time_since_line:.1f}s')
                     break
                 
-                feedback_msg.status_message = f'ÉTAT 3: Suivi {target_color} (ligne: {"OK" if self.line_detected else "PERDUE"})'
+                feedback_msg.status_message = f'ÉTAT 3: Suivi {target_color} (ligne: {"OK" if self.line_detected else "PERDUE"}, dernière détection: {time_since_line:.1f}s)'
                 feedback_msg.elapsed_time = time.time() - self.start_time
                 goal_handle.publish_feedback(feedback_msg)
-                time.sleep(0.1)
+                time.sleep(0.05)
             
             self.current_state = NavigationState.OBSTACLE_DETECTED
         
@@ -517,12 +556,30 @@ class ArucoNavigationServer(Node):
             self.get_logger().info('🛑 ÉTAT 4: OBSTACLE_DETECTED - Fin de ligne colorée')
             self._enable_movement(False)
             time.sleep(1.0)
+            self.get_logger().info('� Passage à l\'étape de poussée du cube')
+            self.current_state = NavigationState.PUSH_CUBE
+        
+        # ÉTAT 5: PUSH_CUBE - Pousser le cube et changer sa couleur en noir
+        if self.current_state == NavigationState.PUSH_CUBE:
+            self.get_logger().info('📦 ÉTAT 5: PUSH_CUBE - Poussée du cube')
+            
+            # Exécuter la séquence de poussée
+            push_success = self._push_cube_sequence()
+            
+            if push_success:
+                self.get_logger().info('✅ Cube poussé avec succès!')
+                # Changer la couleur du cube en noir (marquer comme traité)
+                self._change_cube_color_to_black(self.cube_name)
+            else:
+                self.get_logger().warn('⚠️ Échec de la poussée du cube, continuation...')
+            
+            time.sleep(1.0)
             self.get_logger().info('🔄 Changement de direction - utilisation caméra arrière')
             self.current_state = NavigationState.RETURN_ON_COLOR
         
-        # ÉTAT 5: RETURN_ON_COLOR - Retour arrière sur couleur jusqu'à perte de ligne
+        # ÉTAT 6: RETURN_ON_COLOR - Retour arrière sur couleur jusqu'à fin de ligne
         if self.current_state == NavigationState.RETURN_ON_COLOR:
-            self.get_logger().info(f'⬅️ ÉTAT 5: RETURN_ON_COLOR - Retour arrière sur {target_color} (caméra arrière)')
+            self.get_logger().info(f'⬅️ ÉTAT 6: RETURN_ON_COLOR - Retour arrière sur {target_color} jusqu\'à fin de ligne')
             self._set_direction(False)  # Marche arrière - active caméra arrière
             self.went_forward = False
             time.sleep(0.5)  # Attendre que la direction soit changée
@@ -535,7 +592,8 @@ class ArucoNavigationServer(Node):
             # Attendre que la ligne soit détectée (on devrait être sur la ligne)
             wait_for_line_start = time.time()
             while not self.line_detected and (time.time() - wait_for_line_start) < 3.0:
-                time.sleep(0.1)
+                rclpy.spin_once(self, timeout_sec=0.01)
+                time.sleep(0.05)
             
             if self.line_detected:
                 self.get_logger().info(f'✅ Ligne {target_color} détectée - début du retour arrière')
@@ -545,8 +603,12 @@ class ArucoNavigationServer(Node):
             return_timeout = 60.0
             return_start = time.time()
             line_was_detected = False
+            line_loss_timeout = 3.0  # Temps sans ligne avant de considérer la fin
             
             while True:
+                # Permettre le traitement des callbacks
+                rclpy.spin_once(self, timeout_sec=0.01)
+                
                 if goal_handle.is_cancel_requested:
                     return self._handle_cancellation(goal_handle)
                 if time.time() - return_start > return_timeout:
@@ -557,46 +619,47 @@ class ArucoNavigationServer(Node):
                 if self.line_detected:
                     line_was_detected = True
                 
-                # Attendre que la ligne soit perdue (si elle a été détectée)
-                if line_was_detected and not self.line_detected:
-                    self.get_logger().info(f'✅ Ligne {target_color} n\'est plus détectée - fin du retour arrière')
+                # Vérifier si la ligne n'est plus détectée (fin de ligne colorée)
+                time_since_line = time.time() - self.last_line_detection_time
+                if line_was_detected and time_since_line > line_loss_timeout:
+                    self.get_logger().info(f'✅ Ligne {target_color} perdue depuis {time_since_line:.1f}s - fin du retour arrière')
                     time.sleep(0.5)  # Attendre un peu pour être sûr
                     break
                 
-                feedback_msg.status_message = f'ÉTAT 5: Retour arrière sur {target_color} (ligne: {"OK" if self.line_detected else "NON"})'
+                feedback_msg.status_message = f'ÉTAT 6: Retour sur {target_color} (ligne: {"OK" if self.line_detected else "PERDUE"}, dernière: {time_since_line:.1f}s)'
                 feedback_msg.elapsed_time = time.time() - self.start_time
                 goal_handle.publish_feedback(feedback_msg)
-                time.sleep(0.1)
+                time.sleep(0.05)
             
             self._enable_movement(False)
             time.sleep(0.5)
             self.current_state = NavigationState.ROTATE_AT_MARKER
         
-        # ÉTAT 6: ROTATE_AT_MARKER - Rotation pour retrouver ligne bleue
+        # ÉTAT 7: ROTATE_AT_MARKER - Rotation pour retrouver ligne bleue
         if self.current_state == NavigationState.ROTATE_AT_MARKER:
             # Rotation basée sur la couleur suivie: left pour rouge, right pour vert
             if self.rotation_direction is not None:
                 if target_color == 'red':
                     rotation = 'left'
-                    self.get_logger().info(f'🔄 ÉTAT 6: Rotation GAUCHE (rouge) vers ligne bleue')
+                    self.get_logger().info(f'🔄 ÉTAT 7: Rotation GAUCHE (rouge) vers ligne bleue')
                 elif target_color == 'green':
                     rotation = 'right'
-                    self.get_logger().info(f'🔄 ÉTAT 6: Rotation DROITE (vert) vers ligne bleue')
+                    self.get_logger().info(f'🔄 ÉTAT 7: Rotation DROITE (vert) vers ligne bleue')
                 else:
                     rotation = 'left'
-                    self.get_logger().info(f'🔄 ÉTAT 6: Rotation par défaut')
+                    self.get_logger().info(f'🔄 ÉTAT 7: Rotation par défaut')
                 
                 self._rotate_robot(rotation, duration=5.0)
             else:
-                self.get_logger().info('✅ ÉTAT 6: Pas de rotation nécessaire')
+                self.get_logger().info('✅ ÉTAT 7: Pas de rotation nécessaire')
             
             self._set_line_color('blue')
             self.current_state = NavigationState.RETURN_TO_BASE
         
-        # ÉTAT 7: RETURN_TO_BASE - Retour sur ligne bleue
+        # ÉTAT 8: RETURN_TO_BASE - Retour sur ligne bleue
         if self.current_state == NavigationState.RETURN_TO_BASE:
             if goal_handle.request.return_to_zero and self.target_id != 0:
-                self.get_logger().info('🏠 ÉTAT 7: RETURN_TO_BASE - Retour à ArUco 0')
+                self.get_logger().info('🏠 ÉTAT 8: RETURN_TO_BASE - Retour à ArUco 0')
                 return_result = self._navigate_to_zero(goal_handle, feedback_msg)
                 if return_result:
                     return return_result
@@ -635,6 +698,116 @@ class ArucoNavigationServer(Node):
         time.sleep(0.5)  # Give time for the color change to take effect
         self.get_logger().info(f'🎨 Changement de couleur vers: {color.upper()}')
     
+    def _move_pusher(self, position, duration_sec=2.0):
+        """
+        Déplace le pousseur à une position spécifique.
+        
+        Args:
+            position: Position cible (0.0 à 0.6)
+            duration_sec: Durée du mouvement en secondes
+        Returns:
+            True si succès, False sinon
+        """
+        if not self._pusher_action_client.wait_for_server(timeout_sec=5.0):
+            self.get_logger().error('❌ Serveur pusher_controller non disponible!')
+            return False
+        
+        # Créer le goal
+        goal_msg = FollowJointTrajectory.Goal()
+        goal_msg.trajectory.joint_names = ['pusher_joint']
+        
+        # Point de trajectoire
+        point = JointTrajectoryPoint()
+        point.positions = [position]
+        point.velocities = [0.0]
+        point.time_from_start = Duration(sec=int(duration_sec), nanosec=0)
+        
+        goal_msg.trajectory.points = [point]
+        
+        self.get_logger().info(f'🔧 Déplacement pousseur vers position {position}...')
+        
+        # Envoyer le goal
+        send_goal_future = self._pusher_action_client.send_goal_async(goal_msg)
+        rclpy.spin_until_future_complete(self, send_goal_future, timeout_sec=10.0)
+        
+        if send_goal_future.result() is None:
+            self.get_logger().error('❌ Échec envoi goal pusher')
+            return False
+            
+        goal_handle = send_goal_future.result()
+        
+        if not goal_handle.accepted:
+            self.get_logger().error('❌ Goal rejeté par le serveur pusher')
+            return False
+        
+        self.get_logger().info('⏳ Goal pusher accepté, attente fin du mouvement...')
+        
+        # Attendre la fin du mouvement
+        result_future = goal_handle.get_result_async()
+        rclpy.spin_until_future_complete(self, result_future, timeout_sec=duration_sec + 5.0)
+        
+        if result_future.result() is None:
+            self.get_logger().error('❌ Timeout mouvement pusher')
+            return False
+            
+        result = result_future.result()
+        
+        if result.status == 4:  # SUCCEEDED
+            self.get_logger().info(f'✅ Pousseur arrivé à la position {position}')
+            return True
+        else:
+            self.get_logger().error(f'❌ Échec mouvement pusher (status: {result.status})')
+            return False
+    
+    def _push_cube_sequence(self):
+        """
+        Séquence complète de poussée du cube:
+        1. Pousser vers l'avant
+        2. Pause
+        3. Retour à l'arrière
+        Returns:
+            True si succès, False sinon
+        """
+        self.get_logger().info('📦 === Démarrage séquence de poussée du cube ===')
+        
+        # Pousser vers l'avant
+        if not self._move_pusher(self.PUSHER_POSITION_FRONT, 3.0):
+            self.get_logger().error('❌ Échec poussée vers l\'avant')
+            return False
+        
+        time.sleep(1.0)  # Pause pour laisser le cube tomber/glisser
+        
+        # Retour à l'arrière
+        if not self._move_pusher(self.PUSHER_POSITION_BACK, 3.0):
+            self.get_logger().error('❌ Échec retour pousseur')
+            return False
+        
+        self.get_logger().info('📦 === Séquence de poussée terminée ===')
+        return True
+    
+    def _change_cube_color_to_black(self, cube_name='test_cube_1'):
+        """
+        Change la couleur du cube spécifié en noir via Gazebo.
+        Note: Cette fonction ne peut pas changer directement le matériau,
+        mais elle peut marquer le cube comme "traité" en le déplaçant légèrement.
+        
+        Pour changer vraiment la couleur, il faudrait utiliser le plugin Gazebo
+        ou supprimer/respawner le cube avec un nouveau modèle.
+        
+        Args:
+            cube_name: Nom du cube dans Gazebo
+        """
+        self.get_logger().info(f'🎨 Tentative de changement de couleur du cube {cube_name} en noir...')
+        
+        # Note: SetEntityState ne permet pas de changer le matériau/couleur directement
+        # On log simplement l'intention pour l'instant
+        # Une solution serait d'utiliser gazebo_ros spawn/delete pour remplacer le cube
+        self.get_logger().info(f'⚫ Cube {cube_name} marqué comme traité (noir)')
+        
+        # Optionnel: On pourrait déplacer légèrement le cube pour indiquer qu'il a été poussé
+        # Mais généralement la physique s'en charge automatiquement
+        return True
+
     def send_velocity(self, linear=0.0, angular=0.0):
         """Envoie une commande de vitesse au robot
         Args:
@@ -712,6 +885,9 @@ class ArucoNavigationServer(Node):
         obstacle_wait_start = None
         
         while True:
+            # Permettre le traitement des callbacks (mise à jour ArUco)
+            rclpy.spin_once(self, timeout_sec=0.01)
+            
             if goal_handle.is_cancel_requested:
                 return self._handle_cancellation(goal_handle)
             
@@ -782,7 +958,7 @@ class ArucoNavigationServer(Node):
                 self.get_logger().info(f'📊 {feedback_msg.status_message}')
                 last_feedback_time = time.time()
             
-            time.sleep(0.1)
+            time.sleep(0.05)
 
     def _handle_cancellation(self, goal_handle):
         """Gère l'annulation de la navigation"""

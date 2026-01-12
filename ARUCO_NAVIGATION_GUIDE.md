@@ -241,6 +241,31 @@ Le robot doit pouvoir détecter un marqueur ArUco avant de commencer la navigati
 2. Vérifiez que les caméras fonctionnent correctement
 3. Attendez quelques secondes que le robot détecte un marqueur
 
+### Visualiser le flux des caméras
+
+Pour diagnostiquer un problème de détection (ex : ArUco non détecté), il est utile de visualiser le flux vidéo des caméras du robot. Ouvrez un terminal pour chaque caméra et lancez la commande correspondante :
+
+**Caméra principale (avant) :**
+```bash
+ros2 run image_tools showimage --ros-args -r image:=/camera/image_raw
+```
+
+**Caméra arrière :**
+```bash
+ros2 run image_tools showimage --ros-args -r image:=/rear_camera/image_raw
+```
+
+**Caméra du bas (détection ArUco) :**
+```bash
+ros2 run image_tools showimage --ros-args -r image:=/bottom_camera/image_raw
+```
+
+Vous pouvez aussi utiliser `rqt_image_view` si vous préférez une interface graphique :
+```bash
+ros2 run rqt_image_view rqt_image_view
+```
+Puis sélectionnez le topic de la caméra souhaitée dans le menu déroulant.
+
 ### Le robot ne bouge pas
 
 **Vérifier que le mouvement est activé :**

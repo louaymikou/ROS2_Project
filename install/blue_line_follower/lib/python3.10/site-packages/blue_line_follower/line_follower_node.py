@@ -37,10 +37,9 @@ class LineFollowerNode(Node):
         # Initialize cv_bridge
         self.bridge = CvBridge()
         
-        # Initialize ArUco detector
+        # Initialize ArUco detector (using older OpenCV API for compatibility)
         self.aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-        self.aruco_params = cv2.aruco.DetectorParameters()
-        self.aruco_detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
+        self.aruco_params = cv2.aruco.DetectorParameters_create()
         
         # Track last detected ArUco to avoid spam
         self.last_detected_aruco = None
@@ -293,7 +292,7 @@ class LineFollowerNode(Node):
             # Only detect if ROI is valid
             if aruco_roi.shape[0] > 20:  # At least 20 pixels tall
                 gray_aruco = cv2.cvtColor(aruco_roi, cv2.COLOR_BGR2GRAY)
-                corners, ids, rejected = self.aruco_detector.detectMarkers(gray_aruco)
+                corners, ids, rejected = cv2.aruco.detectMarkers(gray_aruco, self.aruco_dict, parameters=self.aruco_params)
             else:
                 corners, ids, rejected = None, None, None
             
