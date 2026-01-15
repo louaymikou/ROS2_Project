@@ -7,8 +7,9 @@ Mobile robot with manipulator arm, SLAM mapping, autonomous navigation, and **IM
 - 🗺️ **Mapping SLAM** - Création de cartes avec SLAM Toolbox
 - 🧭 **Navigation Autonome** - Navigation avec Nav2
 - 🎮 **Contrôle Téléopéré** - Clavier et manette PS4
-- 🦾 **Bras Manipulateur** - Bras 3-DOF avec pince
+- 🦾 **Bras Manipulateur** - Bras 3-DOF avec pince contrôlé par **MoveIt2**
 - 📡 **Fusion de Capteurs** - IMU + Wheel Encoders avec EKF
+- 🤖 **Motion Planning** - Planification de trajectoires avec MoveIt2
 - 🎯 **Simulation Gazebo** - Environnement réaliste
 
 ## 🚀 Démarrage Rapide
@@ -19,6 +20,9 @@ Mobile robot with manipulator arm, SLAM mapping, autonomous navigation, and **IM
 |-------|-------------|
 | **[QUICK_START.md](QUICK_START.md)** | ⚡ Commandes rapides pour démarrer |
 | **[PROJECT_GUIDE.md](PROJECT_GUIDE.md)** | 📚 Guide complet et détaillé |
+| **[docs/MOVEIT_GUIDE.md](docs/MOVEIT_GUIDE.md)** | 🦾 Guide complet MoveIt2 |
+| **[docs/PICK_AND_PLACE_GUIDE.md](docs/PICK_AND_PLACE_GUIDE.md)** | 📦 Pick & Place workflow |
+| **[docs/PICK_AND_PLACE_QUICK.md](docs/PICK_AND_PLACE_QUICK.md)** | ⚡ Pick & Place rapide |
 | **[check_system.sh](check_system.sh)** | 🔍 Script de vérification du système |
 
 ### ⚙️ Installation Rapide
@@ -29,7 +33,9 @@ sudo apt install ros-humble-slam-toolbox \
                  ros-humble-navigation2 \
                  ros-humble-nav2-bringup \
                  ros-humble-robot-localization \
-                 ros-humble-gazebo-ros-pkgs
+                 ros-humble-gazebo-ros-pkgs \
+                 ros-humble-moveit \
+                 ros-humble-moveit-planners-ompl
 
 # Builder le projet
 cd ~/ROS2_Project
@@ -68,6 +74,53 @@ ros2 run my_robot_controller auto_navigator.py demo
 # Terminal 3: RViz Nav2
 rviz2 -d $(ros2 pkg prefix nav2_bringup)/share/nav2_bringup/rviz/nav2_default_view.rviz
 ```
+
+## 🦾 Contrôle du Bras avec MoveIt2
+
+✨ **Motion planning avancé avec MoveIt2**
+- Planification de trajectoires intelligente
+- Évitement de collisions automatique
+- Poses prédéfinies (home, extended, tucked, ready)
+- Contrôle interactif et programmé
+- Pick & place démonstrations
+
+```bash
+# Lancer MoveIt avec Gazebo
+ros2 launch my_robot_controller moveit.launch.py
+
+# Contrôle simple
+ros2 run my_robot_controller arm_moveit_control.py home
+ros2 run my_robot_controller arm_moveit_control.py demo
+
+# Contrôle interactif
+ros2 run my_robot_controller interactive_arm_control.py
+```
+
+📖 Voir [docs/MOVEIT_GUIDE.md](docs/MOVEIT_GUIDE.md) pour les détails
+
+## 📦 Pick and Place Autonome
+
+🎯 **Workflow complet: Navigation + Manipulation**
+- Navigation autonome vers points de pick/place
+- Manipulation intelligente avec MoveIt2
+- Séquence complète automatisée
+- Configuration personnalisable
+
+```bash
+# Lancer le système complet
+ros2 launch my_robot_controller pick_and_place.launch.py
+
+# Exécuter le workflow (nouveau terminal)
+ros2 run my_robot_controller pick_and_place_workflow.py
+```
+
+**Mission complète:**
+1. Démarrage à la position home
+2. Navigation vers Point A → Pick box
+3. Navigation vers Point B → Place box
+4. Retour à la position home
+
+📖 Voir [docs/PICK_AND_PLACE_GUIDE.md](docs/PICK_AND_PLACE_GUIDE.md) pour les détails
 
 ## 🔧 Intégration IMU
 

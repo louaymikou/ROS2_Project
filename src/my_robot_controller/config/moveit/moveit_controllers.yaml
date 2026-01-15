@@ -1,0 +1,23 @@
+# MoveIt Controllers Configuration
+# Connects MoveIt to ros2_control controllers
+
+controller_names:
+  - arm_controller
+  - gripper_controller
+
+arm_controller:
+  type: FollowJointTrajectory
+  action_ns: follow_joint_trajectory
+  default: true
+  joints:
+    - shoulder_joint
+    - elbow_joint
+    - gripper_rotate_joint
+
+gripper_controller:
+  type: FollowJointTrajectory
+  action_ns: follow_joint_trajectory
+  default: true
+  joints:
+    - gripper_left_joint
+    - gripper_right_joint

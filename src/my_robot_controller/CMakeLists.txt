@@ -16,7 +16,11 @@ install(
 install(
   PROGRAMS
     nodes/controllers/keyboard_controller.py
+    nodes/controllers/arm_moveit_control.py
+    nodes/controllers/interactive_arm_control.py
     nodes/navigation/auto_navigator.py
+    nodes/workflows/pick_and_place_workflow.py
+    nodes/workflows/configurable_pick_place.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -1,0 +1,88 @@
+planning_plugin: ompl_interface/OMPLPlanner
+planner_configs:
+  # RRT (Rapidly-exploring Random Tree)
+  RRT:
+    type: geometric::RRT
+    range: 0.0
+    goal_bias: 0.05
+    
+  # RRT Connect - Fast, good for simple environments
+  RRTConnect:
+    type: geometric::RRTConnect
+    range: 0.0
+    
+  # RRT* - Optimal version of RRT
+  RRTstar:
+    type: geometric::RRTstar
+    range: 0.0
+    goal_bias: 0.05
+    delay_collision_checking: true
+    
+  # TRRT - Temperature-based RRT
+  TRRT:
+    type: geometric::TRRT
+    range: 0.0
+    goal_bias: 0.05
+    
+  # PRM (Probabilistic Roadmap)
+  PRM:
+    type: geometric::PRM
+    max_nearest_neighbors: 10
+    
+  # PRM* - Optimal version
+  PRMstar:
+    type: geometric::PRMstar
+    
+  # BKPIECE - Grid-based planner
+  BKPIECE:
+    type: geometric::BKPIECE1
+    range: 0.0
+    border_fraction: 0.9
+    min_valid_path_fraction: 0.5
+    
+  # LBKPIECE - Lazy version
+  LBKPIECE:
+    type: geometric::LBKPIECE1
+    range: 0.0
+    border_fraction: 0.9
+    min_valid_path_fraction: 0.5
+    
+  # EST - Expansive Space Trees
+  EST:
+    type: geometric::EST
+    range: 0.0
+    goal_bias: 0.05
+
+# Group-specific planner configuration
+arm:
+  default_planner_config: RRTConnect
+  planner_configs:
+    - RRT
+    - RRTConnect
+    - RRTstar
+    - TRRT
+    - PRM
+    - PRMstar
+    - BKPIECE
+    - LBKPIECE
+    - EST
+  projection_evaluator: joints(shoulder_joint,elbow_joint)
+  longest_valid_segment_fraction: 0.005
+
+manipulator:
+  default_planner_config: RRTConnect
+  planner_configs:
+    - RRT
+    - RRTConnect
+    - RRTstar
+    - PRM
+  projection_evaluator: joints(shoulder_joint,elbow_joint)
+  longest_valid_segment_fraction: 0.005
+
+gripper:
+  default_planner_config: RRTConnect
+  planner_configs:
+    - RRT
+    - RRTConnect
+  projection_evaluator: joints(gripper_left_joint,gripper_right_joint)
+  longest_valid_segment_fraction: 0.01

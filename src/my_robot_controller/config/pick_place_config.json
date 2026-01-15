@@ -1,0 +1,43 @@
+{
+  "description": "Pick and Place Workflow Configuration",
+  "home": {
+    "x": 0.0,
+    "y": 0.0,
+    "yaw": 0.0
+  },
+  "pick_location": {
+    "x": 2.0,
+    "y": 1.0,
+    "yaw": 0.0,
+    "description": "Location where box is picked up"
+  },
+  "place_location": {
+    "x": -2.0,
+    "y": -1.0,
+    "yaw": 1.57,
+    "description": "Location where box is placed"
+  },
+  "pick_arm_sequence": [
+    "ready",
+    "extended",
+    "closed",
+    "ready",
+    "tucked"
+  ],
+  "place_arm_sequence": [
+    "ready",
+    "extended",
+    "open",
+    "ready",
+    "home"
+  ],
+  "delays": {
+    "between_steps": 2.0,
+    "arm_movement": 1.0,
+    "gripper_action": 1.0
+  },
+  "notes": {
+    "pick_sequence": "Open gripper -> Move to ready -> Extend to object -> Close gripper -> Lift -> Tuck for transport",
+    "place_sequence": "Move to ready -> Extend to place location -> Open gripper -> Retract -> Return home"
+  }
+}

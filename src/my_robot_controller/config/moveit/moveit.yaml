@@ -1,0 +1,50 @@
+/**:
+  ros__parameters:
+    # Planning Configuration
+    planning_plugin: ompl_interface/OMPLPlanner
+    request_adapters: >-
+      default_planner_request_adapters/AddTimeOptimalParameterization
+      default_planner_request_adapters/ResolveConstraintFrames
+      default_planner_request_adapters/FixWorkspaceBounds
+      default_planner_request_adapters/FixStartStateBounds
+      default_planner_request_adapters/FixStartStateCollision
+      default_planner_request_adapters/FixStartStatePathConstraints
+    start_state_max_bounds_error: 0.1
+    
+    # Trajectory Execution
+    trajectory_execution:
+      allowed_execution_duration_scaling: 1.2
+      allowed_goal_duration_margin: 0.5
+      allowed_start_tolerance: 0.01
+    
+    # Planning Scene Monitor
+    planning_scene_monitor_options:
+      name: planning_scene_monitor
+      robot_description: robot_description
+      joint_state_topic: /joint_states
+      attached_collision_object_topic: /attached_collision_object
+      publish_planning_scene_topic: /publish_planning_scene
+      monitored_planning_scene_topic: /monitored_planning_scene
+      wait_for_initial_state_timeout: 10.0
+    
+    # Sensors for octomap
+    sensors_3d:
+      filtered_cloud_topic: /filtered_cloud
+      point_cloud_topic: /point_cloud
+      max_range: 5.0
+      point_subsample: 1
+      padding_offset: 0.1
+      padding_scale: 1.0
+      max_update_rate: 1.0
+      
+    # Move Group Capabilities
+    capabilities: >-
+      move_group/MoveGroupCartesianPathService
+      move_group/MoveGroupExecuteTrajectoryAction
+      move_group/MoveGroupKinematicsService
+      move_group/MoveGroupMoveAction
+      move_group/MoveGroupPlanService
+      move_group/MoveGroupQueryPlannersService
+      move_group/MoveGroupStateValidationService
+      move_group/MoveGroupGetPlanningSceneService
+      move_group/ClearOctomapService

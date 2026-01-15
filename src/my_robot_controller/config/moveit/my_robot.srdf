@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SRDF (Semantic Robot Description Format)
+  Defines planning groups, end effectors, and collision checking behavior
+-->
+<robot name="mon_robot">
+    
+    <!-- ============================================ -->
+    <!-- PLANNING GROUPS                              -->
+    <!-- ============================================ -->
+    
+    <!-- ARM GROUP: Shoulder + Elbow + Gripper Rotation -->
+    <group name="arm">
+        <joint name="shoulder_joint"/>
+        <joint name="elbow_joint"/>
+        <joint name="gripper_rotate_joint"/>
+    </group>
+    
+    <!-- GRIPPER GROUP: Left and Right Fingers -->
+    <group name="gripper">
+        <joint name="gripper_left_joint"/>
+        <joint name="gripper_right_joint"/>
+    </group>
+    
+    <!-- FULL MANIPULATOR: Arm + Gripper -->
+    <group name="manipulator">
+        <group name="arm"/>
+        <group name="gripper"/>
+    </group>
+    
+    <!-- ============================================ -->
+    <!-- END EFFECTOR DEFINITION                      -->
+    <!-- ============================================ -->
+    
+    <end_effector name="gripper_ee" parent_link="gripper_base_link" group="gripper"/>
+    
+    <!-- ============================================ -->
+    <!-- NAMED POSES (Predefined Configurations)      -->
+    <!-- ============================================ -->
+    
+    <!-- ARM HOME POSITION -->
+    <group_state name="home" group="arm">
+        <joint name="shoulder_joint" value="0"/>
+        <joint name="elbow_joint" value="0"/>
+        <joint name="gripper_rotate_joint" value="0"/>
+    </group_state>
+    
+    <!-- ARM EXTENDED FORWARD -->
+    <group_state name="extended" group="arm">
+        <joint name="shoulder_joint" value="0"/>
+        <joint name="elbow_joint" value="1.57"/>
+        <joint name="gripper_rotate_joint" value="0"/>
+    </group_state>
+    
+    <!-- ARM TUCKED (COMPACT) -->
+    <group_state name="tucked" group="arm">
+        <joint name="shoulder_joint" value="-1.2"/>
+        <joint name="elbow_joint" value="-2.0"/>
+        <joint name="gripper_rotate_joint" value="0"/>
+    </group_state>
+    
+    <!-- ARM READY FOR PICKUP -->
+    <group_state name="ready" group="arm">
+        <joint name="shoulder_joint" value="0.5"/>
+        <joint name="elbow_joint" value="0.8"/>
+        <joint name="gripper_rotate_joint" value="0"/>
+    </group_state>
+    
+    <!-- GRIPPER OPEN -->
+    <group_state name="open" group="gripper">
+        <joint name="gripper_left_joint" value="-0.5"/>
+        <joint name="gripper_right_joint" value="-0.5"/>
+    </group_state>
+    
+    <!-- GRIPPER CLOSED -->
+    <group_state name="closed" group="gripper">
+        <joint name="gripper_left_joint" value="0.0"/>
+        <joint name="gripper_right_joint" value="0.0"/>
+    </group_state>
+    
+    <!-- GRIPPER HALF OPEN -->
+    <group_state name="half_open" group="gripper">
+        <joint name="gripper_left_joint" value="-0.25"/>
+        <joint name="gripper_right_joint" value="-0.25"/>
+    </group_state>
+    
+    <!-- ============================================ -->
+    <!-- DISABLE COLLISIONS                           -->
+    <!-- Adjacent links that are always in contact    -->
+    <!-- ============================================ -->
+    
+    <disable_collisions link1="base_link" link2="arm_1_link" reason="Adjacent"/>
+    <disable_collisions link1="arm_1_link" link2="arm_2_link" reason="Adjacent"/>
+    <disable_collisions link1="arm_2_link" link2="gripper_base_link" reason="Adjacent"/>
+    <disable_collisions link1="gripper_base_link" link2="gripper_left_link" reason="Adjacent"/>
+    <disable_collisions link1="gripper_base_link" link2="gripper_right_link" reason="Adjacent"/>
+    <disable_collisions link1="gripper_left_link" link2="gripper_right_link" reason="Default"/>
+    
+    <!-- Disable collision between base and wheels -->
+    <disable_collisions link1="base_link" link2="front_left_link" reason="Adjacent"/>
+    <disable_collisions link1="base_link" link2="front_right_link" reason="Adjacent"/>
+    <disable_collisions link1="base_link" link2="rear_left_link" reason="Adjacent"/>
+    <disable_collisions link1="base_link" link2="rear_right_link" reason="Adjacent"/>
+    
+    <!-- Disable collision between arm and robot base -->
+    <disable_collisions link1="base_link" link2="arm_2_link" reason="Never"/>
+    <disable_collisions link1="base_link" link2="gripper_base_link" reason="Never"/>
+    
+</robot>
